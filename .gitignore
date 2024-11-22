@@ -1,0 +1,34 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# IntelliJ
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Common editor / temporary files
+*~
+*.tmp
+.DS_Store
+
+# test results
+_artifacts
+
+# release artifacts
+out
+_releasenotes
+
+# Helm
+.helm

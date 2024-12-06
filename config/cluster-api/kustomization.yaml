@@ -1,0 +1,77 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: __.Values.namespace__
+
+configurations:
+- namingConfiguration.yaml
+
+resources:
+- base/core-components.yaml
+- base/capi-admin-rolebinding.yaml
+
+patches:
+- patch: |-
+    - op: add
+      path: /metadata/labels/zzz_.READ_FILE._
+      value: clusterApiLabels.yaml
+  target:
+    labelSelector: "cluster.x-k8s.io/provider=cluster-api"
+- patch: |-
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+      value: capi-webhook-service-cert
+  target:
+    kind: Service
+    name: capi-webhook-service
+#- patch: |-
+#    - op: add
+#      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+#      value: true
+#    - op: delete
+#      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+#  target:
+#    annotationSelector: "cert-manager.io/inject-ca-from=capi-system/capi-serving-cert"
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/command/0
+      value: "zzz_.READ_FILE._: manager.command.yaml"
+    - op: add
+      path: /spec/template/spec/containers/0/zzz_.READ_FILE._
+      value: manager.resources.yaml
+    - op: add
+      path: /spec/template/spec/containers/0/args/0
+      value: "zzz_.READ_FILE._: manager.extraArgs.yaml"
+    - op: replace
+      path: /spec/template/spec/containers/0/image
+      value: __.Values.manager.image.repository__:__.Values.manager.image.tag__
+    - op: replace
+      path: /spec/template/spec/containers/0/imagePullPolicy
+      value: __.Values.manager.image.pullPolicy__
+    - op: add
+      path: /spec/template/spec/zzz_.READ_FILE._
+      value: priorityClassName.yaml
+    - op: replace
+      path: /spec/replicas
+      value: __.Values.replicaCount__
+  target:
+    kind: Deployment
+    name: capi-controller-manager
+- patch: |
+    $patch: delete
+    apiVersion: batch/v1
+    kind: Issuer
+    metadata:
+      name: any-text
+  target:
+    kind: Issuer
+    name: capi-selfsigned-issuer
+- patch: |
+    $patch: delete
+    apiVersion: batch/v1
+    kind: Certificate
+    metadata:
+      name: any-text
+  target:
+    kind: Certificate
+    name: capi-serving-cert

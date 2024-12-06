@@ -1,0 +1,4 @@
+command:
+{{- range .Values.manager.command }}
+- {{ . }}
+{{- end }}

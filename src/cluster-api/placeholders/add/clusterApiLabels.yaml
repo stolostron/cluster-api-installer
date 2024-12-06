@@ -1,0 +1,3 @@
+{{- with .Values.clusterApiLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end }}

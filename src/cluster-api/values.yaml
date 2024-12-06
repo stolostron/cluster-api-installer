@@ -1,0 +1,26 @@
+namespace: capi-system
+replicaCount: 1
+priorityClassName: system-cluster-critical
+clusterApiLabels:
+  clusterctl.cluster.x-k8s.io: ""
+manager:
+  image:
+    repository: registry.redhat.io/openshift4/ose-cluster-api-rhel9
+    tag: v4.18
+    pullPolicy: IfNotPresent
+  command:
+  - /bin/cluster-api-controller-manager
+  resources:
+    requests:
+      cpu: 10m
+      memory: 50Mi
+  diagnosticsAddress: 8443
+  insecureDiagnostics: false
+  useDeprecatedInfraMachineNaming: false
+  featureGates:
+    machinePool: true
+    clusterResourceSet: true
+    clusterTopology: false
+    runtimeSDK: false
+    machineSetPreflightChecks: false
+

@@ -1,0 +1,3 @@
+{{- if .Values.priorityClassName }}              
+priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}

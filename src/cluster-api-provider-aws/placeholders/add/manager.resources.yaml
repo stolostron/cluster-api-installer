@@ -1,0 +1,4 @@
+{{- with .Values.manager.resources }}
+resources:                            
+{{- toYaml . | nindent 12 }}                             
+{{- end }}

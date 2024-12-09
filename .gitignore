@@ -32,3 +32,6 @@ _releasenotes
 
 # Helm
 .helm
+
+# temp files
+config/cluster-api/base/core-components.yaml

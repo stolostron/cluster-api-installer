@@ -350,7 +350,9 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     cluster.x-k8s.io/provider: cluster-api
-    clusterctl.cluster.x-k8s.io: ""
+    {{- with .Values.clusterApiLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   name: capi-admin-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -359,7 +361,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: capi-manager
-    namespace: capi-system
+    namespace: {{ .Values.namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

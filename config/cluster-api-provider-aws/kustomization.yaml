@@ -44,6 +44,16 @@ patches:
     name: capa-controller-manager
 - patch: |-
     - op: add
+      path: /metadata/annotations
+      value:
+        openshift.io/sa.scc.mcs: s0:c26,c0
+        openshift.io/sa.scc.supplemental-groups: 1000/10000
+        openshift.io/sa.scc.uid-range: 65500/10000
+  target:
+    kind: Namespace
+    name: capa-system
+- patch: |-
+    - op: add
       path: /metadata/annotations/iam.amazonaws.com~1role
       value: __.Values.aws.iamRole__
   target:

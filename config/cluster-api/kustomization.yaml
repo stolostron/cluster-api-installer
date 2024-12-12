@@ -28,8 +28,9 @@ patches:
 #    annotationSelector: "cert-manager.io/inject-ca-from=capi-system/capi-serving-cert"
 - patch: |-
     - op: replace
-      path: /spec/template/spec/containers/0/command/0
-      value: /bin/cluster-api-controller-manager
+      path: /spec/template/spec/containers/0/command
+      value:
+      - /bin/cluster-api-controller-manager
     - op: replace
       path: /spec/template/spec/containers/0/image
       value: registry.redhat.io/openshift4/ose-cluster-api-rhel9:__.Values.manager.image.tag__
@@ -42,6 +43,16 @@ patches:
   target:
     kind: Deployment
     name: capi-controller-manager
+- patch: |-
+    - op: add
+      path: /metadata/annotations
+      value:
+        openshift.io/sa.scc.mcs: s0:c26,c0
+        openshift.io/sa.scc.supplemental-groups: 65500/10000
+        openshift.io/sa.scc.uid-range: 65500/10000
+  target:
+    kind: Namespace
+    name: capi-system
 - patch: |
     $patch: delete
     apiVersion: batch/v1
@@ -50,7 +61,6 @@ patches:
       name: any-text
   target:
     kind: Issuer
-    name: capi-selfsigned-issuer
 - patch: |
     $patch: delete
     apiVersion: batch/v1
@@ -59,4 +69,3 @@ patches:
       name: any-text
   target:
     kind: Certificate
-    name: capi-serving-cert

@@ -1,7 +1,6 @@
-replicaCount: 1
 aws:
  encodedCredentials: ""
  iamRole: ""
 manager:
   image:
-    tag: v4.18
+    tag: v4.17

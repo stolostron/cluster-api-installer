@@ -55,6 +55,7 @@ function remove_cert_manager {
     if [ "${USE_OC_CERT=yes}" == "yes" ] ; then
         $YQ -i 'select(.metadata.annotations."cert-manager.io/inject-ca-from"=="capa-system/capa-serving-cert").metadata.annotations."service.beta.openshift.io/inject-cabundle"="true"' "$T_FILE"
         $YQ -i 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' "$T_FILE"
+        $YQ -i 'del(.spec.conversion.webhook.clientConfig.caBundle)' "$T_FILE"
         echo "using: USE_OC_CERT=yes"
     fi
     $YQ -i '' "$T_FILE"
@@ -109,7 +110,7 @@ $KUSTOMIZE build config/$PRJ | $YQ ea '[.] | sort_by(.kind,.metadata.name) | .[]
 
 echo "copy values file: src/$PRJ/values.yaml ->  $OUT_BASE/values.yaml"
 cp "src/$PRJ/values.yaml" "$OUT_BASE/values.yaml"
-sed -i -e 's/^\(    tag: \).*/\1v'"$OCP_VERSION"/ "$OUT_BASE/values.yaml"
+sed -i -e 's/^\(    tag: vX.XX\).*/\1v'"$OCP_VERSION"/ "$OUT_BASE/values.yaml"
 rm -rf "$OUT_BASE/templates"; mkdir -p "$OUT_BASE/templates"
 
 # The helm chart must contain the 

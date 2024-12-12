@@ -4,13 +4,10 @@ metadata:
   labels:
     cluster.x-k8s.io/provider: cluster-api
     control-plane: controller-manager
-    {{- with .Values.clusterApiLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
   name: capi-controller-manager
-  namespace: {{ .Values.namespace }}
+  namespace: capi-system
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       cluster.x-k8s.io/provider: cluster-api
@@ -23,18 +20,13 @@ spec:
     spec:
       containers:
         - args:
-            {{- range .Values.manager.extraArgs }}
-            - {{ . }}
-            {{- end }}
             - --leader-elect
-            - --diagnostics-address=:{{ .Values.manager.diagnosticsAddress }}
-            - --insecure-diagnostics={{ .Values.manager.insecureDiagnostics }}
-            - --use-deprecated-infra-machine-naming={{ .Values.manager.useDeprecatedInfraMachineNaming }}
-            - --feature-gates=MachinePool={{ .Values.manager.featureGates.machinePool }},ClusterResourceSet={{ .Values.manager.featureGates.clusterResourceSet }},ClusterTopology={{ .Values.manager.featureGates.clusterTopology }},RuntimeSDK={{ .Values.manager.featureGates.runtimeSDK }},MachineSetPreflightChecks={{ .Values.manager.featureGates.machineSetPreflightChecks }}
+            - --diagnostics-address=:8443
+            - --insecure-diagnostics=false
+            - --use-deprecated-infra-machine-naming=false
+            - --feature-gates=MachinePool=true,ClusterResourceSet=true,ClusterTopology=false,RuntimeSDK=false,MachineSetPreflightChecks=false
           command:
-          {{- range .Values.manager.command }}
-          - {{ . }}
-          {{- end }}
+            - /bin/cluster-api-controller-manager
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -48,8 +40,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.uid
-          image: {{ .Values.manager.image.repository }}:{{ .Values.manager.image.tag }}
-          imagePullPolicy: {{ .Values.manager.image.pullPolicy }}
+          image: registry.redhat.io/openshift4/ose-cluster-api-rhel9:{{ .Values.manager.image.tag }}
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /healthz
@@ -82,10 +74,6 @@ spec:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
               name: cert
               readOnly: true
-          {{- with .Values.manager.resources }}
-          resources:                            
-          {{- toYaml . | nindent 12 }}                             
-          {{- end }}
       securityContext:
         runAsNonRoot: true
         seccompProfile:
@@ -101,6 +89,3 @@ spec:
         - name: cert
           secret:
             secretName: capi-webhook-service-cert
-      {{- if .Values.priorityClassName }}              
-      priorityClassName: {{ .Values.priorityClassName }}
-      {{- end }}

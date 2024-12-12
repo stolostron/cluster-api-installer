@@ -1,8 +1,0 @@
-  {{- if .Values.ocmUrl }}                          
-  - name: OCM_API_URL                           
-    value: {{ .Values.ocmUrl }}                                                                  
-  {{- end}}                 
-  {{- if .Values.ocmToken}}
-  - name: OCM_TOKEN                                        
-    value: {{ .Values.ocmToken }}
-  {{- end}}

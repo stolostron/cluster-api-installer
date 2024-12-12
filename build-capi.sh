@@ -5,14 +5,14 @@ function subst_env_vars {
     local T_FILE="$2"
     cp "$ORIG_FILE" "$T_FILE"
     declare -a subst=(
-      "CAPI_DIAGNOSTICS_ADDRESS=:__.Values.manager.diagnosticsAddress__"
-      "CAPI_INSECURE_DIAGNOSTICS=__.Values.manager.insecureDiagnostics__"
-      "CAPI_USE_DEPRECATED_INFRA_MACHINE_NAMING=__.Values.manager.useDeprecatedInfraMachineNaming__"
-      "EXP_MACHINE_POOL=__.Values.manager.featureGates.machinePool__"
-      "EXP_CLUSTER_RESOURCE_SET=__.Values.manager.featureGates.clusterResourceSet__"
-      "CLUSTER_TOPOLOGY=__.Values.manager.featureGates.clusterTopology__"
-      "EXP_RUNTIME_SDK=__.Values.manager.featureGates.runtimeSDK__"
-      "EXP_MACHINE_SET_PREFLIGHT_CHECKS=__.Values.manager.featureGates.machineSetPreflightChecks__"
+      "CAPI_DIAGNOSTICS_ADDRESS=:8443"
+      "CAPI_INSECURE_DIAGNOSTICS=false"
+      "CAPI_USE_DEPRECATED_INFRA_MACHINE_NAMING=false"
+      "EXP_MACHINE_POOL=true"
+      "EXP_CLUSTER_RESOURCE_SET=true"
+      "CLUSTER_TOPOLOGY=false"
+      "EXP_RUNTIME_SDK=false"
+      "EXP_MACHINE_SET_PREFLIGHT_CHECKS=false"
     )
     for SUB in "${subst[@]}" ; do
        local WHAT="${SUB%=*}"
@@ -54,13 +54,6 @@ PRJ=cluster-api
 BRANCH="release-$OCP_VERSION"
 mkdir -p openshift
 
-SRC="openshift/$PRJ"
-if [ ! -d "$SRC" ] ; then
-    git clone https://github.com/openshift/"$PRJ" "$SRC"
-fi
-(cd $SRC; git checkout "$BRANCH"; git pull)
-SRC_CC="$SRC/openshift/core-components.yaml"
-
 if [ -z "$YQ" ] ; then
     echo "# using yq: $PWD/hack/tools/yq"
     YQ="$PWD/hack/tools/yq"
@@ -79,6 +72,14 @@ if [ ! -x "$KUSTOMIZE" ] ; then
     echo "use: make helm-capi"
     exit -1
 fi
+
+SRC="openshift/$PRJ"
+if [ ! -d "$SRC" ] ; then
+    git clone https://github.com/openshift/"$PRJ" "$SRC"
+fi
+SRC_CC="$PWD/openshift/$PRJ-components.yaml"
+(cd $SRC; git checkout "$BRANCH"; git pull)
+(cd $SRC; $KUSTOMIZE build config/default) > "$SRC_CC"
 
 echo "-------------------------"
 echo "PRJ=$PRJ BRANCH=$BRANCH"

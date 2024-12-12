@@ -1,3 +1,0 @@
-  {{- range .Values.manager.extraArgs }}
-  - {{ . }}
-  {{- end }}

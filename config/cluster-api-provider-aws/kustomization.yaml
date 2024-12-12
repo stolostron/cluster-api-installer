@@ -1,22 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: __.Values.namespace__
+namespace: capa-system
 
 configurations:
 - namingConfiguration.yaml
 
 resources:
-#- base/capa-credentials.yaml
 - base/core-components.yaml
 
 patches:
-- patch: |-
-    - op: add
-      path: /metadata/labels/zzz_.READ_FILE._
-      value: clusterApiLabels.yaml
-  target:
-    labelSelector: "cluster.x-k8s.io/provider=cluster-api"
 - patch: |-
     - op: add
       path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
@@ -34,30 +27,18 @@ patches:
 #    annotationSelector: "cert-manager.io/inject-ca-from=capa-system/capa-serving-cert"
 - patch: |-
     - op: add
-      path: /spec/template/spec/containers/0/zzx_.READ_FILE._
-      value: manager.command.yaml
-    - op: add
-      path: /spec/template/spec/containers/0/zzz_.READ_FILE._
-      value: manager.resources.yaml
-    - op: add
-      path: /spec/template/spec/containers/0/env/0
+      path: /spec/template/spec/containers/0/command
       value:
-        zzz_.READ_FILE._: manager.extraEnv.yaml 
-    - op: add
-      path: /spec/template/spec/containers/0/args/0
-      value: "zzz_.READ_FILE._: manager.extraArgs.yaml"
+      - /bin/cluster-api-provider-aws-controller-manager
     - op: replace
       path: /spec/template/spec/containers/0/image
-      value: __.Values.manager.image.repository__:__.Values.manager.image.tag__
+      value: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9:__.Values.manager.image.tag__
     - op: replace
       path: /spec/template/spec/containers/0/imagePullPolicy
-      value: __.Values.manager.image.pullPolicy__
-    - op: add
-      path: /spec/template/spec/zzz_.READ_FILE._
-      value: priorityClassName.yaml
+      value: IfNotPresent
     - op: replace
       path: /spec/replicas
-      value: __.Values.replicaCount__
+      value: 1
   target:
     kind: Deployment
     name: capa-controller-manager

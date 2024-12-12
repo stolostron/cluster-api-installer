@@ -19,7 +19,7 @@ spec:
         caBundle: Cg==
         service:
           name: capa-webhook-service
-          namespace: {{ .Values.namespace }}
+          namespace: capa-system
           path: /convert
       conversionReviewVersions:
         - v1

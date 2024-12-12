@@ -1,39 +1,7 @@
-namespace: capa-system
 replicaCount: 1
-priorityClassName: system-cluster-critical
-clusterApiLabels:
-  clusterctl.cluster.x-k8s.io: ""
 aws:
- encodedCredentials: QVdTX0I2NEVOQ09ERURfQ1JFREVOVElBTFM=
+ encodedCredentials: ""
  iamRole: ""
-k8sCpLabel: node-role.kubernetes.io/control-plane
-# ocmUrl: 'hhhh'
-# ocmToken: 'tttt'
 manager:
   image:
-    repository: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9
     tag: v4.18
-    pullPolicy: IfNotPresent
-  command:
-  - /bin/cluster-api-provider-aws-controller-manager
-  resources:
-    requests:
-      cpu: 10m
-      memory: 50Mi
-  diagnosticsAddress: 8443
-  insecureDiagnostics: false
-  logLevel: 0
-  featureGates:
-    machinePool: true
-    eks: true
-    eksEnableIAM: false
-    eksAllowAddRoles: false
-    eksFargate: false
-    eventBridgeInstanceState: false
-    autoControllerIdentityCreator: false
-    bootstrapFormatIgnition: false
-    externalResourceGC: false
-    alternativeGCStrategy: false
-    tagUnmanagedNetworkResources: false
-    rosa: true
-

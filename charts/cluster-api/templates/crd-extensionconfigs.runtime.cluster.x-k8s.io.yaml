@@ -5,9 +5,6 @@ metadata:
     controller-gen.kubebuilder.io/version: v0.15.0
   labels:
     cluster.x-k8s.io/provider: cluster-api
-    {{- with .Values.clusterApiLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
   name: extensionconfigs.runtime.cluster.x-k8s.io
 spec:
   group: runtime.cluster.x-k8s.io

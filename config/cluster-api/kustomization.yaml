@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: __.Values.namespace__
+namespace: capi-system
 
 configurations:
 - namingConfiguration.yaml
@@ -29,25 +29,16 @@ patches:
 - patch: |-
     - op: replace
       path: /spec/template/spec/containers/0/command/0
-      value: "zzz_.READ_FILE._: manager.command.yaml"
-    - op: add
-      path: /spec/template/spec/containers/0/zzz_.READ_FILE._
-      value: manager.resources.yaml
-    - op: add
-      path: /spec/template/spec/containers/0/args/0
-      value: "zzz_.READ_FILE._: manager.extraArgs.yaml"
+      value: /bin/cluster-api-controller-manager
     - op: replace
       path: /spec/template/spec/containers/0/image
-      value: __.Values.manager.image.repository__:__.Values.manager.image.tag__
+      value: registry.redhat.io/openshift4/ose-cluster-api-rhel9:__.Values.manager.image.tag__
     - op: replace
       path: /spec/template/spec/containers/0/imagePullPolicy
-      value: __.Values.manager.image.pullPolicy__
-    - op: add
-      path: /spec/template/spec/zzz_.READ_FILE._
-      value: priorityClassName.yaml
+      value: IfNotPresent
     - op: replace
       path: /spec/replicas
-      value: __.Values.replicaCount__
+      value: 1
   target:
     kind: Deployment
     name: capi-controller-manager

@@ -13,12 +13,6 @@ resources:
 patches:
 - patch: |-
     - op: add
-      path: /metadata/labels/zzz_.READ_FILE._
-      value: clusterApiLabels.yaml
-  target:
-    labelSelector: "cluster.x-k8s.io/provider=cluster-api"
-- patch: |-
-    - op: add
       path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
       value: capi-webhook-service-cert
   target:

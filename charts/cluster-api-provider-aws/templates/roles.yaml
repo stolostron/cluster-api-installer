@@ -1,14 +1,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  annotations:
-    exclude.release.openshift.io/internal-openshift-hosted: "true"
-    include.release.openshift.io/self-managed-high-availability: "true"
-    include.release.openshift.io/single-node-developer: "true"
-    release.openshift.io/feature-set: CustomNoUpgrade,TechPreviewNoUpgrade
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
-    clusterctl.cluster.x-k8s.io: ""
   name: capa-manager-role
 rules:
   - apiGroups:
@@ -452,15 +446,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  annotations:
-    exclude.release.openshift.io/internal-openshift-hosted: "true"
-    include.release.openshift.io/self-managed-high-availability: "true"
-    include.release.openshift.io/single-node-developer: "true"
-    release.openshift.io/feature-set: CustomNoUpgrade,TechPreviewNoUpgrade
-  creationTimestamp: null
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
-    clusterctl.cluster.x-k8s.io: ""
   name: capa-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -474,14 +461,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  annotations:
-    exclude.release.openshift.io/internal-openshift-hosted: "true"
-    include.release.openshift.io/self-managed-high-availability: "true"
-    include.release.openshift.io/single-node-developer: "true"
-    release.openshift.io/feature-set: CustomNoUpgrade,TechPreviewNoUpgrade
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
-    clusterctl.cluster.x-k8s.io: ""
   name: capa-leader-elect-role
   namespace: {{ .Values.namespace }}
 rules:
@@ -527,15 +508,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  annotations:
-    exclude.release.openshift.io/internal-openshift-hosted: "true"
-    include.release.openshift.io/self-managed-high-availability: "true"
-    include.release.openshift.io/single-node-developer: "true"
-    release.openshift.io/feature-set: CustomNoUpgrade,TechPreviewNoUpgrade
-  creationTimestamp: null
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
-    clusterctl.cluster.x-k8s.io: ""
   name: capa-leader-elect-rolebinding
   namespace: {{ .Values.namespace }}
 roleRef:
@@ -548,17 +522,23 @@ subjects:
     namespace: {{ .Values.namespace }}
 ---
 apiVersion: v1
+data:
+  credentials: {{ .Values.aws.encodedCredentials }}
+kind: Secret
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-aws
+  name: capa-manager-bootstrap-credentials
+  namespace: {{ .Values.namespace }}
+type: Opaque
+---
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    exclude.release.openshift.io/internal-openshift-hosted: "true"
     iam.amazonaws.com/role: {{ .Values.aws.iamRole }}
-    include.release.openshift.io/self-managed-high-availability: "true"
-    include.release.openshift.io/single-node-developer: "true"
-    release.openshift.io/feature-set: CustomNoUpgrade,TechPreviewNoUpgrade
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
-    clusterctl.cluster.x-k8s.io: ""
     control-plane: controller-manager
   name: capa-controller-manager
   namespace: {{ .Values.namespace }}

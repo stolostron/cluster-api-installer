@@ -33,7 +33,7 @@ function subst_env_vars {
 }
 function subst_placeholders {
     local T_FILE="$1"
-    sed -i -e 's/\({{\|}}\)/{{ "\1" }}/g' "$T_FILE"
+    #sed -i -e 's/\({{\|}}\)/{{ "\1" }}/g' "$T_FILE"
     sed -i -e 's;__\(.Values.[^_]\+\)__;{{ \1 }};g' "$T_FILE"
     TMP_F=$(mktemp)
     while true ; do
@@ -125,7 +125,8 @@ $YQ 'select(.kind == "Deployment")'  "$DST_PH"   > "$OUT_DEPLOY"
 echo "generated: $OUT_DEPLOY"
 
 # 2. CRDs (each crd in different file)
-OUT_CRDS="$OUT_DIR/crd-"
+OUT_CRDS="$OUT_BASE/crds/"
+mkdir -p "$OUT_CRDS"
 $YQ 'select(.kind == "CustomResourceDefinition")'  "$DST_PH"| $YQ --split-exp "\"$OUT_CRDS\""' + .metadata.name + ".yaml"'
 echo "generated: $OUT_CRDS*"
 
@@ -144,18 +145,18 @@ OUT_ROLES="$OUT_DIR/roles.yaml"
 $YQ 'select(.kind == "ServiceAccount" or .kind == "Role" or .kind == "RoleBinding" or .kind == "ClusterRole" or .kind == "ClusterRoleBinding" or .kind == "Secret")'  "$DST_PH" > "$OUT_ROLES"
 echo "generated: $OUT_ROLES"
 
-for i in "$OUT_DIR"/* ; do
+for i in "$OUT_DIR"/* "$OUT_BASE/crds"/* ; do
     $YQ -i ea '[.] | sort_by(.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' "$i"
     subst_placeholders "$i"
 done
 
 if [ "$SYNC2CHARTS" ] ;then
     echo syncing: $OUT_BASE/{values.yaml,templates} "-> charts/$PRJ"
-    rm -rf charts/"$PRJ"/templates
-    cp -a $OUT_BASE/{values.yaml,templates} charts/"$PRJ"
+    rm -rf charts/"$PRJ"/{templates,crds}
+    cp -a $OUT_BASE/{values.yaml,templates,crds} charts/"$PRJ"
     # check the chart
     echo "apply templates: ./charts/$PRJ -> /tmp/$PRJ.yaml"
-    helm template ./charts/"$PRJ" |$YQ  ea '[.] | sort_by(.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' > /tmp/"$PRJ".yaml
+    helm template ./charts/"$PRJ" --include-crds |$YQ  ea '[.] | sort_by(.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' > /tmp/"$PRJ".yaml
     sed -i -e 's/^\(version|appVersion\): .*/\1: "'"$OCP_VERSION"'"/' ./charts/"$PRJ"/Chart.yaml
 fi
 

@@ -1,0 +1,94 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: capa-system
+
+configurations:
+- namingConfiguration.yaml
+
+resources:
+- base/core-components.yaml
+
+patches:
+- patch: |-
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+      value: capa-webhook-service-cert
+  target:
+    kind: Service
+    name: capa-webhook-service
+- patch: |-
+    apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    metadata:
+      name: "notused"
+    spec:
+      conversion:
+        webhook:
+          clientConfig:
+            caBundle: null
+  target:
+    kind: CustomResourceDefinition
+    annotationSelector: "cert-manager.io/inject-ca-from"
+# related to above patch
+- patch: |-
+    - op: remove
+      path: /spec/conversion
+  target:
+    kind: CustomResourceDefinition
+    name: awsmanagedclusters.infrastructure.cluster.x-k8s.io
+- patch: |-
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+      value: true
+    - op: remove
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+  target:
+    annotationSelector: "cert-manager.io/inject-ca-from"
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/command
+      value:
+      - /bin/cluster-api-provider-aws-controller-manager
+    - op: replace
+      path: /spec/template/spec/containers/0/image
+      value: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9:{{ .Values.manager.image.tag }}
+    - op: replace
+      path: /spec/template/spec/containers/0/imagePullPolicy
+      value: IfNotPresent
+  target:
+    kind: Deployment
+    name: capa-controller-manager
+- patch: |-
+    - op: add
+      path: /metadata/annotations
+      value:
+        openshift.io/sa.scc.mcs: s0:c26,c0
+        openshift.io/sa.scc.supplemental-groups: 1000/10000
+        openshift.io/sa.scc.uid-range: 65500/10000
+  target:
+    kind: Namespace
+    name: capa-system
+- patch: |-
+    - op: add
+      path: /metadata/annotations/iam.amazonaws.com~1role
+      value: "{{ .Values.aws.iamRole }}"
+  target:
+    kind: ServiceAccount
+    name: capa-controller-manager
+- patch: |
+    $patch: delete
+    apiVersion: batch/v1
+    kind: Issuer
+    metadata:
+      name: any-text
+  target:
+    kind: Issuer
+- patch: |
+    $patch: delete
+    apiVersion: batch/v1
+    kind: Certificate
+    metadata:
+      name: any-text
+  target:
+    kind: Certificate

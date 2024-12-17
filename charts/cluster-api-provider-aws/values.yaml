@@ -1,0 +1,6 @@
+aws:
+ encodedCredentials: ""
+ iamRole: ""
+manager:
+  image:
+    tag: v4.17

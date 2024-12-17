@@ -1,0 +1,3 @@
+manager:
+  image:
+    tag: v4.17

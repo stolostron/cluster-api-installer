@@ -5,9 +5,9 @@ function subst_env_vars {
     local T_FILE="$2"
     cp "$ORIG_FILE" "$T_FILE"
     declare -a subst=(
-      "AWS_B64ENCODED_CREDENTIALS=__.Values.aws.encodedCredentials__"
+      "AWS_B64ENCODED_CREDENTIALS='{{ .Values.aws.encodedCredentials }}'"
       "AWS_CONTROLLER_IAM_ROLE/="
-      "AWS_CONTROLLER_IAM_ROLE=__.Values.aws.iamRole__"
+      "AWS_CONTROLLER_IAM_ROLE='{{ .Values.aws.iamRole }}'"
       "K8S_CP_LABEL:=node-role.kubernetes.io/control-plane"
       "CAPA_DIAGNOSTICS_ADDRESS=:8443"
       "CAPA_INSECURE_DIAGNOSTICS=false"
@@ -30,35 +30,6 @@ function subst_env_vars {
        local WITH="${SUB##*=}"
        sed -i "s;\${$WHAT[^}]*};$WITH;g" "$T_FILE" 
     done
-}
-function subst_placeholders {
-    local T_FILE="$1"
-    #sed -i -e 's/\({{\|}}\)/{{ "\1" }}/g' "$T_FILE"
-    sed -i -e 's;__\(.Values.[^_]\+\)__;{{ \1 }};g' "$T_FILE"
-    TMP_F=$(mktemp)
-    while true ; do
-        F_LINE=$(grep '[[:space:]]*\(- \|\)'"'"'*z.._.READ_FILE._:' "$T_FILE"|head -1)
-        [ -z "$F_LINE" ] && break
-        INDENT="${F_LINE%%z??_*}"
-        INDENT="${INDENT%%\'}"
-        INDENT="${INDENT%%\ \ -\ }"
-        R_FILE="${F_LINE#*z??_.READ_FILE._:\ }"
-        R_FILE="${R_FILE%\'}"
-        R_FILE="src/$PRJ/placeholders/add/$R_FILE"
-        sed -e "s;^;$INDENT;" "$R_FILE" > $TMP_F
-        sed -i -e "/^${F_LINE}$/r $TMP_F" -e "//d" "$T_FILE"
-    done
-    rm -f "$TMP_F"
-}
-function remove_cert_manager {
-    local T_FILE="$1"
-    if [ "${USE_OC_CERT=yes}" == "yes" ] ; then
-        $YQ -i 'select(.metadata.annotations."cert-manager.io/inject-ca-from"=="capa-system/capa-serving-cert").metadata.annotations."service.beta.openshift.io/inject-cabundle"="true"' "$T_FILE"
-        $YQ -i 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' "$T_FILE"
-        $YQ -i 'del(.spec.conversion.webhook.clientConfig.caBundle)' "$T_FILE"
-        echo "using: USE_OC_CERT=yes"
-    fi
-    $YQ -i '' "$T_FILE"
 }
 
 PRJ=cluster-api-provider-aws
@@ -104,7 +75,6 @@ mkdir -p "config/$PRJ"/{out,base} "$OUT_BASE"
 echo "creating placeholders file: $SRC_CC ->  $SRC_PH"
 rm -f "config/$PRJ/base"/core-components*.yaml
 subst_env_vars "$SRC_CC" "$SRC_PH"
-remove_cert_manager "$SRC_PH"
 
 $KUSTOMIZE build config/$PRJ | $YQ ea '[.] | sort_by(.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' > "$DST_PH"
 
@@ -146,8 +116,8 @@ $YQ 'select(.kind == "ServiceAccount" or .kind == "Role" or .kind == "RoleBindin
 echo "generated: $OUT_ROLES"
 
 for i in "$OUT_DIR"/* "$OUT_BASE/crds"/* ; do
+    # sort all generated yaml files
     $YQ -i ea '[.] | sort_by(.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' "$i"
-    subst_placeholders "$i"
 done
 
 if [ "$SYNC2CHARTS" ] ;then
@@ -159,6 +129,3 @@ if [ "$SYNC2CHARTS" ] ;then
     helm template ./charts/"$PRJ" --include-crds |$YQ  ea '[.] | sort_by(.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' > /tmp/"$PRJ".yaml
     sed -i -e 's/^\(version|appVersion\): .*/\1: "'"$OCP_VERSION"'"/' ./charts/"$PRJ"/Chart.yaml
 fi
-
-## unused: Issuer, Certificate, Namespace
-## added: ClusterRoleBinding/capi-admin-rolebinding

@@ -18,14 +18,14 @@ patches:
   target:
     kind: Service
     name: capi-webhook-service
-#- patch: |-
-#    - op: add
-#      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-#      value: true
-#    - op: delete
-#      path: /metadata/annotations/cert-manager.io~1inject-ca-from
-#  target:
-#    annotationSelector: "cert-manager.io/inject-ca-from=capi-system/capi-serving-cert"
+- patch: |-
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+      value: true
+    - op: remove
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+  target:
+    annotationSelector: "cert-manager.io/inject-ca-from"
 - patch: |-
     - op: replace
       path: /spec/template/spec/containers/0/command
@@ -33,13 +33,10 @@ patches:
       - /bin/cluster-api-controller-manager
     - op: replace
       path: /spec/template/spec/containers/0/image
-      value: registry.redhat.io/openshift4/ose-cluster-api-rhel9:__.Values.manager.image.tag__
+      value: registry.redhat.io/openshift4/ose-cluster-api-rhel9:{{ .Values.manager.image.tag }}
     - op: replace
       path: /spec/template/spec/containers/0/imagePullPolicy
       value: IfNotPresent
-    - op: replace
-      path: /spec/replicas
-      value: 1
   target:
     kind: Deployment
     name: capi-controller-manager

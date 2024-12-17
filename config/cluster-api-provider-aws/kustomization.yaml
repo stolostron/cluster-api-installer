@@ -17,14 +17,34 @@ patches:
   target:
     kind: Service
     name: capa-webhook-service
-#- patch: |-
-#    - op: add
-#      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-#      value: true
-#    - op: delete
-#      path: /metadata/annotations/cert-manager.io~1inject-ca-from
-#  target:
-#    annotationSelector: "cert-manager.io/inject-ca-from=capa-system/capa-serving-cert"
+- patch: |-
+    apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    metadata:
+      name: "notused"
+    spec:
+      conversion:
+        webhook:
+          clientConfig:
+            caBundle: null
+  target:
+    kind: CustomResourceDefinition
+    annotationSelector: "cert-manager.io/inject-ca-from"
+# related to above patch
+- patch: |-
+    - op: remove
+      path: /spec/conversion
+  target:
+    kind: CustomResourceDefinition
+    name: awsmanagedclusters.infrastructure.cluster.x-k8s.io
+- patch: |-
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+      value: true
+    - op: remove
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+  target:
+    annotationSelector: "cert-manager.io/inject-ca-from"
 - patch: |-
     - op: add
       path: /spec/template/spec/containers/0/command
@@ -32,13 +52,10 @@ patches:
       - /bin/cluster-api-provider-aws-controller-manager
     - op: replace
       path: /spec/template/spec/containers/0/image
-      value: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9:__.Values.manager.image.tag__
+      value: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9:{{ .Values.manager.image.tag }}
     - op: replace
       path: /spec/template/spec/containers/0/imagePullPolicy
       value: IfNotPresent
-    - op: replace
-      path: /spec/replicas
-      value: 1
   target:
     kind: Deployment
     name: capa-controller-manager
@@ -55,7 +72,7 @@ patches:
 - patch: |-
     - op: add
       path: /metadata/annotations/iam.amazonaws.com~1role
-      value: __.Values.aws.iamRole__
+      value: "{{ .Values.aws.iamRole }}"
   target:
     kind: ServiceAccount
     name: capa-controller-manager

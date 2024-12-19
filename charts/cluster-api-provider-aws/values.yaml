@@ -1,6 +1,10 @@
 aws:
- encodedCredentials: ""
- iamRole: ""
+  encodedCredentials: ""
+  iamRole: ""
+rosa:
+  ocmToken: ""
 manager:
+  cmd: /bin/cluster-api-provider-aws-controller-manager
   image:
-    tag: v4.17
+    tag: v4.18
+    url: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9

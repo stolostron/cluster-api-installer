@@ -16,7 +16,7 @@ KUSTOMIZE := $(abspath $(TOOLS_BIN_DIR)/$(KUSTOMIZE_BIN)-$(KUSTOMIZE_VER))
 KUSTOMIZE_PKG := sigs.k8s.io/kustomize/kustomize/v5
 
 .PHONY: all
-all: helm-capa helm-capi
+all: build-helm-charts helm-capi
 YQ_VER := v4.35.2
 YQ_BIN := yq
 YQ :=  $(abspath $(TOOLS_BIN_DIR)/$(YQ_BIN)-$(YQ_VER))
@@ -28,12 +28,12 @@ $(KUSTOMIZE_BIN): $(KUSTOMIZE) ## Build a local copy of kustomize.
 .PHONY: $(YQ_BIN)
 $(YQ_BIN): $(YQ) ## Build a local copy of yq
 
+build-helm-charts: $(KUSTOMIZE)
+	$(MAKE) -C ./charts KUSTOMIZE=$(KUSTOMIZE) build
+
 .PHONY: helm-capi
 helm-capi: $(YQ) $(KUSTOMIZE) ## Build a local copy of kustomize.
 	OCP_VERSION=$(OCP_VERSION) SYNC2CHARTS=true ./build-capi.sh
-
-helm-capa: $(YQ) $(KUSTOMIZE) ## Build a local copy of kustomize.
-	OCP_VERSION=$(OCP_VERSION) SYNC2CHARTS=true ./build-capa.sh
 
 $(KUSTOMIZE): # Build kustomize from tools folder.
 	CGO_ENABLED=0 GOBIN=$(TOOLS_BIN_DIR) $(GO_INSTALL) $(KUSTOMIZE_PKG) $(KUSTOMIZE_BIN) $(KUSTOMIZE_VER)

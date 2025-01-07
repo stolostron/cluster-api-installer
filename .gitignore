@@ -34,7 +34,4 @@ _releasenotes
 .helm
 
 # temp files
-config/cluster-api/base/core-components.yaml
-config/cluster-api-provider-aws/base/core-components.yaml
-openshift/
 hack/

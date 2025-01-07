@@ -1,68 +1,55 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: capi-system
-
-configurations:
-- namingConfiguration.yaml
-
+## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
-- base/core-components.yaml
-- base/capi-admin-rolebinding.yaml
+- default/
 
+transformers:
+- base/transformer.yaml
+
+## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements. 
 patches:
-- patch: |-
-    - op: add
-      path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-      value: capi-webhook-service-cert
-  target:
-    kind: Service
-    name: capi-webhook-service
-- patch: |-
-    - op: add
-      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-      value: true
-    - op: remove
-      path: /metadata/annotations/cert-manager.io~1inject-ca-from
-  target:
-    annotationSelector: "cert-manager.io/inject-ca-from"
-- patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/command
-      value:
-      - /bin/cluster-api-controller-manager
-    - op: replace
-      path: /spec/template/spec/containers/0/image
-      value: registry.redhat.io/openshift4/ose-cluster-api-rhel9:{{ .Values.manager.image.tag }}
-    - op: replace
-      path: /spec/template/spec/containers/0/imagePullPolicy
-      value: IfNotPresent
-  target:
-    kind: Deployment
-    name: capi-controller-manager
-- patch: |-
-    - op: add
-      path: /metadata/annotations
-      value:
-        openshift.io/sa.scc.mcs: s0:c26,c0
-        openshift.io/sa.scc.supplemental-groups: 65500/10000
-        openshift.io/sa.scc.uid-range: 65500/10000
-  target:
-    kind: Namespace
-    name: capi-system
-- patch: |
-    $patch: delete
-    apiVersion: batch/v1
-    kind: Issuer
-    metadata:
-      name: any-text
-  target:
-    kind: Issuer
-- patch: |
-    $patch: delete
-    apiVersion: batch/v1
-    kind: Certificate
-    metadata:
-      name: any-text
-  target:
-    kind: Certificate
+  # Remove cert-manager annotation and add OCP cert service annotation
+  - target:
+      annotationSelector: cert-manager.io/inject-ca-from
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+        value: true
+      - op: remove
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+  # Replace namespace annotation with users UIDs
+  - target:
+      kind: Namespace
+      name: capi-system
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          openshift.io/sa.scc.mcs: s0:c26,c0
+          openshift.io/sa.scc.supplemental-groups: 65500/10000
+          openshift.io/sa.scc.uid-range: 65500/10000
+  # Replace Deployment with default values & helm chart value
+  - target:
+      kind: Deployment
+      name: capi-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/command
+        value:
+        - '{{ .Values.manager.cmd  }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent
+  # Add OCP cert service annotation
+  - target:
+      kind: Service
+      name: capi-webhook-service
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: capi-webhook-service-cert

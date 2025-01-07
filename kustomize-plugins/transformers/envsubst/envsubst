@@ -1,0 +1,17 @@
+#!/bin/bash
+CLUSTERCTL=clusterctl
+TMP_FILE=$(mktemp kustomize-envsubst.XXXXXXXXXX)
+cat > "$TMP_FILE"
+for VAR_NAME in $($CLUSTERCTL generate yaml --list-variables < "$TMP_FILE" |grep '^  - '|sed -e 's/^  - //') ; do
+    VAR_VALUE=$(eval 'echo $'"$VAR_NAME")
+    echo "$VAR_NAME=$VAR_VALUE" >> /tmp/qq
+    if [ -n "$VAR_VALUE" ] ; then
+        sed -i "s;\${$VAR_NAME[^}]*};$VAR_VALUE;g" "$TMP_FILE"
+    else
+        sed -i "s;\${$VAR_NAME:="'\([^}]*\)};\1;g' "$TMP_FILE"
+    fi
+done
+cp $TMP_FILE /tmp/qq.yaml
+
+cat $TMP_FILE
+rm "$TMP_FILE"

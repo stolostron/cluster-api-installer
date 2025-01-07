@@ -5,6 +5,9 @@ kind: Kustomization
 resources:
 - default/
 
+transformers:
+- base/transformer.yaml
+
 ## Patch the default CAPA CRDs & CRs with OCP dwonstream CAPA requirements. 
 patches:
   # Removing the caBundle field (TODO: remove this patch in next release as caBundle is removed upstream)
@@ -110,14 +113,6 @@ patches:
         path: /spec/template/spec/affinity/nodeAffinity/preferredDuringSchedulingIgnoredDuringExecution/0/preference/matchExpressions/0/key
         value: 'node-role.kubernetes.io/control-plane'
       - op: replace
-        path: /spec/template/spec/containers/0/args
-        value:
-        - --leader-elect
-        - --feature-gates=ROSA=true,EKS=true,EKSEnableIAM=true,EKSAllowAddRoles=true,EKSFargate=true,TagUnmanagedNetworkResources=true,AutoControllerIdentityCreator=true,MachinePool=true,EventBridgeInstanceState=false,BootstrapFormatIgnition=false,ExternalResourceGC=false,AlternativeGCStrategy=false
-        - --v=0
-        - --diagnostics-address=:8443
-        - --insecure-diagnostics=false
-      - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
       - op: replace
@@ -139,6 +134,6 @@ patches:
       kind: Service
       name: capa-webhook-service
     patch: |-
-        - op: add
-          path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-          value: capa-webhook-service-cert
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: capa-webhook-service-cert

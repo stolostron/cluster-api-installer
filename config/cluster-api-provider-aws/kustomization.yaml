@@ -80,18 +80,6 @@ patches:
         path: /metadata/annotations
         value:
           iam.amazonaws.com/role: '{{ .Values.aws.iamRole }}'
-  # Replace namespace annotation with users UIDs
-  - target:
-      version: v1
-      kind: Namespace
-      name: capa-system
-    patch: |-
-      - op: replace
-        path: /metadata/annotations
-        value:
-          openshift.io/sa.scc.mcs: s0:c26,c0
-          openshift.io/sa.scc.supplemental-groups: 1000/10000
-          openshift.io/sa.scc.uid-range: 65500/10000
   # Replace sceret with AWS credentials helm chart value
   - target:
       version: v1
@@ -129,6 +117,12 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsUser
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsGroup
+      - op: remove
+        path: /spec/template/spec/securityContext/fsGroup
   # Add OCP cert service annotation
   - target:
       kind: Service

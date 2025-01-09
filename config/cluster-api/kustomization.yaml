@@ -19,17 +19,6 @@ patches:
         value: true
       - op: remove
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-  # Replace namespace annotation with users UIDs
-  - target:
-      kind: Namespace
-      name: capi-system
-    patch: |-
-      - op: add
-        path: /metadata/annotations
-        value:
-          openshift.io/sa.scc.mcs: s0:c26,c0
-          openshift.io/sa.scc.supplemental-groups: 65500/10000
-          openshift.io/sa.scc.uid-range: 65500/10000
   # Replace Deployment with default values & helm chart value
   - target:
       kind: Deployment
@@ -45,6 +34,10 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsUser
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsGroup
   # Add OCP cert service annotation
   - target:
       kind: Service

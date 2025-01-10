@@ -1,3 +1,5 @@
 manager:
+  cmd: /bin/cluster-api-controller-manager
   image:
-    tag: v4.17
+    tag: v4.18
+    url: registry.redhat.io/openshift4/ose-cluster-api-rhel9

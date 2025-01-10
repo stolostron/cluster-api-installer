@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+if [ -z "$WKDIR" ]; then
+    echo "WKDIR must be provided ex; ../out"
+    exit -1
+fi
 if [ -z "$ORGREPO" ]; then
     echo "ORGREPO must be provided ex; https://github.com/openshift"
     exit -1
@@ -18,32 +22,31 @@ if [ -z "$KUSTOMIZE" ] ; then
     exit -1
 fi
 
-WKDIR=../out
 CONFIGDIR=config
 TMPDIR=tmp
 
-## TODO: We need function to compare the $PROJECT --feature-gates in config/manager/manager.yaml
-## with the chart generated $PROJECT --feature-gates in templates/apps_v1_deployment*.yaml 
-## and break if a new feature-gate has been added.
-function check_env_vars {
-    echo 'Check ' $PROJECT ' feature-gates changes'
-    # local ORIG_FILE="$1"
-    # local T_FILE="$2"
-    # return -1
-}
+if [ "$SKIP_CLONE" != true -o ! -d $WKDIR/$PROJECT ] ; then
+    mkdir -p $WKDIR
+    rm -rf $WKDIR/$PROJECT
+    mkdir $WKDIR/$PROJECT
+    git clone $ORGREPO/$PROJECT $WKDIR/$PROJECT
+fi
 
-mkdir -p $WKDIR
-rm -rf $WKDIR/$PROJECT
-mkdir $WKDIR/$PROJECT
-git clone $ORGREPO/$PROJECT $WKDIR/$PROJECT
+mkdir -p ../src
+export SRC_RESOURCES=$(realpath ../src/$PROJECT.yaml)
+export KUSTOMIZE_PLUGIN_HOME=$(realpath ../kustomize-plugins)
+[ -f ../$CONFIGDIR/$PROJECT/env ] && . ../$CONFIGDIR/$PROJECT/env
 cp ../$CONFIGDIR/$PROJECT/kustomization.yaml $WKDIR/$PROJECT/$CONFIGDIR
+[ -d ../$CONFIGDIR/$PROJECT/base ] && cp -a ../$CONFIGDIR/$PROJECT/base $WKDIR/$PROJECT/$CONFIGDIR
 
 cd $WKDIR/$PROJECT
 git checkout "$BRANCH" && git pull
 rm -rf $CONFIGDIR/$TMPDIR
 mkdir -p $CONFIGDIR/$TMPDIR
-$KUSTOMIZE build config -o $CONFIGDIR/$TMPDIR
+$KUSTOMIZE build config/default > $SRC_RESOURCES
+# do the replacements
+$KUSTOMIZE build --enable-alpha-plugins config -o $CONFIGDIR/$TMPDIR
 rm -rf $CONFIGDIR/$TMPDIR/cert*
-## TODO: call check_env_vars config/manager/manager.yaml templates/apps_v1_deployment*.yaml it need to break 
-
-echo $WKDIR/$PROJECT/$CONFIGDIR/$TMPDIR
+if [ "$PROJECT" == "cluster-api" ] ; then
+    rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_ip*.yaml
+fi

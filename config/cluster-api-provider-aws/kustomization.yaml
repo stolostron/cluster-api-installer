@@ -5,6 +5,9 @@ kind: Kustomization
 resources:
 - default/
 
+transformers:
+- base/transformer.yaml
+
 ## Patch the default CAPA CRDs & CRs with OCP dwonstream CAPA requirements. 
 patches:
   # Removing the caBundle field (TODO: remove this patch in next release as caBundle is removed upstream)
@@ -77,18 +80,6 @@ patches:
         path: /metadata/annotations
         value:
           iam.amazonaws.com/role: '{{ .Values.aws.iamRole }}'
-  # Replace namespace annotation with users UIDs
-  - target:
-      version: v1
-      kind: Namespace
-      name: capa-system
-    patch: |-
-      - op: replace
-        path: /metadata/annotations
-        value:
-          openshift.io/sa.scc.mcs: s0:c26,c0
-          openshift.io/sa.scc.supplemental-groups: 1000/10000
-          openshift.io/sa.scc.uid-range: 65500/10000
   # Replace sceret with AWS credentials helm chart value
   - target:
       version: v1
@@ -110,14 +101,6 @@ patches:
         path: /spec/template/spec/affinity/nodeAffinity/preferredDuringSchedulingIgnoredDuringExecution/0/preference/matchExpressions/0/key
         value: 'node-role.kubernetes.io/control-plane'
       - op: replace
-        path: /spec/template/spec/containers/0/args
-        value:
-        - --leader-elect
-        - --feature-gates=ROSA=true,EKS=true,EKSEnableIAM=true,EKSAllowAddRoles=true,EKSFargate=true,TagUnmanagedNetworkResources=true,AutoControllerIdentityCreator=true,MachinePool=true,EventBridgeInstanceState=false,BootstrapFormatIgnition=false,ExternalResourceGC=false,AlternativeGCStrategy=false
-        - --v=0
-        - --diagnostics-address=:8443
-        - --insecure-diagnostics=false
-      - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
       - op: replace
@@ -134,11 +117,17 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsUser
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsGroup
+      - op: remove
+        path: /spec/template/spec/securityContext/fsGroup
   # Add OCP cert service annotation
   - target:
       kind: Service
       name: capa-webhook-service
     patch: |-
-        - op: add
-          path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-          value: capa-webhook-service-cert
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: capa-webhook-service-cert

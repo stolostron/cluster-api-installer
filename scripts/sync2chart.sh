@@ -16,20 +16,24 @@ fi
 
 
 CHARTDIR=../charts/$PROJECT
-PREVCHART=$BUILTDIR/prev-chart.yml
 NEWCHART=$BUILTDIR/new-chart.yml
 
 if [ "$SYNC2CHARTS" ] ;then
-    echo 'Run helm template before sync saving the output to ' $PREVCHART
-	helm template $CHARTDIR --include-crds > $PREVCHART
-	echo 'sync new output to ' $CHARTDIR
+    echo 'sync new output to ' $CHARTDIR
     rm -rf $CHARTDIR/templates/*.yaml
-	rm -rf $CHARTDIR/crds/*.yaml
+    rm -rf $CHARTDIR/crds/*.yaml
     mv $BUILTDIR/apiextensions*.yaml $CHARTDIR/crds
     mv $BUILTDIR/*.yaml $CHARTDIR/templates
-	sed -i -e 's/^\(version|appVersion\): .*/\1: "'"$OCP_VERSION"'"/' $CHARTDIR/Chart.yaml
-	sed -i -e 's/^\(    tag: vX.XX\).*/\1v'"$OCP_VERSION"/ "$CHARTDIR/values.yaml"
-	echo 'Run helm template after sync saving the output to ' $NEWCHART
-	helm template $CHARTDIR --include-crds > $NEWCHART
-	# TODO: We need to diff between PREVCHART with NEWCHART and write the difference in the logs
+
+    echo "updating versions($OCP_VERSION) in:" "$CHARTDIR/Chart.yaml" "$CHARTDIR/values.yaml"
+    sed -i -e 's/^\(version\|appVersion\): .*/\1: "'"$OCP_VERSION"'"/' "$CHARTDIR/Chart.yaml"
+    sed -i -e 's/^\(    tag: \).*/\1v'"$OCP_VERSION"/ "$CHARTDIR/values.yaml"
+    
+    echo 'Run helm template after sync saving the output to ' $NEWCHART
+    $HELM template $CHARTDIR --include-crds | \
+      grep -v '^#' > $NEWCHART
+    
+    if [ "$SORTED_OUTPUT" == "true" ] ; then
+      $YQ ea '[.] | sort_by(.apiVersion,.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' < "$NEWCHART" > "${NEWCHART#.yaml}-sorted.yaml"
+    fi
 fi

@@ -36,7 +36,7 @@ spec:
       containers:
       - args:
         - --leader-elect
-        - --feature-gates=ROSA=true,EKS=true,EKSEnableIAM=true,EKSAllowAddRoles=true,EKSFargate=true,TagUnmanagedNetworkResources=true,AutoControllerIdentityCreator=true,MachinePool=true,EventBridgeInstanceState=false,BootstrapFormatIgnition=false,ExternalResourceGC=false,AlternativeGCStrategy=false
+        - --feature-gates=EKS=true,EKSEnableIAM=true,EKSAllowAddRoles=true,EKSFargate=true,MachinePool=true,EventBridgeInstanceState=false,AutoControllerIdentityCreator=true,BootstrapFormatIgnition=false,ExternalResourceGC=false,AlternativeGCStrategy=false,TagUnmanagedNetworkResources=true,ROSA=true
         - --v=0
         - --diagnostics-address=:8443
         - --insecure-diagnostics=false
@@ -75,8 +75,6 @@ spec:
           capabilities:
             drop:
             - ALL
-          runAsGroup: 65532
-          runAsUser: 65532
         terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
@@ -85,7 +83,6 @@ spec:
         - mountPath: /home/.aws
           name: credentials
       securityContext:
-        fsGroup: 1000
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault

@@ -85,9 +85,8 @@ patches:
       version: v1
       kind: Secret
     patch: |-
-      - op: replace
-        path: /data/credentials
-        value: '{{ .Values.aws.encodedCredentials }}'
+      - op: remove
+        path: /data
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1

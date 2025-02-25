@@ -1,0 +1,85 @@
+name: Sync providers
+
+on:
+  workflow_call:
+    inputs:
+      dst-branch:
+        required: true
+        type: string
+    secrets:
+      personal_access_token:
+        required: true
+
+
+jobs:
+  # This workflow contains a single job called "greet"
+  check-sync:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: test-target-branch-capi
+      id: check-branch-exists-capi
+      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists
+      with:
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capi') }}
+    - name: test-target-branch-capa
+      id: check-branch-exists-capa
+      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
+      with:
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
+    - name: checkout
+      uses: actions/checkout@v4
+      with:
+       ref: ${{ inputs.dst-branch }}
+    - name: Sync
+      id: sync
+      run: make build-helm-charts
+    - name: Create Pull Request CAPI
+      id: cpr-capi
+      if: ${{ steps.sync.outputs.updated_cluster-api == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: CAPI Update report
+        add-paths: charts/cluster-api, src/cluster-api.yaml
+        committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capi') }}
+        delete-branch: true
+        title: '[CAPI] Update report'
+        body: |
+          CAPI Update report
+          - Updated with *today's* date
+        labels: |
+          capi
+          report
+          automated pr
+        assignees: marek-veber
+        reviewers: marek-veber
+        draft: true
+    - name: Create Pull Request CAPA
+      id: cpr-capa
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: CAPA Update report
+        add-paths: charts/cluster-api-provider-aws, src/cluster-api-provider-aws.yaml
+        committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
+        delete-branch: true
+        title: '[CAPA] Update report'
+        body: |
+          CAPA Update report
+          - Updated with *today's* date
+        labels: |
+          capa
+          report
+          automated pr
+        assignees: marek-veber
+        reviewers: marek-veber
+        draft: true
+

@@ -76,6 +76,8 @@ patches:
       kind: ServiceAccount
       name: capa-controller-manager
     patch: |-
+      - op: remove
+        path: /data
   # Replace sceret with AWS credentials helm chart value
   - target:
       version: v1

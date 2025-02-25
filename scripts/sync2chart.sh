@@ -32,6 +32,15 @@ if [ "$SYNC2CHARTS" ] ;then
     echo 'Run helm template after sync saving the output to ' $NEWCHART
     $HELM template $CHARTDIR --include-crds | \
       grep -v '^#' > $NEWCHART
+
+    if [ -n "$GITHUB_OUTPUT" ] ; then
+        echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT NEWCHART=$NEWCHART"
+        # when started under github workflow
+        if [ $(git diff --name-only "$CHARTDIR"|wc -l) -gt 0 ] ; then
+            echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"
+            echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT updated$PROJECT ... NEWCHART=$NEWCHART"
+        fi
+    fi
     
     if [ "$SORTED_OUTPUT" == "true" ] ; then
       $YQ ea '[.] | sort_by(.apiVersion,.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' < "$NEWCHART" > "${NEWCHART#.yaml}-sorted.yaml"

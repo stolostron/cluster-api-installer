@@ -76,10 +76,8 @@ patches:
       kind: ServiceAccount
       name: capa-controller-manager
     patch: |-
-      - op: replace
-        path: /metadata/annotations
-        value:
-          iam.amazonaws.com/role: '{{ .Values.aws.iamRole }}'
+      - op: remove
+        path: /data
   # Replace sceret with AWS credentials helm chart value
   - target:
       version: v1

@@ -1,5 +1,5 @@
-OCP_VERSION ?= 4.18
-BRANCH ?= release-4.18
+OCP_VERSION ?= 4.19
+BRANCH ?= release-4.19
 SYNC2CHARTS ?= true
 ORGREPO ?= https://github.com/openshift
 

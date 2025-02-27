@@ -1,5 +1,5 @@
 OCP_VERSION ?= 4.19
-MCE_VERSION ?= 2.10.0-1
+BRANCH ?= release-4.19
 SYNC2CHARTS ?= true
 
 DEFAULT_ORGREPO ?= https://github.com/openshift

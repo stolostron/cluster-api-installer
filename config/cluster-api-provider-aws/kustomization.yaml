@@ -117,6 +117,8 @@ patches:
           value: /home/.aws/credentials
         - name: OCM_TOKEN
           value: '{{ .Values.rosa.ocmToken  }}'
+        - name: OCM_CONFIG
+          value: /ocm/ocm.json
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent

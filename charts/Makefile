@@ -1,5 +1,5 @@
 OCP_VERSION ?= 4.19
-BRANCH ?= main
+BRANCH ?= master
 SYNC2CHARTS ?= true
 ORGREPO ?= https://github.com/openshift
 

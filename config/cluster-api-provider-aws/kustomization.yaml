@@ -80,7 +80,7 @@ patches:
         path: /metadata/annotations
         value:
           iam.amazonaws.com/role: '{{ .Values.aws.iamRole }}'
-  # Update secrets
+  # Replace sceret with AWS credentials helm chart value
   - target:
       version: v1
       kind: Secret
@@ -117,19 +117,6 @@ patches:
           value: /home/.aws/credentials
         - name: OCM_TOKEN
           value: '{{ .Values.rosa.ocmToken  }}'
-        - name: OCM_CONFIG
-          value: /ocm/ocm.json
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/0
-        value:
-          mountPath: /ocm
-          name: ocm
-      - op: add
-        path: /spec/template/spec/volumes/0
-        value:
-          emptyDir:
-            sizeLimit: 1Mi
-          name: ocm
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent

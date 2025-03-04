@@ -40,7 +40,8 @@ test-charts-crc:
 
 .PHONY: docker
 docker:
-	docker build -t cluster-api-installer -f Dockerfile .
+	docker --version|grep -q podman && MOUNT_FLAGS=",Z" ; \
+	docker run --workdir=/workspace --mount=type=bind,src=./,target=/workspace,rw$${MOUNT_FLAGS} docker.io/library/golang:1.24.0 make build-helm-charts
 
 $(KUSTOMIZE): # Build kustomize from tools folder.
 	CGO_ENABLED=0 GOBIN=$(TOOLS_BIN_DIR) $(GO_INSTALL) $(KUSTOMIZE_PKG) $(KUSTOMIZE_BIN) $(KUSTOMIZE_VER)

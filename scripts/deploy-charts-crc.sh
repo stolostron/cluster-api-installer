@@ -4,7 +4,7 @@ set -e
 crc start > /dev/null
 export KUBECONFIG=$HOME/.crc/machines/crc/kubeconfig
 echo KUBECONFIG=$KUBECONFIG
-for CHART in charts/*; do
+for CHART in charts/cluster-api{,-*}; do
     [ -f $CHART/Chart.yaml ] || continue
     PROJECT=${CHART#charts/}
     [ -z "$PROJECT_ONLY" -o "$PROJECT_ONLY" == "$PROJECT" ] || continue

@@ -85,9 +85,8 @@ patches:
       version: v1
       kind: Secret
     patch: |-
-      - op: replace
-        path: /data/credentials
-        value: '{{ .Values.aws.encodedCredentials }}'
+      - op: remove
+        path: /data
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1
@@ -114,6 +113,19 @@ patches:
           value: /home/.aws/credentials
         - name: OCM_TOKEN
           value: '{{ .Values.rosa.ocmToken  }}'
+        - name: OCM_CONFIG
+          value: /ocm/ocm.json
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/0
+        value:
+          mountPath: /ocm
+          name: ocm
+      - op: add
+        path: /spec/template/spec/volumes/0
+        value:
+          emptyDir:
+            sizeLimit: 1Mi
+          name: ocm
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent

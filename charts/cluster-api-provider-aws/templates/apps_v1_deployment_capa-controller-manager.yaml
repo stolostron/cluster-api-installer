@@ -47,6 +47,8 @@ spec:
           value: /home/.aws/credentials
         - name: OCM_TOKEN
           value: '{{ .Values.rosa.ocmToken  }}'
+        - name: OCM_CONFIG
+          value: /ocm/ocm.json
         image: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -77,6 +79,8 @@ spec:
             - ALL
         terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
+        - mountPath: /ocm
+          name: ocm
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
@@ -94,6 +98,9 @@ spec:
       - effect: NoSchedule
         key: node-role.kubernetes.io/control-plane
       volumes:
+      - emptyDir:
+          sizeLimit: 1Mi
+        name: ocm
       - name: cert
         secret:
           defaultMode: 420

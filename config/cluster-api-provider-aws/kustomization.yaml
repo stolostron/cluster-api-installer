@@ -143,3 +143,11 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: capa-webhook-service-cert
+  # Add the empty cluster.open-cluster-management.io/backup label for the Secret
+  - target:
+      kind: Secret
+      name: capa-manager-bootstrap-credentials
+    patch: |-
+      - op: add
+        path: /metadata/labels/cluster.open-cluster-management.io~1backup
+        value: ""

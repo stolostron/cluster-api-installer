@@ -1,0 +1,37 @@
+---
+name: Sync
+
+on:
+  schedule:
+    - cron: "24 0 * * 3"
+
+jobs:
+  call-sync-release-2_8:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/sync-providers.yaml
+    with:
+      dst-branch: "release-2.8"
+    secrets:
+      personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+  call-sync-release-2_9:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/sync-providers.yaml
+    with:
+      dst-branch: "release-2.9"
+    secrets:
+      personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+  call-sync-main:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/sync-providers.yaml
+    with:
+      dst-branch: "main"
+    secrets:
+      personal_access_token: ${{ secrets.GITHUB_TOKEN }}

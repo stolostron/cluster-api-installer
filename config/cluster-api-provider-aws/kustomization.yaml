@@ -80,13 +80,17 @@ patches:
         path: /metadata/annotations
         value:
           iam.amazonaws.com/role: '{{ .Values.aws.iamRole }}'
-  # Replace sceret with AWS credentials helm chart value
+  # Update secrets
   - target:
       version: v1
       kind: Secret
+      name: capa-manager-bootstrap-credentials
     patch: |-
       - op: remove
         path: /data
+      - op: add
+        path: /metadata/labels/cluster.open-cluster-management.io~1backup
+        value: ""
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1

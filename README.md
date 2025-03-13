@@ -1,8 +1,11 @@
 # cluster-api-installer
-Introduction
+
+## Introduction
+
 The Cluster-api-installer repository creates Helm charts for Cluster-API (CAPI) and its providers, such as Cluster-API-provider-AWS (CAPA), designed for deployment on OpenShift clusters. The MultiClusterEngine operator utilizes these Helm charts to deploy CAPI and CAPA as components of the MultiClusterEngine. For the upcoming release, the Cluster-api-installer repository will include Helm charts for additional Cluster-API providers, such as Cluster-API-provider-Azure (CAPZ) and Cluster-API-provider-Metal3 (CAPM).
 
 CAPI components require the cert-manager operator to generate the necessary certificates. The Cluster-api-installer modifies the CAPI Helm charts to leverage the cert-serve-service (certificate service) that already exists within the OpenShift cluster, instead of relying on the cert-manager operator.
+
 ## How it works
 The cluster-api-installer synch the changes happened in the openshift/cluser-api and openshift/cluster-api-provider-aws repos to the chart directory 
  * Core CAPI provider → `charts/cluster-api`
@@ -34,6 +37,9 @@ Then (for `PROJECT` in `cluster-api` `cluster-api-provider-aws`):
     * The sources before transformation - in the `src/$PROJECT.yaml` file.
     * The target Helm charts in the `charts/$PROJECT` directory.
 
+There are also [GitHub workflows](./doc/GitHub-Actions.md) for synchronization.  
+See [this documentation](./doc/Adding-NewProvider.md) if you want to add a new provider.
+
 ### Commands
 * To sync:
   * `make` - This will sync all charts.
@@ -62,53 +68,4 @@ Then (for `PROJECT` in `cluster-api` `cluster-api-provider-aws`):
   make clean
   ```
 
-## GitHub Actions
-The configuration is in [.github/workflows/crons.yml](https://github.com/stolostron/cluster-api-installer/blob/main/.github/workflows/crons.yml), and the cron job runs once a week (only from the `main` branch):
-```yaml
-on:
-  schedule:
-    - cron: "24 0 * * 3"
-```
-There is a job specified per branch, e.g., for the `release-2.8` branch:
-```yaml
-jobs:
-  call-sync-release-2_8:
-    permissions:
-      contents: write
-      pull-requests: write
-    uses: ./.github/workflows/sync-providers.yaml
-    with:
-      dst-branch: "release-2.8"
-    secrets:
-      personal_access_token: ${{ secrets.GITHUB_TOKEN }}
-```
 
-You can also manually trigger the workflow from the **Actions** menu on GitHub: [Manual Workflow](https://github.com/stolostron/cluster-api-installer/actions/workflows/manual.yaml):
- * Click on `Run workflow`
- * and then select the `Branch to sync`.
-
-## Adding a New Provider
-To add a new provider, update the [`charts/Makefile`](https://github.com/stolostron/cluster-api-installer/blob/main/charts/Makefile) and create a Kustomize configuration for the provider.
-
-### Update `Makefile`
-You need to create a new target in [`charts/Makefile`](https://github.com/stolostron/cluster-api-installer/blob/main/charts/Makefile), similar to `build-cluster-api-aws-chart` for the AWS provider:
-```make
-build-cluster-api-aws-chart: PROJECT = cluster-api-provider-aws
-
- ...
-
-.PHONY: build-cluster-api-aws-chart
-build-cluster-api-aws-chart:
-        WKDIR=$(WKDIR) ORGREPO=$(ORGREPO) PROJECT=$(PROJECT) BRANCH=$(BRANCH) ../scripts/build.sh
-        OCP_VERSION=$(OCP_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
-```
-
-Then, add this target (e.g., `build-cluster-api-aws-chart`) as a dependency for the `build` target:
-```make
-build: build-cluster-api-chart build-cluster-api-aws-chart build-cluster-api-azure-chart
-```
-
-### Update Kustomize Configuration
-You need to create a `kustomization.yaml` file in the `config/$PROJECT` directory, similar to [`config/cluster-api-provider-aws/kustomization.yaml`](https://github.com/stolostron/cluster-api-installer/blob/main/config/cluster-api-provider-aws/kustomization.yaml) for the AWS provider.
-
-Additionally, you may include an `env` file in the `config/$PROJECT` directory with `<KEY>=<value>` pairs to override default values for variables in source resource templates, like [`config/cluster-api-provider-aws/env`](https://github.com/stolostron/cluster-api-installer/blob/main/config/cluster-api-provider-aws/env) for the AWS provider.

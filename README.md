@@ -3,7 +3,7 @@ Introduction
 The Cluster-api-installer repository creates Helm charts for Cluster-API (CAPI) and its providers, such as Cluster-API-provider-AWS (CAPA), designed for deployment on OpenShift clusters. The MultiClusterEngine operator utilizes these Helm charts to deploy CAPI and CAPA as components of the MultiClusterEngine. For the upcoming release, the Cluster-api-installer repository will include Helm charts for additional Cluster-API providers, such as Cluster-API-provider-Azure (CAPZ) and Cluster-API-provider-Metal3 (CAPM).
 
 CAPI components require the cert-manager operator to generate the necessary certificates. The Cluster-api-installer modifies the CAPI Helm charts to leverage the cert-serve-service (certificate service) that already exists within the OpenShift cluster, instead of relying on the cert-manager operator.
-## Synchronization
+## How it works
 The synchronization process now supports synchronization for:
  * Core CAPI provider → `charts/cluster-api`
  * CAPA - AWS provider → `charts/cluster-api-provider-aws`

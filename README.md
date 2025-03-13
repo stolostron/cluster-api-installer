@@ -4,7 +4,7 @@ The Cluster-api-installer repository creates Helm charts for Cluster-API (CAPI) 
 
 CAPI components require the cert-manager operator to generate the necessary certificates. The Cluster-api-installer modifies the CAPI Helm charts to leverage the cert-serve-service (certificate service) that already exists within the OpenShift cluster, instead of relying on the cert-manager operator.
 ## How it works
-The synchronization process now supports synchronization for:
+The cluster-api-installer synch the changes happened in the openshift/cluser-api and openshift/cluster-api-provider-aws repos to the chart directory 
  * Core CAPI provider → `charts/cluster-api`
  * CAPA - AWS provider → `charts/cluster-api-provider-aws`
 

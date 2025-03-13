@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.16.1
     service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
@@ -1005,13 +1005,9 @@ spec:
                             properties:
                               apiVersion:
                                 description: apiVersion filters templates by apiVersion.
-                                maxLength: 512
-                                minLength: 1
                                 type: string
                               kind:
                                 description: kind filters templates by kind.
-                                maxLength: 256
-                                minLength: 1
                                 type: string
                               matchResources:
                                 description: matchResources selects templates based
@@ -1119,8 +1115,6 @@ spec:
                       type: object
                     name:
                       description: name of the patch.
-                      maxLength: 256
-                      minLength: 1
                       type: string
                   required:
                   - name
@@ -1162,8 +1156,6 @@ spec:
                       type: object
                     name:
                       description: name of the variable.
-                      maxLength: 256
-                      minLength: 1
                       type: string
                     required:
                       description: |-
@@ -1496,8 +1488,6 @@ spec:
                                       rules by default are applied only on UPDATE
                                       requests and are\nskipped if an old value could
                                       not be found."
-                                    maxLength: 4096
-                                    minLength: 1
                                     type: string
                                 required:
                                 - rule
@@ -2278,8 +2268,6 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
-                      maxLength: 256
-                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -2813,8 +2801,6 @@ spec:
                       type: boolean
                     name:
                       description: name is the name of the variable.
-                      maxLength: 256
-                      minLength: 1
                       type: string
                   required:
                   - definitions

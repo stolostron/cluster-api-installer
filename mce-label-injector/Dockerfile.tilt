@@ -1,0 +1,9 @@
+FROM golang:1.23-alpine
+RUN apk add --no-cache \
+    gcompat \
+    libc6-compat \
+    && \
+    ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+COPY mce-label-injector /usr/local/bin/mce-label-injector
+

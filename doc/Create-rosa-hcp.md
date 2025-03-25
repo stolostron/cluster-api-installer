@@ -11,7 +11,7 @@
 	   `git clone https://github.com/openshift-cs/terraform-vpc-example`
 	
 	1. Follow the commands below to create the VPC:
-	   ```
+	   ```shell
 	   cd terraform-vpc-example
 	   terraform init
 	   terraform plan -out rosa.tfplan -var region=<region>
@@ -26,14 +26,14 @@
 3. Create the required IAM roles and OpenID Connect configuration.
    
     1. Create the required IAM account roles and policies.
-     ```     
+    ```     
      rosa create account-roles --force-policy-creation
-	   ```
+	```
     2. Create the OpenID Connect (OIDC) configuration.
 
     ```     
     rosa create oidc-config --mode=auto
-	   ```
+	```
     3. Copy the OIDC config ID <OIDC_CONFIG_ID> provided in the ROSA CLI output. 
       
        The OIDC config ID needs to be provided later to create the ROSA HCP cluster.  
@@ -41,7 +41,7 @@
 
     ```     
     rosa list oidc-config
-     ```
+    ```
 
 4. Create the required IAM operator roles.   
    You must supply a prefix in <PREFIX_NAME> and replace the <OIDC_CONFIG_ID> with the OIDC config ID copied previously.
@@ -49,13 +49,11 @@
    ```     
     rosa create operator-roles --prefix <PREFIX_NAME> --oidc-config-id <OIDC_CONFIG_ID> --hosted-cp
    ```
-    
      
 5. Verify the IAM operator roles were created. 
    ```     
    rosa list operator-roles
    ```
-
 
 6. Install ACM (Advanced Cluster Management) operator v2.13 from the [operator hub](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
 
@@ -67,7 +65,7 @@ The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once
 
 1. Verify the default MultiClusterEngine CR has been created. 
 
-```
+```shell
  oc get multiclusterengine engine 
  NAME     STATUS      AGE   CURRENTVERSION   DESIREDVERSION
  engine   Available   11d   2.8.0            2.8.0
@@ -79,7 +77,7 @@ The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once
 
 Modify the components list cluster-api-preview & cluster-api-provider-aws-preview items as shown below:
 
-```
+```yaml
     - configOverrides: {}
       enabled: true
       name: cluster-api-preview
@@ -93,7 +91,7 @@ The changes are automatically saved.
 
 3. Verify the CAPI & CAPA deployments were installed.
 
-```
+```shell
 oc get deploy -n multicluster-engine
 NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
 capa-controller-manager               1/1     1            1           12d
@@ -113,7 +111,7 @@ cluster-manager   12d
 
 Add the registrationConfiguration section as shown below:
 
-```
+```yaml
 apiVersion: operator.open-cluster-management.io/v1
 kind: ClusterManager
 metadata:
@@ -131,7 +129,7 @@ spec:
 
 Bind the CAPI manager permission to the import controller by applying the ClusterRoleBinding below.
 
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -175,7 +173,7 @@ Copy the output of the previous command and add it to the capa-manager-bootstrap
 
 Make the changes to the data->credentials field as below and save.
 
-```
+```yaml
 apiVersion: v1
 data:
   credentials: <REPLACE_WITH_AWS_CREDENTIALS>

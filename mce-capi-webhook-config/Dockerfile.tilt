@@ -5,5 +5,5 @@ RUN apk add --no-cache \
     && \
     ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
-COPY mce-label-injector /usr/local/bin/mce-label-injector
+COPY mce-capi-webhook-config /usr/local/bin/mce-capi-webhook-config
 

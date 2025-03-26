@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= mce-label-injector:latest
+IMG ?= mce-capi-webhook-config:latest
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -9,11 +9,11 @@ else
 GOBIN=$(shell go env GOBIN)
 endif
 
-all: webhook
+build: mce-capi-webhook-config
 
 # Build manager binary
-mce-label-injector: main.go webhook/webhook.go
-	go build -o mce-label-injector main.go
+mce-capi-webhook-config: main.go webhook/webhook.go
+	go build -o mce-capi-webhook-config main.go
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: webhook

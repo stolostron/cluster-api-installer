@@ -14,13 +14,13 @@ COPY main.go main.go
 COPY webhook/ webhook/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o mce-label-injector main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o mce-capi-webhook-config main.go
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
-COPY --from=builder /workspace/mce-label-injector /usr/local/bin
+COPY --from=builder /workspace/mce-capi-webhook-config /
 USER nonroot:nonroot
 
-ENTRYPOINT ["/usr/local/bin/mce-label-injector"]
+ENTRYPOINT ["/mce-capi-webhook-config"]

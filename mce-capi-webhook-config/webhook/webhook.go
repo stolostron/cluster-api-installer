@@ -17,10 +17,10 @@ import (
 
 var log = logf.Log.WithName("example-controller")
 
-// +kubebuilder:webhook:path=/mutate,mutating=true,failurePolicy=fail,groups="cluster.x-k8s.io",verbs=create;update,versions=v1,name=mce-label-injector.x-k8s.io
+// +kubebuilder:webhook:path=/mutate,mutating=true,failurePolicy=fail,groups="cluster.x-k8s.io",verbs=create;update,versions=v1,name=mce-capi-webhook-config.x-k8s.io
 
-// MceLabelInjector label MCE objects for groups="cluster.x-k8s.io"
-type MceLabelInjector struct {
+// MceCapiWebhookConfig label MCE objects for groups="cluster.x-k8s.io"
+type MceCapiWebhookConfig struct {
 	Client         client.Client
 	MceLabelConfig *Config
 	ClientSet      *kubernetes.Clientset
@@ -28,12 +28,27 @@ type MceLabelInjector struct {
 }
 
 type Config struct {
-	NamespaceOpenshiftClusterApi string `default:"openshift-cluster-api"                        yaml:"namespace_openshift_cluster_api"`
-	HyperShiftLabelName          string `default:"hypershift.openshift.io/hosted-control-plane" yaml:"hyper_shift_label_name"`
-	LabelMultiClusterEngine      string `default:"multicluster-engine"                          yaml:"label_multi_cluster_engine"`
+	NamespaceOpenshiftClusterApi string
+	HyperShiftLabelName          string
+	LabelMultiClusterEngine      string
 }
 
-func (li *MceLabelInjector) countLabel(ctx context.Context, namespaceName string, oldValue string) (string, bool, error) {
+func NewConfig() *Config {
+	return &Config{
+		NamespaceOpenshiftClusterApi: "openshift-cluster-api",
+		HyperShiftLabelName:          "hypershift.openshift.io/hosted-control-plane",
+		LabelMultiClusterEngine:      "multicluster-engine",
+	}
+}
+
+func (li *MceCapiWebhookConfig) errorIfMceTag(oldValue string) error {
+	if oldValue == li.MceLabelConfig.LabelMultiClusterEngine {
+		return errors.New(0, "Invalid configuration, cannot use label %s", oldValue)
+	}
+	return nil
+}
+
+func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName string, oldValue string) (string, bool, error) {
 	/*
 		* The auto-labeling mutating webhook inspects the NS
 		  * If the namespace is openshift-cluster-api, don't label for MCE
@@ -49,7 +64,7 @@ func (li *MceLabelInjector) countLabel(ctx context.Context, namespaceName string
 
 	// If the namespace is openshift-cluster-api, don't label for MCE
 	if namespaceName == li.MceLabelConfig.NamespaceOpenshiftClusterApi {
-		return "", false, nil
+		return "", false, li.errorIfMceTag(oldValue)
 	} else {
 		// Else, fetch the NS and inspect labels
 		namespace, err := li.ClientSet.CoreV1().Namespaces().Get(ctx, namespaceName, metav1.GetOptions{})
@@ -58,7 +73,7 @@ func (li *MceLabelInjector) countLabel(ctx context.Context, namespaceName string
 		}
 		hyperShiftValue, isHyperShift := namespace.Labels[li.MceLabelConfig.HyperShiftLabelName]
 		if isHyperShift && hyperShiftValue == "true" {
-			return "", false, nil
+			return "", false, li.errorIfMceTag(oldValue)
 		}
 	}
 
@@ -72,8 +87,8 @@ func (li *MceLabelInjector) countLabel(ctx context.Context, namespaceName string
 	return newLabel, true, nil
 }
 
-// Handle MceLabelInjector label resources managed by MCE capi instance.
-func (li *MceLabelInjector) Handle(ctx context.Context, req admission.Request) admission.Response {
+// Handle MceCapiWebhookConfig label resources managed by MCE capi instance.
+func (li *MceCapiWebhookConfig) Handle(ctx context.Context, req admission.Request) admission.Response {
 	log.Info("handle", "namespace", req.Namespace, "kind", req.Kind, "name", req.Name)
 	var obj metav1.PartialObjectMetadata
 	if err := json.Unmarshal(req.Object.Raw, &obj); err != nil {

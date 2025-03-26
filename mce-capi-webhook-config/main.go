@@ -6,8 +6,7 @@ import (
 	"time"
 
 	"github.com/spf13/pflag"
-	hook "github.com/stolostron/cluster-api-installer/mutating-webhook/mce-label-injector/webhook"
-	"gopkg.in/yaml.v2"
+	hook "github.com/stolostron/cluster-api-installer/mutating-webhook/mce-capi-webhook-config/webhook"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -26,24 +25,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 )
 
-func loadConfig(configFile string) (*hook.Config, error) {
-	data, err := os.ReadFile(configFile)
-	if err != nil {
-		return nil, err
-	}
-
-	var cfg hook.Config
-	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, err
-	}
-
-	return &cfg, nil
-}
-
 var (
 	scheme         = runtime.NewScheme()
 	setupLog       = ctrl.Log.WithName("setup")
-	controllerName = "mce-label-injector-controller"
+	controllerName = "mce-capi-webhook-config-controller"
 	runtimeLog     = ctrl.Log.WithName(controllerName)
 
 	// flags.
@@ -59,7 +44,6 @@ var (
 	webhookCertName             string
 	webhookKeyName              string
 	healthAddr                  string
-	mceLabelConfig              string
 	managerOptions              = flags.ManagerOptions{}
 	logOptions                  = logs.NewOptions()
 )
@@ -103,8 +87,6 @@ func InitFlags(fs *pflag.FlagSet) {
 
 	fs.StringVar(&healthAddr, "health-addr", ":9440",
 		"The address the health endpoint binds to.")
-
-	fs.StringVar(&mceLabelConfig, "mceLabelConfig", "/etc/webhook/config/mce-label-config.yaml", "Web-hook mce-label config")
 
 	flags.AddManagerOptions(fs, &managerOptions)
 
@@ -155,7 +137,7 @@ func main() {
 	ctrlOptions := ctrl.Options{
 		Scheme:                     scheme,
 		LeaderElection:             enableLeaderElection,
-		LeaderElectionID:           "mce-label-injector-leader-election-capi",
+		LeaderElectionID:           "mce-capi-webhook-config-leader-election-capi",
 		LeaseDuration:              &leaderElectionLeaseDuration,
 		RenewDeadline:              &leaderElectionRenewDeadline,
 		RetryPeriod:                &leaderElectionRetryPeriod,
@@ -186,19 +168,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	config, errConfig := loadConfig(mceLabelConfig)
-	if errConfig != nil {
-		setupLog.Error(errConfig, "Unable to load config")
-		os.Exit(1)
-	}
-
 	// Setup webhooks
 	setupLog.Info("setting up webhook server")
 	hookServer := mgr.GetWebhookServer()
 
 	setupLog.Info("registering webhooks to the webhook server")
-	ha := &hook.MceLabelInjector{Client: mgr.GetClient(), ClientSet: clientSet, MceLabelConfig: config, Log: runtimeLog}
-	//ha.SetupWebhookWithManager(mgr)
+	ha := &hook.MceCapiWebhookConfig{Client: mgr.GetClient(), ClientSet: clientSet, MceLabelConfig: hook.NewConfig(), Log: runtimeLog}
 	hookServer.Register("/mutate", &webhook.Admission{Handler: ha})
 
 	setupLog.Info("starting manager")

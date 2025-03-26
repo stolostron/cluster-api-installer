@@ -1,4 +1,4 @@
-module github.com/stolostron/cluster-api-installer/mutating-webhook/mce-label-injector
+module github.com/stolostron/cluster-api-installer/mutating-webhook/mce-capi-webhook-config
 
 go 1.22.0
 

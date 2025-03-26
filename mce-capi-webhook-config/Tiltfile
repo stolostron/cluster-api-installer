@@ -1,5 +1,5 @@
-cluster_name = 'kind'
-project_name = 'mce-label-injector'
+cluster_name = 'crc'
+project_name = 'mce-capi-webhook-config'
 
 # Allow the cluster to avoid problems while having kubectl configured to talk to a remote cluster.
 allow_k8s_contexts(cluster_name)
@@ -9,7 +9,7 @@ load('ext://restart_process', 'docker_build_with_restart')
 
 # Building binary locally.
 local_resource('%s-binary' % project_name,
-    'GOOS=linux go build -gcflags "all=-N -l" -o mce-label-injector main.go',
+    'GOOS=linux go build -gcflags "all=-N -l" -o mce-capi-webhook-config main.go',
     deps=[
         './main.go',
         './webhook/webhook.go',
@@ -21,7 +21,7 @@ docker_build_with_restart(
     project_name,
     '.',
     dockerfile="Dockerfile.tilt",
-    entrypoint='/go/bin/dlv --listen=0.0.0.0:50100 --api-version=2 --headless=true --only-same-user=false --accept-multiclient --log exec /usr/local/bin/mce-label-injector',
+    entrypoint='/go/bin/dlv --listen=0.0.0.0:50100 --api-version=2 --headless=true --only-same-user=false --accept-multiclient --log exec /mce-capi-webhook-config',
     live_update=[
         # Copy the binary so it gets restarted.
         sync(project_name, '/usr/local/bin/%s' % project_name),
@@ -30,6 +30,15 @@ docker_build_with_restart(
 
 # Create the deployment from YAML file path.
 k8s_yaml('deployments/deployment.yaml')
+
+default_registry(
+    'localhost:5000',
+#    host_from_cluster='registry:5000'
+)
+# default_registry(
+#     'quay.io/mveber',
+#     host_from_cluster='quay.io/mveber'
+# )
 
 # Configure the resource.
 k8s_resource(

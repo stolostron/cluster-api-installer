@@ -1,23 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mce-label-injector-service
+  name: mce-capi-webhook-config-service
   labels:
-    app: mce-label-injector
+    app: mce-capi-webhook-config
 spec:
   ports:
   - port: 9443
     targetPort: 9443
   selector:
-    app: mce-label-injector
+    app: mce-capi-webhook-config
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   creationTimestamp: null
-  name: mce-label-injector-configuration
+  name: mce-capi-webhook-config-configuration
   annotations:
-    cert-manager.io/inject-ca-from: default/mce-label-injector
+    cert-manager.io/inject-ca-from: default/mce-capi-webhook-config
 webhooks:
 - admissionReviewVersions:
   - v1
@@ -25,16 +25,19 @@ webhooks:
   clientConfig:
     caBundle: Cg==
     service:
-      name: mce-label-injector-service
+      name: mce-capi-webhook-config-service
       namespace: "default"
       path: /mutate
       port: 9443
   failurePolicy: Fail
   sideEffects: None
-  name: mce-label-injector.x-k8s.io
+  name: mce-capi-webhook-config.x-k8s.io
   rules:
   - apiGroups:
     - cluster.x-k8s.io
+    - ipam.cluster.x-k8s.io
+    - runtime.cluster.x-k8s.io
+    - addons.cluster.x-k8s.io
     resources:
     - "*"
     apiVersions:

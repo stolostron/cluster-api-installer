@@ -26,36 +26,36 @@
 3. Create the required IAM roles and OpenID Connect configuration.
    
     1. Create the required IAM account roles and policies.
-    ```     
-     rosa create account-roles --force-policy-creation
-	```
+       ```     
+        rosa create account-roles --force-policy-creation
+       ```
     2. Create the OpenID Connect (OIDC) configuration.
 
-    ```     
-    rosa create oidc-config --mode=auto
-	```
+       ```     
+       rosa create oidc-config --mode=auto
+       ```
     3. Copy the OIDC config ID <OIDC_CONFIG_ID> provided in the ROSA CLI output. 
       
        The OIDC config ID needs to be provided later to create the ROSA HCP cluster.  
        You can list the available OIDC config IDs using the following command:
 
-    ```     
-    rosa list oidc-config
-    ```
+       ```     
+       rosa list oidc-config
+       ```
 
-4. Create the required IAM operator roles.   
+   4. Create the required IAM operator roles.   
    You must supply a prefix in <PREFIX_NAME> and replace the <OIDC_CONFIG_ID> with the OIDC config ID copied previously.
 
-   ```     
-    rosa create operator-roles --prefix <PREFIX_NAME> --oidc-config-id <OIDC_CONFIG_ID> --hosted-cp
-   ```
+      ```     
+       rosa create operator-roles --prefix <PREFIX_NAME> --oidc-config-id <OIDC_CONFIG_ID> --hosted-cp
+      ```
      
-5. Verify the IAM operator roles were created. 
-   ```     
-   rosa list operator-roles
-   ```
+   5. Verify the IAM operator roles were created. 
+      ```     
+      rosa list operator-roles
+      ```
 
-6. Install ACM (Advanced Cluster Management) operator v2.13 from the [operator hub](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
+4. Assuming you have an OpenShift cluster v4.16 or later running, install ACM (Advanced Cluster Management) operator v2.13 from the [operator hub](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
 
 Notes: The steps for creating the AWS VPC and IAM roles will be declarative through CAPA custom resources next release.
 
@@ -171,7 +171,7 @@ Copy the output of the previous command and add it to the capa-manager-bootstrap
 
 `oc edit secret -n multicluster-engine capa-manager-bootstrap-credentials`
 
-Make the changes to the data->credentials field as below and save.
+Make the changes to the data->credentials field as shown below:
 
 ```yaml
 apiVersion: v1
@@ -183,20 +183,20 @@ metadata:
   namespace: multicluster-engine
 ```
 
-3. Restart the capa-controller-manager deployment:
+3. Restart the capa-controller-manager deployment.
 
 `oc rollout restart deployment capa-controller-manager -n multicluster-engine`
 
 ### OCM Authentication using offline token OR service account credentials
 CAPA controller requires Redhat OCM credentials to provision ROSA HCP. You can obtain OCM credentials in two ways;
 
-1. Obtain an offline token by visiting https://console.redhat.com/openshift/token then Create a credentials secret within the target namespace with the token to be referenced later by `ROSAControlePlane`
+1. Obtain an offline token by visiting https://console.redhat.com/openshift/token. Create a credentials secret within the target namespace with the token to be referenced later by `ROSAControlPlane`
     ```shell
         kubectl create secret generic rosa-creds-secret \
             --from-literal=ocmToken='eyJhbGciOiJIUzI1NiIsI....' \
         --from-literal=ocmApiUrl='https://api.openshift.com'
     ```
-   Note: You can change the secret namespace similar to the ROSAControlPlane that will be created later.
+   Note: You can change the secret namespace similar to the `ROSAControlPlane` that will be created later.
 
 OR
 
@@ -239,7 +239,7 @@ OR
       allowedNamespaces: {}  # matches all namespaces
     ```
 
-2. Update the ROSAControlPlane template below with relative info created in the prerequisite steps then apply it using `oc apply ` command.
+2. Update the `ROSAControlPlane` template below with relative info created in the prerequisite steps then apply it using `oc apply ` command.
 
 	```yaml
 	apiVersion: v1
@@ -336,7 +336,7 @@ OR
 	    env: "demo"
 	    profile: "hcp"
 	```
-3. Check the ROSAControlPlane status conditions.
+3. Check the ROSAControlPlane status.
 
 `oc get ROSAControlPlane rosa-cp-1 -n ns-rosa-hcp -o yaml`
 

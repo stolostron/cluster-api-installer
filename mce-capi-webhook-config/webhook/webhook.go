@@ -82,10 +82,17 @@ func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName st
 	// If we've not returned by now, add the MCE label
 	newLabel = li.MceLabelConfig.LabelMultiClusterEngine
 
-	if oldValue != "" && oldValue != newLabel {
-		return "", false, errors.New(0, "Invalid configuration, cannot change the label %s -> %s", oldValue, newLabel)
+	if oldValue == "" {
+		// not labeled -> add the label
+		return newLabel, true, nil
 	}
-	return newLabel, true, nil
+
+	if oldValue == newLabel {
+		// labeled correctly -> no change is required
+		return "", false, nil
+	}
+
+	return "", false, errors.New(0, "Invalid configuration, cannot change the label %s -> %s", oldValue, newLabel)
 }
 
 // Handle MceCapiWebhookConfig label resources managed by MCE capi instance.

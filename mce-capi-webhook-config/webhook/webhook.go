@@ -41,13 +41,6 @@ func NewConfig() *Config {
 	}
 }
 
-func (li *MceCapiWebhookConfig) errorIfMceTag(oldValue string) error {
-	if oldValue == li.MceLabelConfig.LabelMultiClusterEngine {
-		return errors.New(0, "Invalid configuration, cannot use label %s", oldValue)
-	}
-	return nil
-}
-
 func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName string, oldValue string) (string, bool, error) {
 	/*
 		* The auto-labeling mutating webhook inspects the NS
@@ -62,9 +55,10 @@ func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName st
 
 	newLabel := ""
 
+	isValidNamespace := true
 	// If the namespace is openshift-cluster-api, don't label for MCE
 	if namespaceName == li.MceLabelConfig.NamespaceOpenshiftClusterApi {
-		return "", false, li.errorIfMceTag(oldValue)
+		isValidNamespace = false
 	} else {
 		// Else, fetch the NS and inspect labels
 		namespace, err := li.ClientSet.CoreV1().Namespaces().Get(ctx, namespaceName, metav1.GetOptions{})
@@ -73,14 +67,21 @@ func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName st
 		}
 		hyperShiftValue, isHyperShift := namespace.Labels[li.MceLabelConfig.HyperShiftLabelName]
 		if isHyperShift && hyperShiftValue == "true" {
-			return "", false, li.errorIfMceTag(oldValue)
+			isValidNamespace = false
 		}
+	}
+
+	// If the NS is for (HyperShift or openshift-cluster-api) AND already has the MCE label, reject the admission, invalid configuration
+	if !isValidNamespace {
+		if oldValue == li.MceLabelConfig.LabelMultiClusterEngine {
+			return "", false, errors.New(0, "Invalid configuration, cannot use label %s", oldValue)
+		}
+		return "", false, nil
 	}
 
 	// If we've not returned by now, add the MCE label
 	newLabel = li.MceLabelConfig.LabelMultiClusterEngine
 
-	// If the NS is for (HyperShift or openshift-cluster-api) AND already has the MCE label, reject the admission, invalid configuration
 	if oldValue != "" && oldValue != newLabel {
 		return "", false, errors.New(0, "Invalid configuration, cannot change the label %s -> %s", oldValue, newLabel)
 	}

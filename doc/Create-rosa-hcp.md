@@ -2,66 +2,82 @@
 
 ## Prerequisites
 
-1. Complete the prerequisite actions listed in [Set up to use ROSA cli](https://docs.aws.amazon.com/rosa/latest/userguide/set-up.html).
+1. Complete the prerequisite actions listed in the [Set up to use the ROSA CLI](https://docs.aws.amazon.com/rosa/latest/userguide/set-up.html) documentation.
 
-1. Create Amazon VPC that will be used with ROSA HCP using terraform template as follow;
-    1. Install the Terraform CLI. For more information, see the install instructions in the [Terraform documentation](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
+2. Create an Amazon VPC that will be used with ROSA HCP using the Terraform template as follows:
+    1. Install the Terraform CLI. For more information, see the installation instructions in the [Terraform documentation](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
 	1. Open a terminal session and clone the Terraform VPC repository.
 
 	   `git clone https://github.com/openshift-cs/terraform-vpc-example`
 	
-	1. Follow the commands below to create the VPC
-	   ```
+	1. Follow the commands below to create the VPC:
+	   ```shell
 	   cd terraform-vpc-example
 	   terraform init
 	   terraform plan -out rosa.tfplan -var region=<region>
 	   terraform apply rosa.tfplan
 	   ```
-	   After terraform creating the VPC you should have the subnet-ids as below
-	   ```
-       private-subnet-id: subnet-0889990000000000
-	   public-subnet-id: subnet-054ad00000000000
+       The subnet-ids will be displayed once Terraform has successfully created the VPC.	   
+       ```     
+       private-subnet-id: subnet-0889990000000000   
+       public-subnet-id: subnet-054ad00000000000
        ...
 	   ```
-1. Create the required IAM roles and OpenID Connect configuration
-   1. Create the required IAM account roles and policies.
-
-      `rosa create account-roles --force-policy-creation`
+3. Create the required IAM roles and OpenID Connect configuration.
    
-   1. Create the OpenID Connect (OIDC) configuration.
-    
-	  `rosa create oidc-config --mode=auto`
-	
-	  Copy the OIDC config ID <OIDC_CONFIG_ID> provided in the ROSA CLI output. The OIDC config ID needs to be provided later to create the ROSA HCP cluster. You can list the available OIDC config IDs using command `rosa list oidc-config`
+    1. Create the required IAM account roles and policies.
+       ```     
+        rosa create account-roles --force-policy-creation
+       ```
+    2. Create the OpenID Connect (OIDC) configuration.
 
-   1. Create the required IAM operator roles.
+       ```     
+       rosa create oidc-config --mode=auto
+       ```
+    3. Copy the OIDC config ID <OIDC_CONFIG_ID> provided in the ROSA CLI output. 
+      
+       The OIDC config ID needs to be provided later to create the ROSA HCP cluster.  
+       You can list the available OIDC config IDs using the following command:
 
-      `rosa create operator-roles --prefix <PREFIX_NAME> --oidc-config-id <OIDC_CONFIG_ID> --hosted-cp`
+       ```     
+       rosa list oidc-config
+       ```
 
-	  You must supply a prefix in <PREFIX_NAME> and replace the <OIDC_CONFIG_ID> with the OIDC config ID copied previously.
-	  verify the IAM operator roles were created, using command `rosa list operator-roles`
+   4. Create the required IAM operator roles.   
+   You must supply a prefix in <PREFIX_NAME> and replace the <OIDC_CONFIG_ID> with the OIDC config ID copied previously.
 
-1. Assuming you have an OpenShift cluster v4.16 or later running, Install ACM (Advanced Cluster Management) operator v2.13 from [operator hub](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
+      ```     
+       rosa create operator-roles --prefix <PREFIX_NAME> --oidc-config-id <OIDC_CONFIG_ID> --hosted-cp
+      ```
+     
+   5. Verify the IAM operator roles were created. 
+      ```     
+      rosa list operator-roles
+      ```
 
-Notes; The steps for creating the AWS VPC and IAM roles will be declartive through CAPA custom recources next release.
+4. Assuming you have an OpenShift cluster v4.16 or later running, install ACM (Advanced Cluster Management) operator v2.13 from the [operator hub](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
+
+Notes: The steps for creating the AWS VPC and IAM roles will be declarative through CAPA custom resources next release.
 
 ## Enable CAPI, CAPA and auto import 
 
-After installing ACM operator following the pre-request steps. We have to enable the CAPI & CAPA features in the MultiClusterEngine custom resource. Assuming creating the default MultiClusterEngine CR, use the following command to make it is created
+The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once the ACM operator installation and pre-request steps have been completed. 
 
-```
- $ oc get multiclusterengine engine 
+1. Verify the default MultiClusterEngine CR has been created. 
+
+```shell
+ oc get multiclusterengine engine 
  NAME     STATUS      AGE   CURRENTVERSION   DESIREDVERSION
  engine   Available   11d   2.8.0            2.8.0
 ```
 
-Run the following command to edit the MultiClusterEngine engine
+2. Edit the MultiClusterEngine engine.
 
-`$ oc edit multiclusterengine engine'
+`oc edit multiclusterengine engine`
 
-In the components list change the cluster-api-preview & cluster-api-provider-aws-preview item as below
+Modify the components list cluster-api-preview & cluster-api-provider-aws-preview items as shown below:
 
-```
+```yaml
     - configOverrides: {}
       enabled: true
       name: cluster-api-preview
@@ -71,29 +87,31 @@ In the components list change the cluster-api-preview & cluster-api-provider-aws
 
 ```
 
-After save the changes make sure the CAPI & CAPA deployments are installed using commone below
+The changes are automatically saved. 
 
-```
-$ oc get deploy -n multicluster-engine
+3. Verify the CAPI & CAPA deployments were installed.
+
+```shell
+oc get deploy -n multicluster-engine
 NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
 capa-controller-manager               1/1     1            1           12d
 capi-controller-manager               1/1     1            1           12d
 ```
 
-Now we will enable the auto-import feature in the cluster-manager. Make sure the ClusterManager CR cluster-manager is creatd using the following command
-
-`$ oc get ClusterManager
+4. Verify the ClusterManager CR cluster-manager was created.
+```
+oc get ClusterManager
 NAME              AGE
 cluster-manager   12d
-`
+```
 
-Edit the cluster-manager to enable the auto import using the following command
+5. Edit the cluster-manager to enable auto import.
 
 `oc edit ClusterManager cluster-manager`
 
-and add the registrationConfiguration section as below.
+Add the registrationConfiguration section as shown below:
 
-```
+```yaml
 apiVersion: operator.open-cluster-management.io/v1
 kind: ClusterManager
 metadata:
@@ -109,9 +127,9 @@ spec:
     - system:serviceaccount:multicluster-engine:agent-registration-bootstrap
 ```
 
-Bind the CAPI manager permission to the import controller by apply the below ClusterRoleBinding
+Bind the CAPI manager permission to the import controller by applying the ClusterRoleBinding below.
 
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -127,9 +145,9 @@ subjects:
 ```
 
 ## Permissions
-### AWS credientials
+### AWS credentials
 
-In order to create ROSA HCP cluster, we must set aws credientials secret. Run the command below after setting the prefered aws keys values and region
+1. Set the AWS credentials secret. Run the command below after setting the AWS values and region.
 
 ``` echo '[default]
 aws_access_key_id = <your-access-key>
@@ -138,7 +156,7 @@ region = us-east-1
 ' | base64 -w 0
 ```
 
-If you are using Multi-Factor Auth with AWS use the below command instead with session token.
+If you are using Multi-Factor Auth with AWS use the below command instead with the session token.
 
 ``` echo '[default]
 aws_access_key_id = <your-access-key>
@@ -148,13 +166,14 @@ region = us-east-1
 ' | base64 -w 0
 ```
 
-Copy the output of the previous command and add it to the capa-manager-bootstrap-credentials secret using the below command 
+2. Edit the capa-manager-bootstrap-credentials secret.   
+Copy the output of the previous command and add it to the capa-manager-bootstrap-credentials secret.
 
 `oc edit secret -n multicluster-engine capa-manager-bootstrap-credentials`
 
-make the changes to the data->credentials field as below and save.
+Make the changes to the data->credentials field as shown below:
 
-```
+```yaml
 apiVersion: v1
 data:
   credentials: <REPLACE_WITH_AWS_CREDENTIALS>
@@ -164,21 +183,20 @@ metadata:
   namespace: multicluster-engine
 ```
 
-Note: Better to restart the capa-controller-manager deployment after updating the capa-manager-bootstrap-credentials secret using the below command
+3. Restart the capa-controller-manager deployment.
 
 `oc rollout restart deployment capa-controller-manager -n multicluster-engine`
-
 
 ### OCM Authentication using offline token OR service account credentials
 CAPA controller requires Redhat OCM credentials to provision ROSA HCP. You can obtain OCM credentials in two ways;
 
-1. Optain offline token by visiting https://console.redhat.com/openshift/token then Create a credentials secret within the target namespace with the token to be referenced later by `ROSAControlePlane`
+1. Obtain an offline token by visiting https://console.redhat.com/openshift/token. Create a credentials secret within the target namespace with the token to be referenced later by `ROSAControlPlane`
     ```shell
         kubectl create secret generic rosa-creds-secret \
             --from-literal=ocmToken='eyJhbGciOiJIUzI1NiIsI....' \
         --from-literal=ocmApiUrl='https://api.openshift.com'
     ```
-   Note: You can change the secret namespace similar to the ROSAControlPlane that will be created later.
+   Note: You can change the secret namespace similar to the `ROSAControlPlane` that will be created later.
 
 OR
 
@@ -193,7 +211,7 @@ OR
    rosa whoami
    ```
 
-   Create a new kubernetes secret with the service account credentials to be referenced later by `ROSAControlPlane`
+   Create a new kubernetes secret with the service account credentials in the target namespace to be referenced later by `ROSAControlPlane`
     ```shell
     kubectl create secret generic rosa-creds-secret \
       --from-literal=ocmClientID='....' \
@@ -208,7 +226,7 @@ OR
       --from-literal=ocmApiUrl='https://api.openshift.com'
     ```
 
-## Creating the ROSA-HCP
+## Creating the ROSA-HCP cluster
 
 1. Apply the AWSClusterControllerIdentity below using `oc apply` command.
 
@@ -221,7 +239,7 @@ OR
       allowedNamespaces: {}  # matches all namespaces
     ```
 
-1. Update the ROSAControlPlane template below with relative info created in the prerequisite steps then apply it using `oc apply ` command.
+2. Update the `ROSAControlPlane` template below with relative info created in the prerequisite steps then apply it using `oc apply ` command.
 
 	```yaml
 	apiVersion: v1
@@ -318,15 +336,16 @@ OR
 	    env: "demo"
 	    profile: "hcp"
 	```
-1. After creating the ROSA HCP check the ROSAControlPlane status conditions using the below command.
+3. Check the ROSAControlPlane status.
 
 `oc get ROSAControlPlane rosa-cp-1 -n ns-rosa-hcp -o yaml`
 
-The ROSA HCP cluster should take around 40min to be fully provisioned.
+The ROSA HCP cluster should take around 40 minutes to be fully provisioned.
 
 ## Support
 
-When creating issue for ROSA HCP cluster, include the logs for the capa-controller-manager and capi-controller-manager deployment pods. The logs can be saved to text file using the commands below.
+When creating an issue for ROSA HCP cluster, please make sure to include logs for the capa-controller-manager and capi-controller-manager deployment pods. 
+The logs can be saved to text file using the commands below:
 
 ```shell
 $ kubectl get pod -n multicluster-engine
@@ -342,7 +361,7 @@ capi-controller-manager-78dc897784-f8gpn   1/1     Running   18         26d
 $ kubectl logs -n multicluster-engine capi-controller-manager-78dc897784-f8gpn > capi-controller-manager-logs.txt
 ```
 
- Also include the yaml files for all the resources used to create the ROSA HCP cluster:
+ Make sure to also include yaml files for all the resources used to create the ROSA HCP cluster:
 - `Cluster`
 - `ROSAControlPlane`
 - `MachinePool`

@@ -74,7 +74,7 @@ func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName st
 	// If the NS is for (HyperShift or openshift-cluster-api) AND already has the MCE label, reject the admission, invalid configuration
 	if !isValidNamespace {
 		if oldValue == li.MceLabelConfig.LabelMultiClusterEngine {
-			return "", false, errors.New(0, "Invalid configuration, cannot use label %s", oldValue)
+			return "", false, errors.New(0, "Invalid configuration, cannot use label %q", oldValue)
 		}
 		return "", false, nil
 	}

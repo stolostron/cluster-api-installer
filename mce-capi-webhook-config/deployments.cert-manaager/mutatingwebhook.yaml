@@ -22,6 +22,7 @@ webhooks:
 - admissionReviewVersions:
   - v1
   - v1beta1
+  - v1alpha1
   clientConfig:
     service:
       name: mce-capi-webhook-config-service

@@ -23,7 +23,6 @@ webhooks:
   - v1
   - v1beta1
   clientConfig:
-    caBundle: Cg==
     service:
       name: mce-capi-webhook-config-service
       namespace: "default"

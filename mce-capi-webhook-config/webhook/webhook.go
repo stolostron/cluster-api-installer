@@ -15,7 +15,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
-var log = logf.Log.WithName("example-controller")
+var log = logf.Log.WithName("mce-capi-webhook")
 
 // +kubebuilder:webhook:path=/mutate,mutating=true,failurePolicy=fail,groups="cluster.x-k8s.io",verbs=create;update,versions=v1,name=mce-capi-webhook-config.x-k8s.io
 

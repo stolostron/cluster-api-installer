@@ -3,3 +3,17 @@ kind: Kustomization
 
 resources:
 - default/
+
+## Patch the default resources with OCP downstream requirements.
+patches:
+  # Remove cert-manager annotation and add OCP cert service annotation
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      annotationSelector: "cert-manager.io/inject-ca-from"
+    patch: |-
+      - op: remove
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+        value: true

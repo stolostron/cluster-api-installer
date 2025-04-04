@@ -5,9 +5,10 @@ ORGREPO ?= https://github.com/openshift
 PROJECTS = \
 	cluster-api \
 	cluster-api-provider-aws \
-	cluster-api-provider-openshift-assisted
+	cluster-api-provider-openshift-assisted \
+	cluster-api-provider-metal3
 
-ifeq ($(BRANCH),master)
+ifeq ($(filter $(BRANCH), master main),$(BRANCH))
 	TAG := latest
 else
 	TAG := $(patsubst release-%, %,$(BRANCH))
@@ -16,6 +17,7 @@ CHART_VERSION = $(OCP_VERSION)
 CHART_APP_VERSION = $(OCP_VERSION)
 CHART_VALUES_IMAGE_TAG = $(OCP_VERSION)
 CHART_VALUES_IMAGE_TAG_PREFIX = "v"
+
 # Define specific overrides
 ORGREPO_cluster-api-provider-openshift-assisted = https://github.com/openshift-assisted
 KUSTOMIZE_CONFIG_DIRS_cluster-api-provider-openshift-assisted = "bootstrap" "controlplane"
@@ -23,6 +25,9 @@ CHART_VERSION_cluster-api-provider-openshift-assisted = "1.0.0"
 CHART_APP_VERSION_cluster-api-provider-openshift-assisted = $(TAG)
 CHART_VALUES_IMAGE_TAG_cluster-api-provider-openshift-assisted = $(TAG)
 CHART_VALUES_IMAGE_TAG_PREFIX_cluster-api-provider-openshift-assisted = ""
+
+BRANCH_cluster-api-provider-metal3 = main
+
 WKDIR ?= ../out
 
 .PHONY: build-cluster-api-chart build-cluster-api-provider-aws-chart build-cluster-api-provider-azure-chart build-cluster-api-provider-openshift-assisted-chart
@@ -35,7 +40,7 @@ build-$(1)-chart:
 	ORGREPO="$(if $(ORGREPO_$(1)),$(ORGREPO_$(1)),$(ORGREPO))" \
 	KUSTOMIZE_CONFIG_DIRS="$(if $(KUSTOMIZE_CONFIG_DIRS_$(1)),$(KUSTOMIZE_CONFIG_DIRS_$(1)),)" \
 	PROJECT="$(1)" \
-	BRANCH="$(BRANCH)" \
+	BRANCH="$(if $(BRANCH_$(1)),$(BRANCH_$(1)),$(BRANCH))" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/$(1)/config/tmp" \
 	CHART_VERSION="$(if $(CHART_VERSION_$(1)),$(CHART_VERSION_$(1)),$(CHART_VERSION))" \

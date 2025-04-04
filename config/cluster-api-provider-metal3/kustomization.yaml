@@ -17,3 +17,21 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
         value: true
+  - target:
+      version: v1
+      kind: MutatingWebhookConfiguration
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+        value: true
+      - op: remove
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+  - target:
+      version: v1
+      kind: ValidatingWebhookConfiguration
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+        value: true
+      - op: remove
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from

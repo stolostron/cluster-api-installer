@@ -60,6 +60,18 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/args/1
+        value: --enableBMHNameBasedPreallocation=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: --diagnostics-address=:8443
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: --insecure-diagnostics=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/4
+        value: --tls-min-version=VersionTLS13
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove

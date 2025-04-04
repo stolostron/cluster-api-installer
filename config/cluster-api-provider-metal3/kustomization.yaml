@@ -51,3 +51,12 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: ipam-webhook-service-cert
+  # Replace Deployment with default values & helm chart value
+  - target:
+      version: v1
+      kind: Deployment
+      name: capm3-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'

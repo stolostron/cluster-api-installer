@@ -27,6 +27,8 @@ CHART_VALUES_IMAGE_TAG_cluster-api-provider-openshift-assisted = $(TAG)
 CHART_VALUES_IMAGE_TAG_PREFIX_cluster-api-provider-openshift-assisted = ""
 
 BRANCH_cluster-api-provider-metal3 = main
+CHART_VALUES_IMAGE_TAG_cluster-api-provider-metal3 = $(TAG)
+CHART_VALUES_IMAGE_TAG_PREFIX_cluster-api-provider-metal3 = ""
 
 WKDIR ?= ../out
 

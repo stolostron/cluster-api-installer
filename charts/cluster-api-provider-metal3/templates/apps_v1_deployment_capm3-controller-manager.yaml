@@ -37,7 +37,7 @@ spec:
         envFrom:
         - configMapRef:
             name: capm3-capm3fasttrack-configmap
-        image: quay.io/metal3-io/cluster-api-provider-metal3:main
+        image: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

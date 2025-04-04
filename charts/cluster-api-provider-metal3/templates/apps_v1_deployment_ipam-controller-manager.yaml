@@ -23,9 +23,9 @@ spec:
       containers:
       - args:
         - --webhook-port=9443
-        - --diagnostics-address=${IPAM_DIAGNOSTICS_ADDRESS:=:8443}
-        - --insecure-diagnostics=${IPAM_INSECURE_DIAGNOSTICS:=false}
-        - --tls-min-version=${TLS_MIN_VERSION:=VersionTLS13}
+        - --diagnostics-address=:8443
+        - --insecure-diagnostics=false
+        - --tls-min-version=VersionTLS13
         command:
         - /manager
         env:
@@ -60,8 +60,6 @@ spec:
             drop:
             - ALL
           privileged: false
-          runAsGroup: 65532
-          runAsUser: 65532
         terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs

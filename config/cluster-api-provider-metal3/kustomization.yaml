@@ -76,3 +76,21 @@ patches:
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
+  - target:
+      version: v1
+      kind: Deployment
+      name: ipam-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/args/1
+        value: --diagnostics-address=:8443
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: --insecure-diagnostics=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: --tls-min-version=VersionTLS13
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsUser
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext/runAsGroup

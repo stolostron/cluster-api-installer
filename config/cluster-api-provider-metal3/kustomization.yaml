@@ -35,3 +35,19 @@ patches:
         value: true
       - op: remove
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
+  - target:
+      version: v1
+      kind: Service
+      name: capm3-webhook-service
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: capm3-webhook-service-cert
+  - target:
+      version: v1
+      kind: Service
+      name: ipam-webhook-service
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: ipam-webhook-service-cert

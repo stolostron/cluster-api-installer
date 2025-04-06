@@ -311,7 +311,7 @@ OR
 	    ingressARN: "arn:aws:iam::12345678910:role/your-prefix-openshift-ingress-operator-cloud-credentials"
 	    imageRegistryARN: "arn:aws:iam::12345678910:role/your-prefix-openshift-image-registry-installer-cloud-credentials"
 	    storageARN: "arn:aws:iam::12345678910:role/your-prefix-openshift-cluster-csi-drivers-ebs-cloud-credentials"
-	    networkARN: "arn:aws:iam::12345678910:role/your-prefix-openshift-cloud-network-config-controller-cloud-credent"
+	    networkARN: "arn:aws:iam::12345678910:role/your-prefix-openshift-cloud-network-config-controller-cloud-credentials"
 	    kubeCloudControllerARN: "arn:aws:iam::12345678910:role/your-prefix-kube-system-kube-controller-manager"
 	    nodePoolManagementARN: "arn:aws:iam::12345678910:role/your-prefix-kube-system-capa-controller-manager"
 	    controlPlaneOperatorARN: "arn:aws:iam::12345678910:role/your-prefix-kube-system-control-plane-operator"

@@ -1,26 +1,10 @@
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    service.beta.openshift.io/serving-cert-secret-name: mce-capi-webhook-config-service-cert
-  name: mce-capi-webhook-config-service
-  namespace: capi-system
-  labels:
-    app: mce-capi-webhook-config
-spec:
-  ports:
-  - port: 9443
-    targetPort: 9443
-  selector:
-    app: mce-capi-webhook-config
----
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  creationTimestamp: null
-  name: mce-capi-webhook-config-configuration
   annotations:
     service.beta.openshift.io/inject-cabundle: "true"
+  creationTimestamp: null
+  name: mce-capi-webhook-config-configuration
 webhooks:
 - admissionReviewVersions:
   - v1
@@ -33,7 +17,6 @@ webhooks:
       path: /mutate
       port: 9443
   failurePolicy: Fail
-  sideEffects: None
   name: mce-capi-webhook-config.x-k8s.io
   rules:
   - apiGroups:
@@ -41,11 +24,12 @@ webhooks:
     - ipam.cluster.x-k8s.io
     - runtime.cluster.x-k8s.io
     - addons.cluster.x-k8s.io
-    resources:
-    - "*"
     apiVersions:
     - v1beta1
     operations:
     - CREATE
     - UPDATE
-    scope: "Namespaced"
+    resources:
+    - '*'
+    scope: Namespaced
+  sideEffects: None

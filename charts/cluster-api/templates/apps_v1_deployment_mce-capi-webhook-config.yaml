@@ -1,11 +1,10 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mce-capi-webhook-config
-  namespace: capi-system
   labels:
     app: mce-capi-webhook-config
+  name: mce-capi-webhook-config
+  namespace: capi-system
 spec:
   replicas: 1
   selector:
@@ -18,8 +17,8 @@ spec:
     spec:
       containers:
       - args:
-          - --webhook-port=9443
-        image: image-registry.openshift-image-registry.svc:5000/mce-capi-webhook-config/mce-capi-webhook-config
+        - --webhook-port=9443
+        image: quay.io/mveber/mce-capi-webhook-config
         imagePullPolicy: Always
         name: manager
         ports:
@@ -30,8 +29,8 @@ spec:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
+      serviceAccount: mce-labeling-manager
       volumes:
       - name: cert
         secret:
           secretName: mce-capi-webhook-config-service-cert
-      serviceAccount: mce-labeling-manager

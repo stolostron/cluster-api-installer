@@ -39,7 +39,10 @@ if [ "$SYNC2CHARTS" ] ;then
     echo "* chart values image tag: ${CHART_VALUES_IMAGE_TAG}"
     sed -i -e 's/^version: .*/version: "'"${CHART_VERSION}"'"/' "${CHARTDIR}/Chart.yaml"
     sed -i -e 's/^appVersion: .*/appVersion: "'"${CHART_APP_VERSION}"'"/' "${CHARTDIR}/Chart.yaml"
-    sed -i -e 's/^\(    tag: \).*/\1'"${CHART_VALUES_IMAGE_TAG_PREFIX}${CHART_VALUES_IMAGE_TAG}"/ "$CHARTDIR/values.yaml"
+    export CHART_TAG="${CHART_VALUES_IMAGE_TAG_PREFIX}${CHART_VALUES_IMAGE_TAG}"
+    for I in manager bootstrap controlplane ; do
+        $YQ e -i '(. | select(has("'$I'")) | .'$I'.image.tag) = env(CHART_TAG)' "$CHARTDIR/values.yaml"
+    done
     
     echo 'Run helm template after sync saving the output to ' $NEWCHART
     $HELM template $CHARTDIR --include-crds | \

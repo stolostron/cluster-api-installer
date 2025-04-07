@@ -68,7 +68,7 @@ The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once
 ```shell
  oc get multiclusterengine multiclusterengine 
  NAME     STATUS      AGE   CURRENTVERSION   DESIREDVERSION
- engine   Available   11d   2.8.0            2.8.0
+ multiclusterengine   Available   11d   2.8.0            2.8.0
 ```
 
 2. Edit the MultiClusterEngine engine.

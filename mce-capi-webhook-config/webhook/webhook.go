@@ -3,15 +3,17 @@ package hook
 import (
 	"context"
 	"encoding/json"
-	"github.com/go-logr/logr"
 	"gomodules.xyz/jsonpatch/v2"
 	admissionv1 "k8s.io/api/admission/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/kube-openapi/pkg/validation/errors"
 	"net/http"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
@@ -24,7 +26,6 @@ type MceCapiWebhookConfig struct {
 	Client         client.Client
 	MceLabelConfig *Config
 	ClientSet      *kubernetes.Clientset
-	Log            logr.Logger
 }
 
 type Config struct {
@@ -39,6 +40,21 @@ func NewConfig() *Config {
 		HyperShiftLabelName:          "hypershift.openshift.io/hosted-control-plane",
 		LabelMultiClusterEngine:      "multicluster-engine",
 	}
+}
+
+func SetupWebhookWithManager(restConfig *rest.Config, mgr manager.Manager) error {
+	// creates the clientSet
+	clientSet, errClientSet := kubernetes.NewForConfig(restConfig)
+	if errClientSet != nil {
+		return errClientSet
+	}
+
+	// Setup webhooks
+	hookServer := mgr.GetWebhookServer()
+
+	ha := &MceCapiWebhookConfig{Client: mgr.GetClient(), ClientSet: clientSet, MceLabelConfig: NewConfig()}
+	hookServer.Register("/mutate", &webhook.Admission{Handler: ha})
+	return nil
 }
 
 func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName string, oldValue string) (string, bool, error) {
@@ -92,14 +108,14 @@ func (li *MceCapiWebhookConfig) countLabel(ctx context.Context, namespaceName st
 		return "", false, nil
 	}
 
-	return "", false, errors.New(0, "Invalid configuration, cannot change the label %s -> %s", oldValue, newLabel)
+	return "", false, errors.New(0, "Invalid configuration, cannot use label %q (it should be: %q)", oldValue, newLabel)
 }
 
 // Handle MceCapiWebhookConfig label resources managed by MCE capi instance.
 func (li *MceCapiWebhookConfig) Handle(ctx context.Context, req admission.Request) admission.Response {
-	log.Info("handle", "namespace", req.Namespace, "kind", req.Kind, "name", req.Name)
 	var obj metav1.PartialObjectMetadata
 	if err := json.Unmarshal(req.Object.Raw, &obj); err != nil {
+		log.Error(err, "handle", "namespace", req.Namespace, "kind", req.Kind, "name", req.Name)
 		return admission.Errored(http.StatusBadRequest, err)
 	}
 	var patches []jsonpatch.JsonPatchOperation
@@ -117,9 +133,11 @@ func (li *MceCapiWebhookConfig) Handle(ctx context.Context, req admission.Reques
 	}
 	newLabelValue, change, errReject := li.countLabel(ctx, req.Namespace, oldLabelValue)
 	if errReject != nil {
+		log.Error(errReject, "handle", "namespace", req.Namespace, "kind", req.Kind, "name", req.Name)
 		return admission.ValidationResponse(false, errReject.Error())
 	}
 	if !change {
+		log.Info("handle", "namespace", req.Namespace, "kind", req.Kind, "name", req.Name, "response", "No change")
 		return admission.ValidationResponse(true, "")
 	}
 
@@ -133,6 +151,7 @@ func (li *MceCapiWebhookConfig) Handle(ctx context.Context, req admission.Reques
 			Path:      "/metadata/labels/cluster.x-k8s.io~1watch-filter",
 			Value:     newLabelValue,
 		})
+		log.Info("handle", "namespace", req.Namespace, "kind", req.Kind, "name", req.Name, "response", operation, "old", oldLabelValue, "new", newLabelValue)
 	}
 
 	return admission.Response{

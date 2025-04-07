@@ -2,13 +2,12 @@ package main
 
 import (
 	"flag"
+	hook "github.com/stolostron/cluster-api-installer/mutating-webhook/mce-capi-webhook-config/webhook"
 	"os"
 	"time"
 
 	"github.com/spf13/pflag"
-	hook "github.com/stolostron/cluster-api-installer/mutating-webhook/mce-capi-webhook-config/webhook"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"k8s.io/client-go/tools/leaderelection/resourcelock"
 	cliflag "k8s.io/component-base/cli/flag"
@@ -29,7 +28,6 @@ var (
 	scheme         = runtime.NewScheme()
 	setupLog       = ctrl.Log.WithName("setup")
 	controllerName = "mce-capi-webhook-config-controller"
-	runtimeLog     = ctrl.Log.WithName(controllerName)
 
 	// flags.
 	enableLeaderElection        bool
@@ -161,20 +159,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// creates the clientSet
-	clientSet, errClientSet := kubernetes.NewForConfig(restConfig)
-	if errClientSet != nil {
-		setupLog.Error(errClientSet, "Unable to create clientSet")
+	setupLog.Info("setting up webhook server and registering webhooks to the webhook server")
+	errSetup := hook.SetupWebhookWithManager(restConfig, mgr)
+	if errSetup != nil {
+		setupLog.Error(errSetup, "Unable to create clientSet")
 		os.Exit(1)
 	}
-
-	// Setup webhooks
-	setupLog.Info("setting up webhook server")
-	hookServer := mgr.GetWebhookServer()
-
-	setupLog.Info("registering webhooks to the webhook server")
-	ha := &hook.MceCapiWebhookConfig{Client: mgr.GetClient(), ClientSet: clientSet, MceLabelConfig: hook.NewConfig(), Log: runtimeLog}
-	hookServer.Register("/mutate", &webhook.Admission{Handler: ha})
 
 	setupLog.Info("starting manager")
 	if err := mgr.Start(signals.SetupSignalHandler()); err != nil {

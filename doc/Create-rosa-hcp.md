@@ -66,14 +66,14 @@ The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once
 1. Verify the default MultiClusterEngine CR has been created. 
 
 ```shell
- oc get multiclusterengine engine 
+ oc get multiclusterengine multiclusterengine 
  NAME     STATUS      AGE   CURRENTVERSION   DESIREDVERSION
- engine   Available   11d   2.8.0            2.8.0
+ multiclusterengine   Available   11d   2.8.0            2.8.0
 ```
 
 2. Edit the MultiClusterEngine engine.
 
-`oc edit multiclusterengine engine`
+`oc edit multiclusterengine multiclusterengine`
 
 Modify the components list cluster-api-preview & cluster-api-provider-aws-preview items as shown below:
 

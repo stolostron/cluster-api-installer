@@ -148,22 +148,20 @@ subjects:
 ### AWS credentials
 
 1. Set the AWS credentials secret. Run the command below after setting the AWS values and region.
-
-``` echo '[default]
-aws_access_key_id = <your-access-key>
-aws_secret_access_key = <your-secret-access-key>
-region = us-east-1
-' | base64 -w 0
+    Remove `-w 0` on MacOS.
+``` 
+echo 'aws_access_key_id = tina
+aws_secret_access_key = secretstuff
+region = us-east-1' | base64 -w 0 
 ```
 
-If you are using Multi-Factor Auth with AWS use the below command instead with the session token.
+If you are using Multi-Factor Auth with AWS use the below command instead with the session token. Remove `-w 0` on MacOS.
 
-``` echo '[default]
-aws_access_key_id = <your-access-key>
+``` 
+echo 'aws_access_key_id = <your-access-key>
 aws_secret_access_key = <your-secret-access-key>
 aws_session_token= <your-aws-session-token>
-region = us-east-1
-' | base64 -w 0
+region = us-east-1' | base64 -w 0 
 ```
 
 2. Edit the capa-manager-bootstrap-credentials secret.   

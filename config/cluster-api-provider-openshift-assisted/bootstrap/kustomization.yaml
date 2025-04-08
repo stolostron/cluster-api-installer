@@ -13,3 +13,13 @@ patches:
     - op: replace
       path: /spec/template/spec/containers/0/image
       value: '{{ .Values.bootstrap.image.url  }}:{{ .Values.bootstrap.image.tag  }}'
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_NAME
+        value: default-ingress-cert
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_NAMESPACE
+        value: openshift-config-managed

@@ -23,6 +23,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: ASSISTED_CA_BUNDLE_NAME
+          value: default-ingress-cert
+        - name: ASSISTED_CA_BUNDLE_NAMESPACE
+          value: openshift-config-managed
         image: '{{ .Values.bootstrap.image.url  }}:{{ .Values.bootstrap.image.tag  }}'
         imagePullPolicy: Always
         livenessProbe:

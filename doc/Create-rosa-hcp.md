@@ -192,9 +192,10 @@ metadata:
 ### OCM Authentication using offline token OR service account credentials
 CAPA controller requires Redhat OCM credentials to provision ROSA HCP. You can obtain OCM credentials in two ways;
 
-1. Obtain an offline token by visiting https://console.redhat.com/openshift/token. Create a credentials secret within the target namespace with the token to be referenced later by `ROSAControlPlane`
+1. Obtain an offline token by visiting https://console.redhat.com/openshift/token. Create a credentials secret within the target namespace `ns-rosa-hcp` with the token to be referenced later by `ROSAControlPlane`
     ```shell
-        kubectl create secret generic rosa-creds-secret \
+	    kubectl create ns ns-rosa-hcp &&
+        kubectl create secret generic -n ns-rosa-hcp rosa-creds-secret \
             --from-literal=ocmToken='eyJhbGciOiJIUzI1NiIsI....' \
         --from-literal=ocmApiUrl='https://api.openshift.com'
     ```
@@ -213,9 +214,10 @@ OR
    rosa whoami
    ```
 
-   Create a new kubernetes secret with the service account credentials in the target namespace to be referenced later by `ROSAControlPlane`
+   Create a new kubernetes secret with the service account credentials in the target namespace `ns-rosa-hcp`  to be referenced later by `ROSAControlPlane`
     ```shell
-    kubectl create secret generic rosa-creds-secret \
+    kubectl create ns ns-rosa-hcp &&
+    kubectl create -n ns-rosa-hcp secret generic rosa-creds-secret \
       --from-literal=ocmClientID='....' \
       --from-literal=ocmClientSecret='eyJhbGciOiJIUzI1NiIsI....' \
       --from-literal=ocmApiUrl='https://api.openshift.com'

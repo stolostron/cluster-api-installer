@@ -1,15 +1,11 @@
 OCP_VERSION ?= 4.19
-BRANCH ?= release-4.19
 SYNC2CHARTS ?= true
 
+DEFAULT_BRANCH ?= release-4.19
 DEFAULT_ORGREPO ?= https://github.com/openshift
-STOLOSTRON_ORGREPO ?= https://github.com/stolostron
-CAPI_BRANCH ?= master
-CAPA_BRANCH ?= main
 # needs overridable branch, as the non-master branch will differ
-OPENSHIFT_ASSISTED_BRANCH ?= master
-ASSISTED_BRANCH ?= master
-METAL3_BRANCH ?= main
+OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.9
+METAL3_BRANCH ?= release-4.19
 
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
 
@@ -31,7 +27,7 @@ build-cluster-api-chart:
 	WKDIR="$(WKDIR)" \
 	ORGREPO="$(DEFAULT_ORGREPO)" \
 	PROJECT="cluster-api" \
-	BRANCH="$(CAPI_BRANCH)" \
+	BRANCH="$(DEFAULT_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \
@@ -46,15 +42,15 @@ build-cluster-api-chart:
 build-cluster-api-provider-aws-chart:
 	@echo "Building cluster-api-provider-aws chart"
 	WKDIR="$(WKDIR)" \
-	ORGREPO="$(STOLOSTRON_ORGREPO)" \
+	ORGREPO="$(DEFAULT_ORGREPO)" \
 	PROJECT="cluster-api-provider-aws" \
-	BRANCH="$(CAPA_BRANCH)" \
+	BRANCH="$(DEFAULT_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-aws/config/tmp" \
-	CHART_VERSION="$(MCE_VERSION)" \
-	CHART_APP_VERSION="$(MCE_VERSION)" \
-	CHART_VALUES_IMAGE_TAG="$(MCE_VERSION)" \
-	CHART_VALUES_IMAGE_TAG_PREFIX="" \
+	CHART_VERSION="$(OCP_VERSION)" \
+	CHART_APP_VERSION="$(OCP_VERSION)" \
+	CHART_VALUES_IMAGE_TAG="$(OCP_VERSION)" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="v" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api-provider-aws" \
 	../scripts/sync2chart.sh
@@ -68,7 +64,7 @@ build-cluster-api-provider-openshift-assisted-chart:
 	ORGREPO="$(OPENSHIFT_ASSISTED_ORGREPO)" \
 	KUSTOMIZE_CONFIG_DIRS="bootstrap controlplane" \
 	PROJECT="cluster-api-provider-openshift-assisted" \
-	BRANCH="$(ASSISTED_BRANCH)" \
+	BRANCH="$(OPENSHIFT_ASSISTED_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-openshift-assisted/config/tmp" \
 	CHART_VERSION="$(VERSION)" \
@@ -92,7 +88,7 @@ build-cluster-api-provider-metal3-chart:
 	CHART_VERSION="$(OCP_VERSION)" \
 	CHART_APP_VERSION="$(OCP_VERSION)" \
 	CHART_VALUES_IMAGE_TAG="$(TAG)" \
-	CHART_VALUES_IMAGE_TAG_PREFIX="" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="v" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api-provider-metal3" \
 	../scripts/sync2chart.sh

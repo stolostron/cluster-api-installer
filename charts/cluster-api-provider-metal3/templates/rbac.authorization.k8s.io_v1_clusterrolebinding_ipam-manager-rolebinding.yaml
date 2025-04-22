@@ -1,12 +1,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: capoa-controlplane-manager-rolebinding
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-metal3
+  name: ipam-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: capoa-controlplane-manager-role
+  name: ipam-manager-role
 subjects:
 - kind: ServiceAccount
-  name: capoa-controlplane-controller-manager
-  namespace: capoa-system
+  name: ipam-manager
+  namespace: capm3-system

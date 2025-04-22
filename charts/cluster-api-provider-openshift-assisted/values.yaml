@@ -1,8 +1,8 @@
 bootstrap:
   image:
-    tag: latest
+    tag: 2.9
     url: quay.io/edge-infrastructure/cluster-api-bootstrap-provider-openshift-assisted
 controlplane:
   image:
-    tag: latest
+    tag: 2.9
     url: quay.io/edge-infrastructure/cluster-api-controlplane-provider-openshift-assisted

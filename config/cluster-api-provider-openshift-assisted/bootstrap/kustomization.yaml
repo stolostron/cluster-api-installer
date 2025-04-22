@@ -23,32 +23,3 @@ patches:
       value:
         name: ASSISTED_CA_BUNDLE_NAMESPACE
         value: openshift-config-managed
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: ASSISTED_CA_BUNDLE_RESOURCE
-        value: "configmap"
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: ASSISTED_CA_BUNDLE_KEY
-        value: "ca-bundle.crt"
-- target:
-    version: v1
-    kind: ValidatingWebhookConfiguration
-    annotationSelector: "cert-manager.io/inject-ca-from"
-  patch: |-
-    - op: remove
-      path: /metadata/annotations/cert-manager.io~1inject-ca-from
-    - op: add
-      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-      value: true
-- target:
-    version: v1
-    kind: Service
-    name: webhook-service
-    namespace: capoa-bootstrap-system
-  patch: |-
-    - op: add
-      path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-      value: "capoa-bootstrap-webhook-cert-secret"

@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mce-capi-webhook-config
+  namespace: capi-system
+  labels:
+    app: mce-capi-webhook-config
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mce-capi-webhook-config
+  template:
+    metadata:
+      labels:
+        app: mce-capi-webhook-config
+    spec:
+      containers:
+      - args:
+          - --webhook-port=9443
+        image: quay.io/stolostron/mce-capi-webhook-config:latest
+        imagePullPolicy: Always
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      volumes:
+      - name: cert
+        secret:
+          secretName: mce-capi-webhook-config-service-cert
+      serviceAccount: mce-labeling-manager

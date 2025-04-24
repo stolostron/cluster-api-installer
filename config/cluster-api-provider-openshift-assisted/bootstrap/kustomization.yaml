@@ -23,3 +23,13 @@ patches:
       value:
         name: ASSISTED_CA_BUNDLE_NAMESPACE
         value: openshift-config-managed
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_RESOURCE
+        value: "configmap"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_KEY
+        value: "ca-bundle.crt"

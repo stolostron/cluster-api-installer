@@ -2,7 +2,3 @@ manager:
   image:
     tag: latest
     url: registry.redhat.io/openshift4/ose-baremetal-cluster-api-controllers-rhel9
-
-# Format this differently to avoid automation pushing this tag to `latest`
-ipamImageTag: v1.9.2
-ipamImageUrl: quay.io/metal3-io/ip-address-manager

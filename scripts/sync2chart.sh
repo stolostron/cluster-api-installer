@@ -25,6 +25,8 @@ fi
 
 CHARTDIR=../charts/$PROJECT
 NEWCHART=$BUILTDIR/new-chart.yml
+SRC_PROJECT_FILE=../src/$PROJECT.yaml
+[ ! -f "$SRC_PROJECT_FILE" ] && SRC_PROJECT_FILE=""
 
 if [ "$SYNC2CHARTS" ] ;then
     echo 'sync new output to ' $CHARTDIR
@@ -45,13 +47,15 @@ if [ "$SYNC2CHARTS" ] ;then
     $HELM template $CHARTDIR --include-crds | \
       grep -v '^#' > $NEWCHART
 
+    IS_UPDATED=false
+    if [ $(git diff --name-only "$CHARTDIR" $SRC_PROJECT_FILE|wc -l) -gt 0 ] ; then
+        IS_UPDATED=true
+    fi
+    echo "updated_$PROJECT=$IS_UPDATED"
     if [ -n "$GITHUB_OUTPUT" ] ; then
-        echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT NEWCHART=$NEWCHART"
         # when started under github workflow
-        if [ $(git diff --name-only "$CHARTDIR"|wc -l) -gt 0 ] ; then
-            echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"
-            echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT updated$PROJECT ... NEWCHART=$NEWCHART"
-        fi
+        echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT"
+        echo "updated_$PROJECT=$IS_UPDATED" >> "$GITHUB_OUTPUT"
     fi
     
     if [ "$SORTED_OUTPUT" == "true" ] ; then

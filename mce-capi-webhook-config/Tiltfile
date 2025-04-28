@@ -1,0 +1,53 @@
+cluster_name = 'crc'
+project_name = 'mce-capi-webhook-config'
+
+# Allow the cluster to avoid problems while having kubectl configured to talk to a remote cluster.
+allow_k8s_contexts(cluster_name)
+
+# Load the restart_process extension with the docker_build_with_restart func for live reloading.
+load('ext://restart_process', 'docker_build_with_restart')
+
+# Building binary locally.
+local_resource('%s-binary' % project_name,
+    'GOOS=linux CGO_ENABLED=1 GO111MODULE=on go build -gcflags "all=-N -l" -o mce-capi-webhook-config main.go',
+    deps=[
+        './main.go',
+        './webhook/webhook.go',
+    ],
+)
+
+## Wrap a docker_build to restart the given entrypoint after a Live Update.
+#docker_build_with_restart(
+#    project_name,
+#    '.',
+#    dockerfile="Dockerfile.tilt",
+#    entrypoint='/go/bin/dlv --listen=0.0.0.0:50100 --api-version=2 --headless=true --only-same-user=false --accept-multiclient --log exec /mce-capi-webhook-config',
+#    live_update=[
+#        # Copy the binary so it gets restarted.
+#        sync(project_name, '/%s' % project_name),
+#    ],
+#)
+custom_build(
+  project_name,
+  'buildah build-using-dockerfile -f Dockerfile.tilt --tag $EXPECTED_REF . && buildah push $EXPECTED_REF',
+  ['.'],
+  entrypoint='/go/bin/dlv --listen=0.0.0.0:50100 --api-version=2 --headless=true --accept-multiclient --log exec /mce-capi-webhook-config',
+  live_update=[
+      # Copy the binary so it gets restarted.
+      sync(project_name, '/%s' % project_name),
+  ],
+  skips_local_docker=True)
+
+# Create the deployment from YAML file path.
+k8s_yaml('deployments/deployment.yaml')
+
+default_registry(
+  'default-route-openshift-image-registry.apps-crc.testing/mce-capi-webhook-config',
+  host_from_cluster='image-registry.openshift-image-registry.svc:5000/mce-capi-webhook-config')
+
+# Configure the resource.
+k8s_resource(
+        project_name,
+        port_forwards = ["50100:50100"] # Set up the K8s port-forward to be able to connect to it locally.
+)
+

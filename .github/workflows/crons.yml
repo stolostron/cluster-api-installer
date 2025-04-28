@@ -15,6 +15,7 @@ jobs:
       dst-branch: "release-2.8"
     secrets:
       personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
   call-sync-release-2_9:
     permissions:
@@ -25,6 +26,7 @@ jobs:
       dst-branch: "release-2.9"
     secrets:
       personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
   call-sync-main:
     permissions:
@@ -35,3 +37,4 @@ jobs:
       dst-branch: "main"
     secrets:
       personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}

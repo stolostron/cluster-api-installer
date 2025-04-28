@@ -160,8 +160,12 @@ if [ "$SYNC2CHARTS" ] ;then
     generate_helm_template "$CHARTDIR" "$NEWCHART"
 
 
+    IS_UPDATED=false
+    if [ $(git diff --name-only "$CHARTDIR" $SRC_PROJECT_FILE|wc -l) -gt 0 ] ; then
+        IS_UPDATED=true
+    fi
+    echo "updated_$PROJECT=$IS_UPDATED"
     if [ -n "$GITHUB_OUTPUT" ] ; then
-        echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT NEWCHART=$NEWCHART"
         # when started under github workflow
         if [ $(git diff --name-only "$CHARTDIR"|wc -l) -gt 0 ] ; then
             echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"

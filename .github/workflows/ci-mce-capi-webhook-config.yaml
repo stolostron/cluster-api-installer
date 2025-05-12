@@ -1,0 +1,19 @@
+name: ci-mce-capi-webhook-config
+on:
+  pull_request:
+    paths:
+      - 'mce-capi-webhook-config/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mce-capi-webhook-config
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        run: make build
+      - name: docker-build
+        run: make docker-build
+      - name: test
+        run: make test

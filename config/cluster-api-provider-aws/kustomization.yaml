@@ -111,6 +111,9 @@ patches:
         value:
         - '{{ .Values.manager.cmd  }}'
       - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: '--disable-controllers=unmanaged'
+      - op: add
         path: /spec/template/spec/containers/0/env
         value:
         - name: AWS_SHARED_CREDENTIALS_FILE

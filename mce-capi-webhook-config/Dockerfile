@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM golang:1.24 AS builder
+FROM registry.ci.openshift.org/stolostron/builder:go1.24-linux AS builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -16,9 +16,7 @@ COPY webhook/ webhook/
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o mce-capi-webhook-config main.go
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/static:nonroot
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 WORKDIR /
 COPY --from=builder /workspace/mce-capi-webhook-config /
 USER nonroot:nonroot

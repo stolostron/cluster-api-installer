@@ -30,7 +30,7 @@ spec:
   - name: dockerfile
     value: mce-capi-webhook-config/Dockerfile
   - name: path-context
-    value: mce-capi-webhook-config/
+    value: .
   - name: build-source-image
     value: "true"
   - name: hermetic

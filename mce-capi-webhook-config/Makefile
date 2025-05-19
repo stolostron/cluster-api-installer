@@ -35,7 +35,7 @@ test: envtest ## Run tests.
 	ENV_TEST="true" go test $(shell go list ./... | grep -E -v "test") -coverprofile cover.out
 
 # Build manager binary
-mce-capi-webhook-config: main.go webhook/webhook.go
+mce-capi-webhook-config: main.go webhook/webhook.go go.mod go.sum
 	go build -o mce-capi-webhook-config main.go
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
@@ -56,7 +56,7 @@ docker-build: webhook
 docker-push:
 	docker push ${IMG}
 
-buid-deploy-crc: docker-build deploy-crc
+build-deploy-crc: docker-build deploy-crc
 
 deploy-crc:
 	docker login -u kubeadmin -p $(shell oc whoami -t) --tls-verify=false default-route-openshift-image-registry.apps-crc.testing

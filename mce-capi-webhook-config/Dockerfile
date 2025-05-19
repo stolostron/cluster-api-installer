@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM registry.ci.openshift.org/stolostron/builder:go1.24-linux AS builder
+FROM registry.redhat.io/rhel8/go-toolset:latest AS builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -14,11 +14,19 @@ COPY main.go main.go
 COPY webhook/ webhook/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o mce-capi-webhook-config main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o /tmp/mce-capi-webhook-config main.go
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+LABEL com.redhat.component="" \
+      description="Auto-labeling CAPI resources based on their namespace" \
+      io.k8s.description="" \
+      io.k8s.display-name="" \
+      io.openshift.tags="" \
+      name="mce-capi-webhook-config" \
+      summary="Auto-labeling CAPI resources based on their namespace"
+
 WORKDIR /
-COPY --from=builder /workspace/mce-capi-webhook-config /
+COPY --from=builder /tmp/mce-capi-webhook-config /
 USER nonroot:nonroot
 
 ENTRYPOINT ["/mce-capi-webhook-config"]

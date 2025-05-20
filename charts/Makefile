@@ -1,10 +1,12 @@
 OCP_VERSION ?= 4.19
 SYNC2CHARTS ?= true
 
-DEFAULT_BRANCH ?= master
 DEFAULT_ORGREPO ?= https://github.com/openshift
+CAPI_BRANCH ?= master
+CAPA_BRANCH ?= main
 # needs overridable branch, as the non-master branch will differ
 OPENSHIFT_ASSISTED_BRANCH ?= master
+ASSISTED_BRANCH ?= master
 METAL3_BRANCH ?= main
 
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
@@ -27,7 +29,7 @@ build-cluster-api-chart:
 	WKDIR="$(WKDIR)" \
 	ORGREPO="$(DEFAULT_ORGREPO)" \
 	PROJECT="cluster-api" \
-	BRANCH="$(DEFAULT_BRANCH)" \
+	BRANCH="$(CAPI_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \
@@ -44,7 +46,7 @@ build-cluster-api-provider-aws-chart:
 	WKDIR="$(WKDIR)" \
 	ORGREPO="$(DEFAULT_ORGREPO)" \
 	PROJECT="cluster-api-provider-aws" \
-	BRANCH="$(DEFAULT_BRANCH)" \
+	BRANCH="$(CAPA_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-aws/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \
@@ -64,7 +66,7 @@ build-cluster-api-provider-openshift-assisted-chart:
 	ORGREPO="$(OPENSHIFT_ASSISTED_ORGREPO)" \
 	KUSTOMIZE_CONFIG_DIRS="bootstrap controlplane" \
 	PROJECT="cluster-api-provider-openshift-assisted" \
-	BRANCH="$(DEFAULT_BRANCH)" \
+	BRANCH="$(ASSISTED_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-openshift-assisted/config/tmp" \
 	CHART_VERSION="$(VERSION)" \

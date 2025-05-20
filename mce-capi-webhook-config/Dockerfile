@@ -19,12 +19,12 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o /tmp/mce
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 LABEL com.redhat.component="" \
-      description="Auto-labeling CAPI resources based on their namespace" \
-      io.k8s.description="" \
-      io.k8s.display-name="" \
-      io.openshift.tags="" \
+      description="Auto-labeling CAPI resources based on openshift and hypershift namespaces" \
+      io.k8s.description="Auto-labeling CAPI resources based on namespaces" \
+      io.k8s.display-name="MultiCluster Engine CAPI Webhook Config" \
+      io.openshift.tags="cluster-api,capi,multicluster-engine" \
       name="mce-capi-webhook-config" \
-      summary="Auto-labeling CAPI resources based on their namespace"
+      summary="Auto-labeling CAPI resources based on namespaces"
 
 WORKDIR /
 COPY --from=builder /tmp/mce-capi-webhook-config /

@@ -27,9 +27,9 @@ jobs:
     - name: show-env
       id: show-env
       run: |
-        echo "env.JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}
-        echo "env.JIRA_PROJECT: ${{ env.JIRA_PROJECT }}
-        echo "env.JIRA_EPIC_LINK: ${{ env.JIRA_EPIC_LINK }}
+        echo "env.JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}"
+        echo "env.JIRA_PROJECT: ${{ env.JIRA_PROJECT }}"
+        echo "env.JIRA_EPIC_LINK: ${{ env.JIRA_EPIC_LINK }}"
     - name: test-target-branch-capi
       id: check-branch-exists-capi
       uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists

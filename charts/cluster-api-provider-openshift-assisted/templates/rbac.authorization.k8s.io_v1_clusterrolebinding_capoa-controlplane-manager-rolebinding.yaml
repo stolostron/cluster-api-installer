@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capoa-controlplane-controller-manager
-  namespace: capoa-system
+  namespace: capoa-controlplane-system

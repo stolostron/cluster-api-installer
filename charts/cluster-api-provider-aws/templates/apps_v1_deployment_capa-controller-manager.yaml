@@ -40,6 +40,7 @@ spec:
         - --v=0
         - --diagnostics-address=:8443
         - --insecure-diagnostics=false
+        - --disable-controllers=unmanaged
         command:
         - '{{ .Values.manager.cmd  }}'
         env:

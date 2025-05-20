@@ -1,5 +1,6 @@
+ARG BUILDER_IMAGE="registry.redhat.io/rhel8/go-toolset:latest"
 # Build the manager binary
-FROM registry.redhat.io/rhel8/go-toolset:latest AS builder
+FROM ${BUILDER_IMAGE} AS builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests

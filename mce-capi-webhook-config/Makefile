@@ -50,7 +50,7 @@ deploy: webhook
 
 # Build the docker image
 docker-build: webhook
-	docker build . -t ${IMG}
+	docker build . -t ${IMG} --build-arg BUILDER_IMAGE=registry.ci.openshift.org/stolostron/builder:go1.23-linux 
 
 # Push the docker image
 docker-push:

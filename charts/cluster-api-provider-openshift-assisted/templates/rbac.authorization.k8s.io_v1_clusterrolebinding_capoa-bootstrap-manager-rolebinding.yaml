@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system

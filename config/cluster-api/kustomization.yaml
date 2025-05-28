@@ -4,6 +4,7 @@ kind: Kustomization
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
 - default/
+- base/mce-capi-webhook-config/
 
 transformers:
 - base/transformer.yaml
@@ -27,6 +28,9 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
+      - op: add
+        path: /spec/template/spec/containers/0/args/0
+        value: '--watch-filter=multicluster-engine'
       - op: replace
         path: /spec/template/spec/containers/0/command
         value:

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: capoa-system
+  name: capoa-bootstrap-system
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -318,10 +318,6 @@ spec:
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
-              isoDownloadURL:
-                description: ISODownloadURL is the url for the live-iso to be downloaded
-                  from Assisted Installer
-                type: string
               observedGeneration:
                 description: ObservedGeneration is the latest generation observed
                   by the controller.
@@ -583,13 +579,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: capoa-bootstrap-leader-election-role
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system
 rules:
 - apiGroups:
   - ""
@@ -728,7 +724,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: capoa-bootstrap-leader-election-rolebinding
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -736,7 +732,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -749,13 +745,26 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: capoa-bootstrap-webhook-service
+  namespace: capoa-bootstrap-system
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 9443
+  selector:
+    control-plane: capoa-bootstrap-controller-manager
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-system
+  namespace: capoa-bootstrap-system
 spec:
   replicas: 1
   selector:
@@ -803,14 +812,74 @@ spec:
           capabilities:
             drop:
             - ALL
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs/
+          name: certs
       securityContext:
         runAsNonRoot: true
       serviceAccountName: capoa-bootstrap-controller-manager
       terminationGracePeriodSeconds: 10
+      volumes:
+      - name: certs
+        secret:
+          secretName: capoa-bootstrap-webhook-cert-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: capoa-bootstrap-cert
+  namespace: capoa-bootstrap-system
+spec:
+  commonName: capoa-bootstrap-webhook-service.capoa-bootstrap-system.svc
+  dnsNames:
+  - capoa-bootstrap-webhook-service.capoa-bootstrap-system.svc
+  duration: 8760h
+  issuerRef:
+    kind: Issuer
+    name: capoa-bootstrap-selfsigned-issuer
+  renewBefore: 360h
+  secretName: capoa-bootstrap-webhook-cert-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: capoa-bootstrap-selfsigned-issuer
+  namespace: capoa-bootstrap-system
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capoa-bootstrap-system/capoa-bootstrap-cert
+  name: capoa-bootstrap-validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: capoa-bootstrap-webhook-service
+      namespace: capoa-bootstrap-system
+      path: /validate-bootstrap-cluster-x-k8s-io-v1alpha1-openshiftassistedconfig
+  failurePolicy: Fail
+  name: validation.openshiftassistedconfig.bootstrap.cluster.x-k8s.io
+  rules:
+  - apiGroups:
+    - bootstrap.cluster.x-k8s.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - openshiftassistedconfigs
+  sideEffects: None
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: capoa-system
+  name: capoa-controlplane-system
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -1487,13 +1556,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: capoa-controlplane-controller-manager
-  namespace: capoa-system
+  namespace: capoa-controlplane-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: capoa-controlplane-leader-election-role
-  namespace: capoa-system
+  namespace: capoa-controlplane-system
 rules:
 - apiGroups:
   - ""
@@ -1683,7 +1752,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: capoa-controlplane-leader-election-rolebinding
-  namespace: capoa-system
+  namespace: capoa-controlplane-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -1691,7 +1760,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capoa-controlplane-controller-manager
-  namespace: capoa-system
+  namespace: capoa-controlplane-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -1704,13 +1773,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capoa-controlplane-controller-manager
-  namespace: capoa-system
+  namespace: capoa-controlplane-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capoa-controlplane-controller-manager
-  namespace: capoa-system
+  namespace: capoa-controlplane-system
 spec:
   replicas: 1
   selector:

@@ -15,14 +15,16 @@ We expect the following:
   * `az` CLI (or a `sp.json` file is already created), see [Install the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
   * `oc` - see [OpenShift CLI (oc)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc)
   * `helm` – also required for setting up the infrastructure using the declarative approach
+  * `clusterctl` - see [The clusterctl CLI tool](https://cluster-api-aws.sigs.k8s.io/getting-started#install-clusterctl)
 * Ensure you have access to the RH Azure tenant:
   * **RH account**: You need to have a Red Hat account to access the Red Hat Azure tenant (`redhat0.onmicrosoft.com`) where personal DEV environments are created
   * **Subscription access**: You need access to the `ARO Hosted Control Planes (EA Subscription 1)` subscription in the Red Hat Azure tenant. Consult the [ARO HCP onboarding guide](https://docs.google.com/document/d/1KUZSLknIkSd6usFPe_OcEYWJyW6mFeotc2lIsLgE3JA/)
   * `az login` with your Red Hat account
 
 1. Create azure account service principal and store it in json file sp.json as follow
+See also: https://capz.sigs.k8s.io/getting-started#prerequisites
 ```bash
-AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 if [ ! -f sp.json ] ; then
     let "randomIdentifier=$RANDOM*$RANDOM"
     servicePrincipalName="msdocs-sp-$randomIdentifier"
@@ -36,43 +38,37 @@ export AZURE_CLIENT_SECRET=$(jq -r .password sp.json)
 export REGION=westus3
 export NAME_PREFIX=aro-hcp
 ```
-2. Install cert-manager using a Helm chart
+2. Install cert-manager using a Helm chart (if you are using kind cluster)
+
 This is required for non-OCP clusters, as OCP clusters include a different built-in cert-manager.
 ```bash
 helm repo add jetstack https://charts.jetstack.io --force-update
 helm repo update
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true
-````
-3. Install ASO2 using a Helm chart 
-```bash
-helm repo add aso2 https://raw.githubusercontent.com/Azure/azure-service-operator/main/v2/charts
-helm repo update
-helm upgrade --install --devel aso2 aso2/azure-service-operator \
-        --create-namespace --wait --timeout 2m \
-        --namespace=azureserviceoperator-system \
-        --set azureSubscriptionID=$AZURE_SUBSCRIPTION_ID \
-        --set azureTenantID=$AZURE_TENANT_ID \
-        --set azureClientID=$AZURE_CLIENT_ID \
-        --set useWorkloadIdentityAuth=true \
-        --set crdPattern='resources.azure.com/*;containerservice.azure.com/*;keyvault.azure.com/*;managedidentity.azure.com/*;eventhub.azure.com/*;network.azure.com/*;authorization.azure.com/*'
 ```
-4. Deploy the AZURE secret:
+3. Install Azure provider / initialize CAPZ
+
+The ASO2 controller is part of CAPZ provider. Setup the CAPZ provider:
+* create `cluster-identity-secret` and
+* finally, initialize the Azure management cluster see [Initialization for common providers](https://cluster-api-aws.sigs.k8s.io/getting-started#initialize-the-management-cluster)/Azure
 ```bash
-cat <<EOF | oc apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
- name: aso-credential
- namespace: default
-stringData:
- AZURE_SUBSCRIPTION_ID: "$AZURE_SUBSCRIPTION_ID"
- AZURE_TENANT_ID: "$AZURE_TENANT_ID"
- AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
- AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
-EOF
+export CLUSTER_TOPOLOGY=true
+export AZURE_CLIENT_ID_USER_ASSIGNED_IDENTITY=$AZURE_CLIENT_ID # for compatibility with CAPZ v1.16 templates
+
+# Settings needed for AzureClusterIdentity used by the AzureCluster
+export AZURE_CLUSTER_IDENTITY_SECRET_NAME="cluster-identity-secret"
+export CLUSTER_IDENTITY_NAME="cluster-identity"
+export AZURE_CLUSTER_IDENTITY_SECRET_NAMESPACE="default"
+
+# Create a secret to include the password of the Service Principal identity created in Azure
+# This secret will be referenced by the AzureClusterIdentity used by the AzureCluster
+oc create secret generic "${AZURE_CLUSTER_IDENTITY_SECRET_NAME}" --from-literal=clientSecret="${AZURE_CLIENT_SECRET}" --namespace "${AZURE_CLUSTER_IDENTITY_SECRET_NAMESPACE}"
+
+# Finally, initialize the management cluster
+clusterctl init --infrastructure azure
 ```
 ## Creating infrastructure for ARO-HCP clusters
-5. Then we can start such a deplouyment:
+4. Then we can start such a deplouyment:
 ```bash
 cat <<EOF | oc apply -f -
 # Equivalent to:

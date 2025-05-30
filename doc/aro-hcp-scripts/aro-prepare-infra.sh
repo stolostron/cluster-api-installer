@@ -1,4 +1,4 @@
-AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 if [ ! -f sp.json ] ; then
     let "randomIdentifier=$RANDOM*$RANDOM"
     servicePrincipalName="msdocs-sp-$randomIdentifier"
@@ -12,12 +12,37 @@ export AZURE_CLIENT_SECRET=$(jq -r .password sp.json)
 export REGION=westus3
 export NAME_PREFIX=aro-hcp
 
-# to skip do "export SKIP_ASO2_INSTALL=true" before run
-if [ -n "$SKIP_ASO2_INSTALL" ] ; then
+# to skip do "export SKIP_CERT_MANAGER=true" before run
+if [ -z "$SKIP_CERT_MANAGER" ] ; then
 helm repo add jetstack https://charts.jetstack.io --force-update
 helm repo update
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true
+fi
 
+# to skip do "export SKIP_ASO2_INSTALL=true" before run
+if [ -z "$SKIP_ASO2_INSTALL" ] ; then
+
+
+if [ -z "$USE_ASO2_HELM" ] ; then
+
+export CLUSTER_TOPOLOGY=true
+export AZURE_CLIENT_ID_USER_ASSIGNED_IDENTITY=$AZURE_CLIENT_ID # for compatibility with CAPZ v1.16 templates
+
+# Settings needed for AzureClusterIdentity used by the AzureCluster
+export AZURE_CLUSTER_IDENTITY_SECRET_NAME="cluster-identity-secret"
+export CLUSTER_IDENTITY_NAME="cluster-identity"
+export AZURE_CLUSTER_IDENTITY_SECRET_NAMESPACE="default"
+
+# we need to define list of crds to install
+export ADDITIONAL_ASO_CRDS='resources.azure.com/*;containerservice.azure.com/*;keyvault.azure.com/*;managedidentity.azure.com/*;eventhub.azure.com/*;network.azure.com/*;authorization.azure.com/*'
+
+# Create a secret to include the password of the Service Principal identity created in Azure
+# This secret will be referenced by the AzureClusterIdentity used by the AzureCluster
+oc create secret generic "${AZURE_CLUSTER_IDENTITY_SECRET_NAME}" --from-literal=clientSecret="${AZURE_CLIENT_SECRET}" --namespace "${AZURE_CLUSTER_IDENTITY_SECRET_NAMESPACE}"
+
+# Finally, initialize the management cluster
+clusterctl init --infrastructure azure
+else
 helm repo add aso2 https://raw.githubusercontent.com/Azure/azure-service-operator/main/v2/charts
 helm repo update
 helm upgrade --install --devel aso2 aso2/azure-service-operator \
@@ -42,9 +67,12 @@ stringData:
  AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
 EOF
 fi
+fi
 
 cat <<EOF | oc apply -f -
-# az group create --name <resource-group> --location <location>
+# Equivalent to:
+# az group create --name "$NAME_PREFIX-resgroup" --location "$REGION"
+# This YAML creates a Resource Group named "$NAME_PREFIX-resgroup" in the specified Azure region "$REGION".
 apiVersion: resources.azure.com/v1api20200601
 kind: ResourceGroup
 metadata:
@@ -53,7 +81,9 @@ metadata:
 spec:
   location: $REGION
 ---
-# az network vnet create -n <vnet-name> -g <resource-group> --subnet-name <subnet-name>
+# Equivalent to:
+# az network vnet create -n "$NAME_PREFIX-vnet" -g "$NAME_PREFIX-resgroup"
+# This YAML creates a virtual network named "$NAME_PREFIX-vnet" in the "$NAME_PREFIX-resgroup" resource group.
 apiVersion: network.azure.com/v1api20201101
 kind: VirtualNetwork
 metadata:
@@ -67,7 +97,9 @@ spec:
     addressPrefixes:
       - 10.100.0.0/15
 ---
-# az network nsg create -n <nsg-name> -g <resource-group>
+# Equivalent to:
+# az network nsg create -n "$NAME_PREFIX-nsg" -g "$NAME_PREFIX-resgroup"
+# This YAML creates a Network Security Group (NSG) named "$NAME_PREFIX-nsg" in the "${NAME_PREFIX}-resgroup" resource group.
 apiVersion: network.azure.com/v1api20201101
 kind: NetworkSecurityGroup
 metadata:
@@ -78,8 +110,9 @@ spec:
   owner:
     name: $NAME_PREFIX-resgroup
 ---
-# az network vnet create -n <vnet-name> -g <resource-group> --subnet-name <subnet-name>
-# az network vnet subnet update -g <resource-group> -n <subnet-name> --vnet-name <vnet-name> --network-security-group <nsg-name>
+# Equivalent to:
+# az network vnet subnet create -n "$NAME_PREFIX-subnet" -g "$NAME_PREFIX-resgroup" --vnet-name "$NAME_PREFIX-vnet" --network-security-group "$NAME_PREFIX-nsg"
+# This YAML creates a subnet named "$NAME_PREFIX-subnet" in the "$NAME_PREFIX-vnet" virtual network and associates it with the "$NAME_PREFIX-nsg" Network Security Group.
 apiVersion: network.azure.com/v1api20201101
 kind: VirtualNetworksSubnet
 metadata:
@@ -134,11 +167,13 @@ for IDENTITY_NAME in \
 ; do 
 cat >> AroHcpUserAssignedIdentity.yaml <<EOF
 ---
-# az identity create -n ${IDENTITY_NAME} -g <resource-group>
+# Equivalent to:
+# az identity create -n "$IDENTITY_NAME" -g "$NAME_PREFIX-resgroup"
+# This YAML creates a managed identity named "$IDENTITY_NAME" in the "$NAME_PREFIX-resgroup" resource group.
 apiVersion: managedidentity.azure.com/v1api20230131
 kind: UserAssignedIdentity
 metadata:
-  name: ${IDENTITY_NAME}
+  name: $IDENTITY_NAME
   namespace: default
 spec:
   location: $REGION

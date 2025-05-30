@@ -75,7 +75,9 @@ EOF
 5. Then we can start such a deplouyment:
 ```bash
 cat <<EOF | oc apply -f -
-# az group create --name <resource-group> --location <location>
+# Equivalent to:
+# az group create --name "$NAME_PREFIX-resgroup" --location "$REGION"
+# This YAML creates a Resource Group named "$NAME_PREFIX-resgroup" in the specified Azure region "$REGION".
 apiVersion: resources.azure.com/v1api20200601
 kind: ResourceGroup
 metadata:
@@ -84,7 +86,9 @@ metadata:
 spec:
   location: $REGION
 ---
-# az network vnet create -n <vnet-name> -g <resource-group> --subnet-name <subnet-name>
+# Equivalent to:
+# az network vnet create -n "$NAME_PREFIX-vnet" -g "$NAME_PREFIX-resgroup"
+# This YAML creates a virtual network named "$NAME_PREFIX-vnet" in the "$NAME_PREFIX-resgroup" resource group.
 apiVersion: network.azure.com/v1api20201101
 kind: VirtualNetwork
 metadata:
@@ -98,7 +102,9 @@ spec:
     addressPrefixes:
       - 10.100.0.0/15
 ---
-# az network nsg create -n <nsg-name> -g <resource-group>
+# Equivalent to:
+# az network nsg create -n "$NAME_PREFIX-nsg" -g "$NAME_PREFIX-resgroup"
+# This YAML creates a Network Security Group (NSG) named "$NAME_PREFIX-nsg" in the "${NAME_PREFIX}-resgroup" resource group.
 apiVersion: network.azure.com/v1api20201101
 kind: NetworkSecurityGroup
 metadata:
@@ -109,8 +115,9 @@ spec:
   owner:
     name: $NAME_PREFIX-resgroup
 ---
-# az network vnet create -n <vnet-name> -g <resource-group> --subnet-name <subnet-name>
-# az network vnet subnet update -g <resource-group> -n <subnet-name> --vnet-name <vnet-name> --network-security-group <nsg-name>
+# Equivalent to:
+# az network vnet subnet create -n "$NAME_PREFIX-subnet" -g "$NAME_PREFIX-resgroup" --vnet-name "$NAME_PREFIX-vnet" --network-security-group "$NAME_PREFIX-nsg"
+# This YAML creates a subnet named "$NAME_PREFIX-subnet" in the "$NAME_PREFIX-vnet" virtual network and associates it with the "$NAME_PREFIX-nsg" Network Security Group.
 apiVersion: network.azure.com/v1api20201101
 kind: VirtualNetworksSubnet
 metadata:
@@ -153,11 +160,13 @@ for IDENTITY_NAME in \
 ; do 
 cat >> AroHcpUserAssignedIdentity.yaml <<EOF
 ---
-# az identity create -n ${IDENTITY_NAME} -g <resource-group>
+# Equivalent to:
+# az identity create -n "$IDENTITY_NAME" -g "$NAME_PREFIX-resgroup"
+# This YAML creates a managed identity named "$IDENTITY_NAME" in the "$NAME_PREFIX-resgroup" resource group.
 apiVersion: managedidentity.azure.com/v1api20230131
 kind: UserAssignedIdentity
 metadata:
-  name: ${IDENTITY_NAME}
+  name: $IDENTITY_NAME
   namespace: default
 spec:
   location: $REGION

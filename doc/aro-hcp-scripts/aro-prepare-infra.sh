@@ -9,8 +9,8 @@ fi
 export AZURE_TENANT_ID=$(jq -r .tenant sp.json)
 export AZURE_CLIENT_ID=$(jq -r .appId sp.json)
 export AZURE_CLIENT_SECRET=$(jq -r .password sp.json)
-export REGION=westus3
-export NAME_PREFIX=aro-hcp
+export REGION=${REGION:-westus3}
+export NAME_PREFIX=${NAME_PREFIX:-aro-hcp}
 
 # to skip do "export SKIP_CERT_MANAGER=true" before run
 if [ -z "$SKIP_CERT_MANAGER" ] ; then
@@ -128,8 +128,8 @@ spec:
       group: network.azure.com
       kind: NetworkSecurityGroup
 EOF
-USER=user1
-CS_CLUSTER_NAME=cluster1
+USER=${USER:-user1}
+CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-cluster1}
 OPERATORS_UAMIS_SUFFIX_FILE=operators-uamis-suffix.txt
 if [ ! -f "$OPERATORS_UAMIS_SUFFIX_FILE" ] ; then
     openssl rand -hex 3 > "$OPERATORS_UAMIS_SUFFIX_FILE"

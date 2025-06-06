@@ -2,68 +2,17 @@
 
 ## Prerequisites
 
-1. Complete the prerequisite actions listed in the [Set up to use the ROSA CLI](https://docs.aws.amazon.com/rosa/latest/userguide/set-up.html) documentation.
+1. Complete the prerequisite actions listed in the [ROSA with HCP Prerequisites](https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/4/html/install_rosa_with_hcp_clusters/rosa-hcp-sts-creating-a-cluster-quickly#rosa-hcp-prereqs) section of the ROSA HCP documentation.
+  Note: The steps for creating the AWS VPC and IAM roles will be declarative through CAPA custom resources in a future release.
 
-2. Create an Amazon VPC that will be used with ROSA HCP using the Terraform template as follows:
-    1. Install the Terraform CLI. For more information, see the installation instructions in the [Terraform documentation](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
-	1. Open a terminal session and clone the Terraform VPC repository.
+2. Using an OpenShift cluster v4.16 or later running, install RHACM (Red Hat Advanced Cluster Management) operator v2.13 or later from the [installation documentation](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
 
-	   `git clone https://github.com/openshift-cs/terraform-vpc-example`
-	
-	1. Follow the commands below to create the VPC:
-	   ```shell
-	   cd terraform-vpc-example
-	   terraform init
-	   terraform plan -out rosa.tfplan -var region=<region>
-	   terraform apply rosa.tfplan
-	   ```
-       The subnet-ids will be displayed once Terraform has successfully created the VPC.	   
-       ```     
-       private-subnet-id: subnet-0889990000000000   
-       public-subnet-id: subnet-054ad00000000000
-       ...
-	   ```
-3. Create the required IAM roles and OpenID Connect configuration.
-   
-    1. Create the required IAM account roles and policies.
-       ```     
-        rosa create account-roles --force-policy-creation
-       ```
-    2. Create the OpenID Connect (OIDC) configuration.
+## Enable CAPI, CAPA and auto import features in ACM (multicluster engine)
 
-       ```     
-       rosa create oidc-config --mode=auto
-       ```
-    3. Copy the OIDC config ID <OIDC_CONFIG_ID> provided in the ROSA CLI output. 
-      
-       The OIDC config ID needs to be provided later to create the ROSA HCP cluster.  
-       You can list the available OIDC config IDs using the following command:
+The Multicluster Engine is automatically installed with RHACM. 
+The MultiClusterEngine custom resource contains both CAPI & CAPA feature flags which. These must be enabled only after the ACM operator installation is complete.
 
-       ```     
-       rosa list oidc-config
-       ```
-
-   4. Create the required IAM operator roles.   
-   You must supply a prefix in <PREFIX_NAME> and replace the <OIDC_CONFIG_ID> with the OIDC config ID copied previously.
-
-      ```     
-       rosa create operator-roles --prefix <PREFIX_NAME> --oidc-config-id <OIDC_CONFIG_ID> --hosted-cp
-      ```
-     
-   5. Verify the IAM operator roles were created. 
-      ```     
-      rosa list operator-roles
-      ```
-
-4. Assuming you have an OpenShift cluster v4.16 or later running, install ACM (Advanced Cluster Management) operator v2.13 from the [operator hub](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-operatorhub) or using OpenShift Container Platform [CLI](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/install/installing#installing-from-the-cli)
-
-Notes: The steps for creating the AWS VPC and IAM roles will be declarative through CAPA custom resources next release.
-
-## Enable CAPI, CAPA and auto import 
-
-The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once the ACM operator installation and pre-request steps have been completed. 
-
-1. Verify the default MultiClusterEngine CR has been created. 
+1. Verify the default MultiClusterEngine CR is created and Available
 
 ```shell
  oc get multiclusterengine multiclusterengine 
@@ -75,7 +24,7 @@ The MultiClusterEngine custom resource CAPI & CAPA features must be enabled once
 
 `oc edit multiclusterengine multiclusterengine`
 
-Modify the components list cluster-api-preview & cluster-api-provider-aws-preview items as shown below:
+Modify the components cluster-api-preview & cluster-api-provider-aws-preview items to true as shown below:
 
 ```yaml
     - configOverrides: {}
@@ -98,7 +47,7 @@ capa-controller-manager               1/1     1            1           12d
 capi-controller-manager               1/1     1            1           12d
 ```
 
-4. Verify the ClusterManager CR cluster-manager was created.
+4. During a normal ACM installation, the ClusterManager will be created. Verify the ClusterManager CR cluster-manager was created.
 ```
 oc get ClusterManager
 NAME              AGE
@@ -190,7 +139,7 @@ metadata:
 `oc rollout restart deployment capa-controller-manager -n multicluster-engine`
 
 ### OCM Authentication using offline token OR service account credentials
-CAPA controller requires Redhat OCM credentials to provision ROSA HCP. You can obtain OCM credentials in two ways;
+The CAPA controller requires Red Hat OpenShift Cluster Manager (OCM) credentials to provision ROSA HCP clusters. You can obtain OCM credentials in two ways:
 
 1. Obtain an offline token by visiting https://console.redhat.com/openshift/token. Create a credentials secret within the target namespace `ns-rosa-hcp` with the token to be referenced later by `ROSAControlPlane`
     ```shell
@@ -201,7 +150,7 @@ CAPA controller requires Redhat OCM credentials to provision ROSA HCP. You can o
     ```
    Note: You can change the secret namespace similar to the `ROSAControlPlane` that will be created later.
 
-OR
+ - OR - 
 
 2. Create a service account by visiting [https://console.redhat.com/iam/service-accounts](https://console.redhat.com/iam/service-accounts). If you already have a service account, you can skip this step.
 

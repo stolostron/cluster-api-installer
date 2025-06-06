@@ -4,7 +4,31 @@ The necessary infrastructure for deploying an ARO-HCP cluster can be provisioned
 as part of the Cluster API Provider for Azure. In the following steps, we will create the required Azure resources,
 including a Resource Group, Network Security Group, Virtual Network (VNet), Subnet, and a User Assigned Managed Identity.
 
-Note: This document was created based on [Creating an HCP via Cluster Service](https://github.com/Azure/ARO-HCP/blob/main/cluster-service/cluster-creation.md)  
+Note:
+* This document was created based on [Creating an HCP via Cluster Service](https://github.com/Azure/ARO-HCP/blob/main/cluster-service/cluster-creation.md)
+* The bash script [doc/aro-hcp-scripts/aro-prepare-infra.sh](aro-hcp-scripts/aro-prepare-infra.sh) can be used to perform the steps described in this document.
+  * You can change the `REGION`, and you should set your own `USER`, `NAME_PREFIX` and `CS_CLUSTER_NAME` before running the script:
+    ```bash
+    cd doc
+    export REGION=westus3
+    export USER=mveber
+    export NAME_PREFIX="${USER}-hcp"
+    export CS_CLUSTER_NAME=mv-aro-cluster1
+    ./aro-hcp-scripts/aro-prepare-infra.sh
+    ```
+
+  * You can also define `SKIP_ASO2_INSTALL` to skip the installation of the managed cluster, or `SKIP_CERT_MANAGER` to skip the installation of cert-manager, before running the script:
+    ```bash
+    cd doc
+    export REGION=westus3
+    export USER=mveber
+    export NAME_PREFIX="${USER}-hcp"
+    export CS_CLUSTER_NAME=mv-aro-cluster1
+    export SKIP_ASO2_INSTALL=true
+    export SKIP_CERT_MANAGER=true
+    ./aro-hcp-scripts/aro-prepare-infra.sh
+    ```
+
 
 ## Prerequisites
 

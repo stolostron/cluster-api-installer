@@ -69,4 +69,6 @@ fi
 rm -rf $CONFIGDIR/$TMPDIR/cert*
 if [ "$PROJECT" == "cluster-api" ] ; then
     rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_ip*.yaml
+    rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_clusterresourcesets.addons.cluster.x-k8s.io.yaml
+    # TODO come to agreement for machines CRDs as there is no feature OR flag to disable those controllers in CAPI
 fi

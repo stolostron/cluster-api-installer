@@ -70,3 +70,13 @@ rm -rf $CONFIGDIR/$TMPDIR/cert*
 if [ "$PROJECT" == "cluster-api" ] ; then
     rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_ip*.yaml
 fi
+if [ "$PROJECT" == "cluster-api-provider-aws" ] ; then
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsclustercontrolleridentities.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsclusterroleidentities.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsclusters.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsclusterstaticidentities.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsclustertemplates.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsmachinepools.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsmachines.infrastructure.cluster.x-k8s.io.yaml
+    rm $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_awsmachinetemplates.infrastructure.cluster.x-k8s.io.yaml
+fi

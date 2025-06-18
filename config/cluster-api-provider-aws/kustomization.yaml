@@ -10,27 +10,14 @@ transformers:
 
 ## Patch the default CAPA CRDs & CRs with OCP dwonstream CAPA requirements. 
 patches:
-  # Removing the caBundle field (TODO: remove this patch in next release as caBundle is removed upstream)
+  # Remove the webhook conversion part from CRDs to match Hypershift CRDs
   - target:
       version: v1
       kind: CustomResourceDefinition
       annotationSelector: "cert-manager.io/inject-ca-from"
     patch: |-
-      apiVersion: apiextensions.k8s.io/v1
-      kind: CustomResourceDefinition
-      metadata:
-        name: "notused"
-      spec:
-        conversion:
-          webhook:
-            clientConfig:
-              caBundle: null
-  # related to above patch (TODO: remove next release)
-  - target:
-      version: v1
-      kind: CustomResourceDefinition
-      name: awsmanagedclusters.infrastructure.cluster.x-k8s.io
-    patch: |-
+      - op: add
+        path: /spec/conversion
       - op: remove
         path: /spec/conversion
   # Remove cert-manager annotation and add OCP cert service annotation

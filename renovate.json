@@ -1,61 +1,31 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "baseBranchPatterns": [
-        "main",
-        "/^backplane-2\\.[0-99]$/"
-    ],
-    "tekton": {
-        "includePaths": [
-            ".tekton/**"
-        ],
-        "schedule": [
-            "at any time"
-        ]
-    },
-    "packageRules": [
-        {
-            "matchManagers": [
-                "Dockerfile"
-            ],
-            "enabled": true
-        },
-        {
-            "matchBaseBranches": [
-                "main",
-                "/^backplane-2\\.[0-99]$/"
-            ],
-            "matchManagers": [
-                "tekton"
-            ],
-            "enabled": true,
-            "addLabels": [
-                "ok-to-test"
-            ]
-        },
-        {
-            "matchManagers": [
-                "gomod"
-            ],
-            "enabled": false,
-            "groupName": "go dependencies",
-            "groupSlug": "go-deps"
-        },
-        {
-            "matchManagers": [
-                "gomod"
-            ],
-            "matchDepTypes": [
-                "indirect"
-            ],
-            "enabled": false
-        }
-    ],
-    "rebaseWhen": "behind-base-branch",
-    "recreateWhen": "never",
-    "addLabels": [
-        "ok-to-test"
-    ],
-    "schedule": [
-        "on monday"
-    ]
+	"extends": [
+	  "config:recommended"
+	],
+	"vulnerabilityAlerts": {
+	  "enabled": true
+	},
+	"osvVulnerabilityAlerts": true,
+	"packageRules": [
+	  {
+		"enabled": false,
+		"matchPackageNames": [
+		  "*"
+		]
+	  },
+	  {
+		"matchManagers": [
+		  "gomod"
+		],
+		"matchUpdateTypes": [
+		  "major",
+		  "minor",
+		  "patch"
+		],
+		"enabled": false
+	  }
+	],
+	"gomod": {
+	  "enabled": false
+	}
 }

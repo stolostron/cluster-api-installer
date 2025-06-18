@@ -1,0 +1,31 @@
+{
+	"extends": [
+	  "config:recommended"
+	],
+	"vulnerabilityAlerts": {
+	  "enabled": true
+	},
+	"osvVulnerabilityAlerts": true,
+	"packageRules": [
+	  {
+		"enabled": false,
+		"matchPackageNames": [
+		  "*"
+		]
+	  },
+	  {
+		"matchManagers": [
+		  "gomod"
+		],
+		"matchUpdateTypes": [
+		  "major",
+		  "minor",
+		  "patch"
+		],
+		"enabled": false
+	  }
+	],
+	"gomod": {
+	  "enabled": false
+	}
+}

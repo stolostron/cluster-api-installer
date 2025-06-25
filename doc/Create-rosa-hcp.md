@@ -10,7 +10,7 @@
 ## Enable CAPI, CAPA and auto import features in ACM (multicluster engine)
 
 The Multicluster Engine is automatically installed with RHACM. 
-The MultiClusterEngine custom resource contains both CAPI & CAPA feature flags which. These must be enabled only after the ACM operator installation is complete.
+The MultiClusterEngine custom resource contains both CAPI & CAPA feature flags which must be enabled only after the ACM operator installation is complete.
 
 1. Verify the default MultiClusterEngine CR is created and Available
 
@@ -24,15 +24,15 @@ The MultiClusterEngine custom resource contains both CAPI & CAPA feature flags w
 
 `oc edit multiclusterengine multiclusterengine`
 
-Modify the components cluster-api-preview & cluster-api-provider-aws-preview items to true as shown below:
+Modify the components cluster-api & cluster-api-provider-aws items to true as shown below:
 
 ```yaml
     - configOverrides: {}
       enabled: true
-      name: cluster-api-preview
+      name: cluster-api
     - configOverrides: {}
       enabled: true
-      name: cluster-api-provider-aws-preview
+      name: cluster-api-provider-aws
 
 ```
 
@@ -171,7 +171,7 @@ The CAPA controller requires Red Hat OpenShift Cluster Manager (OCM) credentials
       --from-literal=ocmClientSecret='eyJhbGciOiJIUzI1NiIsI....' \
       --from-literal=ocmApiUrl='https://api.openshift.com'
     ```
-    Note: to consume the secret without the need to reference it from your `ROSAControlPlane`, name your secret as `rosa-creds-secret` and create it in the CAPA manager namespace.
+    Note: to consume the secret without the need to reference it from your `ROSAControlPlane`, name your secret as `rosa-creds-secret` and create it in the `multicluster-engine` namespace.
     ```shell
     kubectl -n multicluster-engine create secret generic rosa-creds-secret \
       --from-literal=ocmClientID='....' \

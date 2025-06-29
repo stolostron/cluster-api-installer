@@ -43,7 +43,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/cel-go v0.20.1 // indirect
-	github.com/google/gnostic-models v0.6.9 // indirect
+	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/pprof v0.0.0-20250607225305-033d6d78b36a // indirect
@@ -76,6 +76,7 @@ require (
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.3 // indirect
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/oauth2 v0.25.0 // indirect

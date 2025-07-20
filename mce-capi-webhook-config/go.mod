@@ -5,7 +5,7 @@ go 1.23.6
 require (
 	github.com/onsi/ginkgo/v2 v2.23.3
 	github.com/onsi/gomega v1.37.0
-	github.com/spf13/pflag v1.0.5
+	github.com/spf13/pflag v1.0.7
 	gomodules.xyz/jsonpatch/v2 v2.4.0
 	k8s.io/api v0.31.3
 	k8s.io/apimachinery v0.31.3

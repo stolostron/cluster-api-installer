@@ -33,7 +33,9 @@ spec:
   - name: dockerfile
     value: mce-capi-webhook-config/Dockerfile
   - name: path-context
-    value: .
+    value: mce-capi-webhook-config
+  - name: prefetch-input
+    value: '[{"type": "gomod", "path": "mce-capi-webhook-config"}]'
   pipelineSpec:
     description: |
       This pipeline is ideal for building multi-arch container images from a Containerfile while maintaining trust after pipeline customization.

@@ -1,11 +1,11 @@
-OCP_VERSION ?= 4.19
+OCP_VERSION ?= 4.20
 SYNC2CHARTS ?= true
 
-DEFAULT_BRANCH ?= release-4.19
+DEFAULT_BRANCH ?= release-4.20
 DEFAULT_ORGREPO ?= https://github.com/openshift
 # needs overridable branch, as the non-master branch will differ
-OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.9
-METAL3_BRANCH ?= release-4.19
+OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.10
+METAL3_BRANCH ?= release-4.20
 
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
 

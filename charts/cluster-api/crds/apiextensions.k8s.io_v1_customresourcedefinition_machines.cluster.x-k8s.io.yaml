@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
     service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
@@ -1057,12 +1057,23 @@ spec:
                   properties:
                     conditionType:
                       description: |-
-                        conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+                        conditionType refers to a condition with matching type in the Machine's condition list.
                         If the conditions doesn't exist, it will be treated as unknown.
                         Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                       maxLength: 316
                       minLength: 1
                       pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                    polarity:
+                      description: |-
+                        polarity of the conditionType specified in this readinessGate.
+                        Valid values are Positive, Negative and omitted.
+                        When omitted, the default behaviour will be Positive.
+                        A positive polarity means that the condition should report a true status under normal conditions.
+                        A negative polarity means that the condition should report a false status under normal conditions.
+                      enum:
+                      - Positive
+                      - Negative
                       type: string
                   required:
                   - conditionType
@@ -1149,6 +1160,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -1216,6 +1229,8 @@ spec:
                   controller's output.
 
                   Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+                maxLength: 10240
+                minLength: 1
                 type: string
               failureReason:
                 description: |-
@@ -1352,9 +1367,16 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: |-
-                  phase represents the current phase of machine actuation.
-                  E.g. Pending, Running, Terminating, Failed etc.
+                description: phase represents the current phase of machine actuation.
+                enum:
+                - Pending
+                - Provisioning
+                - Provisioned
+                - Running
+                - Deleting
+                - Deleted
+                - Failed
+                - Unknown
                 type: string
               v1beta2:
                 description: v1beta2 groups all the fields that will be added or modified

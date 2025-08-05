@@ -11,7 +11,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusterclasses.cluster.x-k8s.io
@@ -1013,9 +1013,13 @@ spec:
                             properties:
                               apiVersion:
                                 description: apiVersion filters templates by apiVersion.
+                                maxLength: 512
+                                minLength: 1
                                 type: string
                               kind:
                                 description: kind filters templates by kind.
+                                maxLength: 256
+                                minLength: 1
                                 type: string
                               matchResources:
                                 description: matchResources selects templates based
@@ -1123,6 +1127,8 @@ spec:
                       type: object
                     name:
                       description: name of the patch.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                   required:
                   - name
@@ -1164,6 +1170,8 @@ spec:
                       type: object
                     name:
                       description: name of the variable.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     required:
                       description: |-
@@ -1496,6 +1504,8 @@ spec:
                                       rules by default are applied only on UPDATE
                                       requests and are\nskipped if an old value could
                                       not be found."
+                                    maxLength: 4096
+                                    minLength: 1
                                     type: string
                                 required:
                                 - rule
@@ -2276,6 +2286,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -2809,6 +2821,8 @@ spec:
                       type: boolean
                     name:
                       description: name is the name of the variable.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                   required:
                   - definitions
@@ -2828,7 +2842,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusterresourcesetbindings.addons.cluster.x-k8s.io
@@ -3148,7 +3162,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusterresourcesets.addons.cluster.x-k8s.io
@@ -3661,6 +3675,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -3772,7 +3788,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusters.cluster.x-k8s.io
@@ -4543,6 +4559,9 @@ spec:
                 description: |-
                   availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.
 
+                  If this field is not defined and the Cluster implements a managed topology, availabilityGates
+                  from the corresponding ClusterClass will be used, if any.
+
                   NOTE: this field is considered only for computing v1beta2 conditions.
                 items:
                   description: ClusterAvailabilityGate contains the type of a Cluster
@@ -4550,12 +4569,23 @@ spec:
                   properties:
                     conditionType:
                       description: |-
-                        conditionType refers to a positive polarity condition (status true means good) with matching type in the Cluster's condition list.
+                        conditionType refers to a condition with matching type in the Cluster's condition list.
                         If the conditions doesn't exist, it will be treated as unknown.
                         Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as availability gates.
                       maxLength: 316
                       minLength: 1
                       pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                    polarity:
+                      description: |-
+                        polarity of the conditionType specified in this availabilityGate.
+                        Valid values are Positive, Negative and omitted.
+                        When omitted, the default behaviour will be Positive.
+                        A positive polarity means that the condition should report a true status under normal conditions.
+                        A negative polarity means that the condition should report a false status under normal conditions.
+                      enum:
+                      - Positive
+                      - Negative
                       type: string
                   required:
                   - conditionType
@@ -4743,15 +4773,6 @@ spec:
                     maxLength: 63
                     minLength: 1
                     pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
-                    type: string
-                  classNamespace:
-                    description: |-
-                      classNamespace is the namespace of the ClusterClass object to create the topology.
-                      If the namespace is empty or not set, it is defaulted to the namespace of the cluster object.
-                      Value must follow the DNS1123Subdomain syntax.
-                    maxLength: 253
-                    minLength: 1
-                    pattern: ^[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9](?:[-a-z0-9]*[a-z0-9])?)*$
                     type: string
                   controlPlane:
                     description: controlPlane describes the cluster control plane.
@@ -5009,6 +5030,8 @@ spec:
                                   type: string
                                 name:
                                   description: name of the variable.
+                                  maxLength: 256
+                                  minLength: 1
                                   type: string
                                 value:
                                   description: |-
@@ -5058,6 +5081,8 @@ spec:
                           type: string
                         name:
                           description: name of the variable.
+                          maxLength: 256
+                          minLength: 1
                           type: string
                         value:
                           description: |-
@@ -5471,6 +5496,8 @@ spec:
                                         type: string
                                       name:
                                         description: name of the variable.
+                                        maxLength: 256
+                                        minLength: 1
                                         type: string
                                       value:
                                         description: |-
@@ -5614,6 +5641,8 @@ spec:
                                         type: string
                                       name:
                                         description: name of the variable.
+                                        maxLength: 256
+                                        minLength: 1
                                         type: string
                                       value:
                                         description: |-
@@ -5678,6 +5707,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -5737,6 +5768,8 @@ spec:
                   state, and will be set to a descriptive error message.
 
                   Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+                maxLength: 10240
+                minLength: 1
                 type: string
               failureReason:
                 description: |-
@@ -5756,9 +5789,14 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: |-
-                  phase represents the current phase of cluster actuation.
-                  E.g. Pending, Running, Terminating, Failed etc.
+                description: phase represents the current phase of cluster actuation.
+                enum:
+                - Pending
+                - Provisioning
+                - Provisioned
+                - Deleting
+                - Failed
+                - Unknown
                 type: string
               v1beta2:
                 description: v1beta2 groups all the fields that will be added or modified
@@ -5910,7 +5948,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: extensionconfigs.runtime.cluster.x-k8s.io
@@ -5977,9 +6015,13 @@ spec:
                     properties:
                       name:
                         description: name is the name of the service.
+                        maxLength: 63
+                        minLength: 1
                         type: string
                       namespace:
                         description: namespace is the namespace of the service.
+                        maxLength: 63
+                        minLength: 1
                         type: string
                       path:
                         description: |-
@@ -6108,6 +6150,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -6150,6 +6194,8 @@ spec:
                       type: string
                     name:
                       description: name is the unique name of the ExtensionHandler.
+                      maxLength: 512
+                      minLength: 1
                       type: string
                     requestHook:
                       description: requestHook defines the versioned runtime hook
@@ -6163,6 +6209,8 @@ spec:
                           type: string
                         hook:
                           description: hook is the name of the hook.
+                          maxLength: 256
+                          minLength: 1
                           type: string
                       required:
                       - apiVersion
@@ -6263,7 +6311,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: ipaddressclaims.ipam.cluster.x-k8s.io
@@ -6383,6 +6431,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -6525,6 +6575,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -6629,7 +6681,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: ipaddresses.ipam.cluster.x-k8s.io
@@ -6688,6 +6740,8 @@ spec:
             properties:
               address:
                 description: address is the IP address.
+                maxLength: 39
+                minLength: 1
                 type: string
               claimRef:
                 description: claimRef is a reference to the claim this IPAddress was
@@ -6788,6 +6842,8 @@ spec:
             properties:
               address:
                 description: address is the IP address.
+                maxLength: 39
+                minLength: 1
                 type: string
               claimRef:
                 description: claimRef is a reference to the claim this IPAddress was
@@ -6850,7 +6906,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinedeployments.cluster.x-k8s.io
@@ -8418,12 +8474,23 @@ spec:
                           properties:
                             conditionType:
                               description: |-
-                                conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+                                conditionType refers to a condition with matching type in the Machine's condition list.
                                 If the conditions doesn't exist, it will be treated as unknown.
                                 Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                               maxLength: 316
                               minLength: 1
                               pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              type: string
+                            polarity:
+                              description: |-
+                                polarity of the conditionType specified in this readinessGate.
+                                Valid values are Positive, Negative and omitted.
+                                When omitted, the default behaviour will be Positive.
+                                A positive polarity means that the condition should report a true status under normal conditions.
+                                A negative polarity means that the condition should report a false status under normal conditions.
+                              enum:
+                              - Positive
+                              - Negative
                               type: string
                           required:
                           - conditionType
@@ -8485,6 +8552,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -8664,7 +8733,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinedrainrules.cluster.x-k8s.io
@@ -8907,6 +8976,9 @@ spec:
                 minItems: 1
                 type: array
                 x-kubernetes-list-type: atomic
+                x-kubernetes-validations:
+                - message: entries in machines must be unique
+                  rule: self.all(x, self.exists_one(y, x == y))
               pods:
                 description: |-
                   pods defines to which Pods this MachineDrainRule should be applied.
@@ -9052,6 +9124,9 @@ spec:
                 minItems: 1
                 type: array
                 x-kubernetes-list-type: atomic
+                x-kubernetes-validations:
+                - message: entries in pods must be unique
+                  rule: self.all(x, self.exists_one(y, x == y))
             required:
             - drain
             type: object
@@ -9068,7 +9143,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinehealthchecks.cluster.x-k8s.io
@@ -9930,6 +10005,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -10069,7 +10146,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinepools.cluster.x-k8s.io
@@ -11375,12 +11452,23 @@ spec:
                           properties:
                             conditionType:
                               description: |-
-                                conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+                                conditionType refers to a condition with matching type in the Machine's condition list.
                                 If the conditions doesn't exist, it will be treated as unknown.
                                 Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                               maxLength: 316
                               minLength: 1
                               pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              type: string
+                            polarity:
+                              description: |-
+                                polarity of the conditionType specified in this readinessGate.
+                                Valid values are Positive, Negative and omitted.
+                                When omitted, the default behaviour will be Positive.
+                                A positive polarity means that the condition should report a true status under normal conditions.
+                                A negative polarity means that the condition should report a false status under normal conditions.
+                              enum:
+                              - Positive
+                              - Negative
                               type: string
                           required:
                           - conditionType
@@ -11443,6 +11531,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -11474,6 +11564,8 @@ spec:
                   and will be set to a descriptive error message.
 
                   Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+                maxLength: 10240
+                minLength: 1
                 type: string
               failureReason:
                 description: |-
@@ -11541,9 +11633,18 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: |-
-                  phase represents the current phase of cluster actuation.
-                  E.g. Pending, Running, Terminating, Failed etc.
+                description: phase represents the current phase of cluster actuation.
+                enum:
+                - Pending
+                - Provisioning
+                - Provisioned
+                - Running
+                - ScalingUp
+                - ScalingDown
+                - Scaling
+                - Deleting
+                - Failed
+                - Unknown
                 type: string
               readyReplicas:
                 description: readyReplicas is the number of ready replicas for this
@@ -11669,7 +11770,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machines.cluster.x-k8s.io
@@ -12734,12 +12835,23 @@ spec:
                   properties:
                     conditionType:
                       description: |-
-                        conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+                        conditionType refers to a condition with matching type in the Machine's condition list.
                         If the conditions doesn't exist, it will be treated as unknown.
                         Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                       maxLength: 316
                       minLength: 1
                       pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                    polarity:
+                      description: |-
+                        polarity of the conditionType specified in this readinessGate.
+                        Valid values are Positive, Negative and omitted.
+                        When omitted, the default behaviour will be Positive.
+                        A positive polarity means that the condition should report a true status under normal conditions.
+                        A negative polarity means that the condition should report a false status under normal conditions.
+                      enum:
+                      - Positive
+                      - Negative
                       type: string
                   required:
                   - conditionType
@@ -12826,6 +12938,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -12893,6 +13007,8 @@ spec:
                   controller's output.
 
                   Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+                maxLength: 10240
+                minLength: 1
                 type: string
               failureReason:
                 description: |-
@@ -13029,9 +13145,16 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: |-
-                  phase represents the current phase of machine actuation.
-                  E.g. Pending, Running, Terminating, Failed etc.
+                description: phase represents the current phase of machine actuation.
+                enum:
+                - Pending
+                - Provisioning
+                - Provisioned
+                - Running
+                - Deleting
+                - Deleted
+                - Failed
+                - Unknown
                 type: string
               v1beta2:
                 description: v1beta2 groups all the fields that will be added or modified
@@ -13118,7 +13241,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinesets.cluster.x-k8s.io
@@ -14438,12 +14561,23 @@ spec:
                           properties:
                             conditionType:
                               description: |-
-                                conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+                                conditionType refers to a condition with matching type in the Machine's condition list.
                                 If the conditions doesn't exist, it will be treated as unknown.
                                 Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                               maxLength: 316
                               minLength: 1
                               pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              type: string
+                            polarity:
+                              description: |-
+                                polarity of the conditionType specified in this readinessGate.
+                                Valid values are Positive, Negative and omitted.
+                                When omitted, the default behaviour will be Positive.
+                                A positive polarity means that the condition should report a true status under normal conditions.
+                                A negative polarity means that the condition should report a false status under normal conditions.
+                              enum:
+                              - Positive
+                              - Negative
                               type: string
                           required:
                           - conditionType
@@ -14503,6 +14637,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -14529,9 +14665,14 @@ spec:
                   type: object
                 type: array
               failureMessage:
-                description: 'Deprecated: This field is deprecated and is going to
-                  be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md
-                  for more details.'
+                description: |-
+                  failureMessage will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a more verbose string suitable
+                  for logging and human consumption.
+
+                  Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+                maxLength: 10240
+                minLength: 1
                 type: string
               failureReason:
                 description: |-
@@ -14562,7 +14703,7 @@ spec:
                 type: string
               fullyLabeledReplicas:
                 description: |-
-                  The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+                  fullyLabeledReplicas is the number of replicas that have labels matching the labels of the machine template of the MachineSet.
 
                   Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
                 format: int32
@@ -14771,6 +14912,18 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - addons.cluster.x-k8s.io
+  resources:
   - clusterresourcesets/finalizers
   - clusterresourcesets/status
   verbs:
@@ -14801,6 +14954,28 @@ rules:
   - list
   - watch
 - apiGroups:
+  - apiextensions.k8s.io
+  resourceNames:
+  - clusterclasses.cluster.x-k8s.io
+  - clusterresourcesetbindings.addons.cluster.x-k8s.io
+  - clusterresourcesets.addons.cluster.x-k8s.io
+  - clusters.cluster.x-k8s.io
+  - extensionconfigs.runtime.cluster.x-k8s.io
+  - ipaddressclaims.ipam.cluster.x-k8s.io
+  - ipaddresses.ipam.cluster.x-k8s.io
+  - machinedeployments.cluster.x-k8s.io
+  - machinedrainrules.cluster.x-k8s.io
+  - machinehealthchecks.cluster.x-k8s.io
+  - machinepools.cluster.x-k8s.io
+  - machines.cluster.x-k8s.io
+  - machinesets.cluster.x-k8s.io
+  resources:
+  - customresourcedefinitions
+  - customresourcedefinitions/status
+  verbs:
+  - patch
+  - update
+- apiGroups:
   - authentication.k8s.io
   resources:
   - tokenreviews
@@ -14820,6 +14995,7 @@ rules:
   - clusters
   - clusters/finalizers
   - clusters/status
+  - machinedrainrules
   - machinehealthchecks/finalizers
   - machinehealthchecks/status
   verbs:
@@ -14853,15 +15029,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - cluster.x-k8s.io
-  resources:
-  - machinedrainrules
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
+  - ipam.cluster.x-k8s.io
   resources:
   - ipaddressclaims
   - ipaddresses
@@ -14960,8 +15128,7 @@ spec:
         - --leader-elect
         - --diagnostics-address=${CAPI_DIAGNOSTICS_ADDRESS:=:8443}
         - --insecure-diagnostics=${CAPI_INSECURE_DIAGNOSTICS:=false}
-        - --use-deprecated-infra-machine-naming=${CAPI_USE_DEPRECATED_INFRA_MACHINE_NAMING:=false}
-        - --feature-gates=MachinePool=${EXP_MACHINE_POOL:=true},ClusterResourceSet=${EXP_CLUSTER_RESOURCE_SET:=true},ClusterTopology=${CLUSTER_TOPOLOGY:=false},RuntimeSDK=${EXP_RUNTIME_SDK:=false},MachineSetPreflightChecks=${EXP_MACHINE_SET_PREFLIGHT_CHECKS:=true},MachineWaitForVolumeDetachConsiderVolumeAttachments=${EXP_MACHINE_WAITFORVOLUMEDETACH_CONSIDER_VOLUMEATTACHMENTS:=true}
+        - --feature-gates=MachinePool=${EXP_MACHINE_POOL:=true},ClusterResourceSet=${EXP_CLUSTER_RESOURCE_SET:=true},ClusterTopology=${CLUSTER_TOPOLOGY:=false},RuntimeSDK=${EXP_RUNTIME_SDK:=false},MachineSetPreflightChecks=${EXP_MACHINE_SET_PREFLIGHT_CHECKS:=true},MachineWaitForVolumeDetachConsiderVolumeAttachments=${EXP_MACHINE_WAITFORVOLUMEDETACH_CONSIDER_VOLUMEATTACHMENTS:=true},PriorityQueue=${EXP_PRIORITY_QUEUE:=false}
         command:
         - /manager
         env:

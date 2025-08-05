@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.17.2
     service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
@@ -763,6 +763,9 @@ spec:
                 description: |-
                   availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.
 
+                  If this field is not defined and the Cluster implements a managed topology, availabilityGates
+                  from the corresponding ClusterClass will be used, if any.
+
                   NOTE: this field is considered only for computing v1beta2 conditions.
                 items:
                   description: ClusterAvailabilityGate contains the type of a Cluster
@@ -770,12 +773,23 @@ spec:
                   properties:
                     conditionType:
                       description: |-
-                        conditionType refers to a positive polarity condition (status true means good) with matching type in the Cluster's condition list.
+                        conditionType refers to a condition with matching type in the Cluster's condition list.
                         If the conditions doesn't exist, it will be treated as unknown.
                         Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as availability gates.
                       maxLength: 316
                       minLength: 1
                       pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                    polarity:
+                      description: |-
+                        polarity of the conditionType specified in this availabilityGate.
+                        Valid values are Positive, Negative and omitted.
+                        When omitted, the default behaviour will be Positive.
+                        A positive polarity means that the condition should report a true status under normal conditions.
+                        A negative polarity means that the condition should report a false status under normal conditions.
+                      enum:
+                      - Positive
+                      - Negative
                       type: string
                   required:
                   - conditionType
@@ -963,15 +977,6 @@ spec:
                     maxLength: 63
                     minLength: 1
                     pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
-                    type: string
-                  classNamespace:
-                    description: |-
-                      classNamespace is the namespace of the ClusterClass object to create the topology.
-                      If the namespace is empty or not set, it is defaulted to the namespace of the cluster object.
-                      Value must follow the DNS1123Subdomain syntax.
-                    maxLength: 253
-                    minLength: 1
-                    pattern: ^[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9](?:[-a-z0-9]*[a-z0-9])?)*$
                     type: string
                   controlPlane:
                     description: controlPlane describes the cluster control plane.
@@ -1229,6 +1234,8 @@ spec:
                                   type: string
                                 name:
                                   description: name of the variable.
+                                  maxLength: 256
+                                  minLength: 1
                                   type: string
                                 value:
                                   description: |-
@@ -1278,6 +1285,8 @@ spec:
                           type: string
                         name:
                           description: name of the variable.
+                          maxLength: 256
+                          minLength: 1
                           type: string
                         value:
                           description: |-
@@ -1691,6 +1700,8 @@ spec:
                                         type: string
                                       name:
                                         description: name of the variable.
+                                        maxLength: 256
+                                        minLength: 1
                                         type: string
                                       value:
                                         description: |-
@@ -1834,6 +1845,8 @@ spec:
                                         type: string
                                       name:
                                         description: name of the variable.
+                                        maxLength: 256
+                                        minLength: 1
                                         type: string
                                       value:
                                         description: |-
@@ -1898,6 +1911,8 @@ spec:
                         reason is the reason for the condition's last transition in CamelCase.
                         The specific API may choose whether or not this field is considered a guaranteed API.
                         This field may be empty.
+                      maxLength: 256
+                      minLength: 1
                       type: string
                     severity:
                       description: |-
@@ -1957,6 +1972,8 @@ spec:
                   state, and will be set to a descriptive error message.
 
                   Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+                maxLength: 10240
+                minLength: 1
                 type: string
               failureReason:
                 description: |-
@@ -1976,9 +1993,14 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: |-
-                  phase represents the current phase of cluster actuation.
-                  E.g. Pending, Running, Terminating, Failed etc.
+                description: phase represents the current phase of cluster actuation.
+                enum:
+                - Pending
+                - Provisioning
+                - Provisioned
+                - Deleting
+                - Failed
+                - Unknown
                 type: string
               v1beta2:
                 description: v1beta2 groups all the fields that will be added or modified

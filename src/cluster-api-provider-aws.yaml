@@ -10,7 +10,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -240,7 +240,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -588,7 +588,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -2814,33 +2814,8 @@ spec:
                       CapacityReservationPreference specifies the preference for use of Capacity Reservations by the instance. Valid values include:
                       "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
                       "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
-                      "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
+                      "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation
                     type: string
-                  cpuOptions:
-                    description: |-
-                      CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                    minProperties: 1
-                    properties:
-                      confidentialCompute:
-                        description: |-
-                          ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                          and, if so, which confidential computing technology to use.
-                          Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                          When set to Disabled, confidential computing will be disabled for the instance.
-                          When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                          In this case, ensure the following conditions are met:
-                          1) The selected instance type supports AMD SEV-SNP.
-                          2) The selected AWS region supports AMD SEV-SNP.
-                          3) The selected AMI supports AMD SEV-SNP.
-                          More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                          which is subject to change without notice. The current default is Disabled.
-                        enum:
-                        - Disabled
-                        - AMDEncryptedVirtualizationNestedPaging
-                        type: string
-                    type: object
                   ebsOptimized:
                     description: Indicates whether the instance is optimized for Amazon
                       EBS I/O.
@@ -3759,7 +3734,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -3998,7 +3973,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -5778,7 +5753,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -6213,7 +6188,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -7216,10 +7191,9 @@ spec:
                         type: array
                     type: object
                   version:
-                    description: |-
-                      Version defines which version of Ignition will be used to generate bootstrap data.
-                      Defaults to `2.3` if storageType is set to `ClusterObjectStore`.
-                      It will be ignored if storageType is set to `UnencryptedUserData`, as the userdata defines its own version.
+                    default: "2.3"
+                    description: Version defines which version of Ignition will be
+                      used to generate bootstrap data.
                     enum:
                     - "2.3"
                     - "3.0"
@@ -7603,7 +7577,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -8273,7 +8247,7 @@ spec:
                   CapacityReservationPreference specifies the preference for use of Capacity Reservations by the instance. Valid values include:
                   "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
                   "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
-                  "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
+                  "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation
                 type: string
               cloudInit:
                 description: |-
@@ -8945,7 +8919,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -9534,7 +9508,7 @@ spec:
                           CapacityReservationPreference specifies the preference for use of Capacity Reservations by the instance. Valid values include:
                           "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
                           "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
-                          "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
+                          "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation
                         type: string
                       cloudInit:
                         description: |-
@@ -10102,7 +10076,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -10269,7 +10243,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -10285,7 +10259,7 @@ spec:
     listKind: AWSManagedClusterTemplateList
     plural: awsmanagedclustertemplates
     shortNames:
-    - awsmct
+    - amct
     singular: awsmanagedclustertemplate
   scope: Namespaced
   versions:
@@ -10358,7 +10332,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -11606,33 +11580,8 @@ spec:
                       CapacityReservationPreference specifies the preference for use of Capacity Reservations by the instance. Valid values include:
                       "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
                       "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
-                      "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
+                      "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation
                     type: string
-                  cpuOptions:
-                    description: |-
-                      CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                    minProperties: 1
-                    properties:
-                      confidentialCompute:
-                        description: |-
-                          ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                          and, if so, which confidential computing technology to use.
-                          Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                          When set to Disabled, confidential computing will be disabled for the instance.
-                          When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                          In this case, ensure the following conditions are met:
-                          1) The selected instance type supports AMD SEV-SNP.
-                          2) The selected AWS region supports AMD SEV-SNP.
-                          3) The selected AMI supports AMD SEV-SNP.
-                          More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                          which is subject to change without notice. The current default is Disabled.
-                        enum:
-                        - Disabled
-                        - AMDEncryptedVirtualizationNestedPaging
-                        type: string
-                    type: object
                   ebsOptimized:
                     description: Indicates whether the instance is optimized for Amazon
                       EBS I/O.
@@ -13872,33 +13821,8 @@ spec:
                       CapacityReservationPreference specifies the preference for use of Capacity Reservations by the instance. Valid values include:
                       "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
                       "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
-                      "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
+                      "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation
                     type: string
-                  cpuOptions:
-                    description: |-
-                      CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                    minProperties: 1
-                    properties:
-                      confidentialCompute:
-                        description: |-
-                          ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                          and, if so, which confidential computing technology to use.
-                          Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                          When set to Disabled, confidential computing will be disabled for the instance.
-                          When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                          In this case, ensure the following conditions are met:
-                          1) The selected instance type supports AMD SEV-SNP.
-                          2) The selected AWS region supports AMD SEV-SNP.
-                          3) The selected AMI supports AMD SEV-SNP.
-                          More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                          which is subject to change without notice. The current default is Disabled.
-                        enum:
-                        - Disabled
-                        - AMDEncryptedVirtualizationNestedPaging
-                        type: string
-                    type: object
                   ebsOptimized:
                     description: Indicates whether the instance is optimized for Amazon
                       EBS I/O.
@@ -14869,7 +14793,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -14935,28 +14859,6 @@ spec:
                     description: AWSManagedControlPlaneSpec defines the desired state
                       of an Amazon EKS Cluster.
                     properties:
-                      accessConfig:
-                        description: AccessConfig specifies the access configuration
-                          information for the cluster
-                        properties:
-                          authenticationMode:
-                            default: config_map
-                            description: |-
-                              AuthenticationMode specifies the desired authentication mode for the cluster
-                              Defaults to config_map
-                            enum:
-                            - config_map
-                            - api
-                            - api_and_config_map
-                            type: string
-                          bootstrapClusterCreatorAdminPermissions:
-                            default: true
-                            description: |-
-                              BootstrapClusterCreatorAdminPermissions grants cluster admin permissions
-                              to the IAM identity creating the cluster. Only applied during creation,
-                              ignored when updating existing clusters. Defaults to true.
-                            type: boolean
-                        type: object
                       additionalTags:
                         additionalProperties:
                           type: string
@@ -14987,11 +14889,6 @@ spec:
                               description: Name is the name of the addon
                               minLength: 2
                               type: string
-                            preserveOnDelete:
-                              description: |-
-                                PreserveOnDelete indicates that the addon resources should be
-                                preserved in the cluster on delete.
-                              type: boolean
                             serviceAccountRoleARN:
                               description: ServiceAccountRoleArn is the ARN of an
                                 IAM role to bind to the addons service account
@@ -16085,7 +15982,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -17328,7 +17225,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -17936,7 +17833,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -18405,7 +18302,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -18570,7 +18467,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -18659,7 +18556,6 @@ spec:
                 description: OpenShift version channel group, default is stable.
                 enum:
                 - stable
-                - eus
                 - fast
                 - candidate
                 - nightly
@@ -19526,7 +19422,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3

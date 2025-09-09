@@ -5,5 +5,5 @@ manager:
     url: registry.redhat.io/openshift4/ose-cluster-api-rhel9
 webhook:
   image:
-    tag: 65e3d999c7fe4cb335c35e2c0c7754a11129d8dc-linux-x86-64
-    url: quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-webhook-config-mce-29
+    tag: 2.10.0-1
+    url: registry.redhat.io/multicluster-engine/mce-capi-webhook-config-rhel9

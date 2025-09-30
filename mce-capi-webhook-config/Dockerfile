@@ -20,11 +20,12 @@ RUN CGO_ENABLED=1 GO111MODULE=on GOEXPERIMENT=strictfipsruntime go build -a -o /
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 LABEL com.redhat.component="" \
+      cpe="cpe:/a:redhat:multicluster_engine:2.9::el9" \
       description="Auto-labeling CAPI resources based on openshift and hypershift namespaces" \
       io.k8s.description="Auto-labeling CAPI resources based on namespaces" \
       io.k8s.display-name="MultiCluster Engine CAPI Webhook Config" \
       io.openshift.tags="cluster-api,capi,multicluster-engine" \
-      name="mce-capi-webhook-config" \
+      name="multicluster-engine/mce-capi-webhook-config-rhel9" \
       summary="Auto-labeling CAPI resources based on namespaces"
 
 WORKDIR /

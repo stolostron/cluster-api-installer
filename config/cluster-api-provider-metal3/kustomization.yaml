@@ -6,6 +6,13 @@ resources:
 
 ## Patch the default resources with OCP downstream requirements.
 patches:
+   # Remove cert-manager Certificate and Issuer
+  - path: delete-certificate.yaml
+    target:
+      kind: Certificate
+  - path: delete-issuer.yaml
+    target:
+      kind: Issuer
   # Remove cert-manager annotation and add OCP cert service annotation
   - target:
       version: v1

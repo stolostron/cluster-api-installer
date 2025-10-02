@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+# Environment variables:
+# - PROJECT: Project name (required)
+# - CHART_VERSION, CHART_APP_VERSION, CHART_VALUES_IMAGE_TAG: Chart versioning (required)
+# - BUILTDIR: Directory containing built manifests (required)
+# - SYNC2CHARTS: Enable syncing to existing charts directory (optional)
+# - SORTED_OUTPUT: Enable sorted YAML output (optional)
+# - HELM, YQ: Tool paths (optional)
+
 if [ -z "$PROJECT" ] ; then
     echo "PROJECT name must be defned ex; cluster-api, cluster-api-providers-aws, cluster-api-providers-azure"
     exit -1
@@ -22,46 +30,47 @@ if [ -z "$BUILTDIR" ]; then
     exit -1
 fi
 
+ROOT_DIR=$(realpath $(dirname "${BASH_SOURCE[0]}")"/../")
 
-CHARTDIR=../charts/$PROJECT
-NEWCHART=$BUILTDIR/new-chart.yml
-SRC_PROJECT_FILE=../src/$PROJECT.yaml
+BASE_MANIFEST="${ROOT_DIR}/src/${PROJECT}.yaml"
+echo "BASE_MANIFEST=${BASE_MANIFEST}"
+[ -f "${BASE_MANIFEST}" ] || (echo "ERROR: missing base manifest for ${PROJECT} (${BASE_MANIFEST})" && exit 123)
+
+K8S_MANIFEST="${ROOT_DIR}/src/${PROJECT}-k8s.yaml"
+[ -f "${K8S_MANIFEST}" ] || (echo "WARNING: missing k8s manifest for ${PROJECT} (${K8S_MANIFEST})" && K8S_MANIFEST=${BASE_MANIFEST})
+
+CHARTIFY_OUTPUT_DIR=../chartify-charts/$PROJECT
 [ ! -f "$SRC_PROJECT_FILE" ] && SRC_PROJECT_FILE=""
 
-if [ "$SYNC2CHARTS" ] ;then
-    echo 'sync new output to ' $CHARTDIR
-    rm -rf $CHARTDIR/templates/*.yaml
-    rm -rf $CHARTDIR/crds/*.yaml
-    mv $BUILTDIR/apiextensions*.yaml $CHARTDIR/crds
-    mv $BUILTDIR/*.yaml $CHARTDIR/templates
 
-    echo "updating versions in:" "$CHARTDIR/Chart.yaml" "$CHARTDIR/values.yaml"
-    echo "* chart version: ${CHART_VERSION}"
-    echo "* chart app version: ${CHART_APP_VERSION}"
-    echo "* chart values image tag: ${CHART_VALUES_IMAGE_TAG}"
-    sed -i -e 's/^version: .*/version: "'"${CHART_VERSION}"'"/' "${CHARTDIR}/Chart.yaml"
-    sed -i -e 's/^appVersion: .*/appVersion: "'"${CHART_APP_VERSION}"'"/' "${CHARTDIR}/Chart.yaml"
-    export CHART_TAG="${CHART_VALUES_IMAGE_TAG_PREFIX}${CHART_VALUES_IMAGE_TAG}"
-    for I in manager bootstrap controlplane ; do
-        $YQ e -i '(. | select(has("'$I'")) | .'$I'.image.tag) = env(CHART_TAG)' "$CHARTDIR/values.yaml"
-    done
-    
-    echo 'Run helm template after sync saving the output to ' $NEWCHART
-    $HELM template $CHARTDIR --include-crds | \
-      grep -v '^#' > $NEWCHART
+[ -f "$CHARTIFY_OUTPUT_DIR/values.yaml" ] && cp "$CHARTIFY_OUTPUT_DIR"/values.yaml /tmp/values.yaml || touch /tmp/values.yaml
+# Clean and create output directory
+rm -rf "$CHARTIFY_OUTPUT_DIR"
+mkdir -p "$(dirname "$CHARTIFY_OUTPUT_DIR")"
 
-    IS_UPDATED=false
-    if [ $(git diff --name-only "$CHARTDIR" $SRC_PROJECT_FILE|wc -l) -gt 0 ] ; then
-        IS_UPDATED=true
-    fi
-    echo "updated_$PROJECT=$IS_UPDATED"
-    if [ -n "$GITHUB_OUTPUT" ] ; then
-        # when started under github workflow
-        echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT"
-        echo "updated_$PROJECT=$IS_UPDATED" >> "$GITHUB_OUTPUT"
-    fi
-    
-    if [ "$SORTED_OUTPUT" == "true" ] ; then
-      $YQ ea '[.] | sort_by(.apiVersion,.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' < "$NEWCHART" > "${NEWCHART#.yaml}-sorted.yaml"
-    fi
+# Run chartify.py
+python3 ../scripts/chartify/chartify.py \
+    "${K8S_MANIFEST}" \
+    "${BASE_MANIFEST}" \
+    --condition "global.deployOnOCP" \
+    --output "$CHARTIFY_OUTPUT_DIR" \
+    --chart-name "$PROJECT" \
+    --chart-version "${CHART_VERSION}" \
+    --chart-app-version "${CHART_APP_VERSION}" \
+    --values-file "/tmp/values.yaml" --debug
+
+IS_UPDATED=false
+if [ $(git diff --name-only "$CHARTIFY_OUTPUT_DIR" $BASE_MANIFEST $K8S_MANIFEST|wc -l) -gt 0 ] ; then
+    IS_UPDATED=true
 fi
+echo "updated_$PROJECT=$IS_UPDATED"
+if [ -n "$GITHUB_OUTPUT" ] ; then
+    # when started under github workflow
+    echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT"
+    echo "updated_$PROJECT=$IS_UPDATED" >> "$GITHUB_OUTPUT"
+fi
+
+export CHART_TAG="${CHART_VALUES_IMAGE_TAG_PREFIX}${CHART_VALUES_IMAGE_TAG}"
+for I in manager bootstrap controlplane ; do
+  $YQ e -i '(. | select(has("'$I'")) | .'$I'.image.tag) = env(CHART_TAG)' "$CHARTIFY_OUTPUT_DIR/values.yaml"
+done

@@ -21,7 +21,7 @@ get-version-from-branch = \
 	$(if $(findstring release-,$(1)),$(patsubst release-%,%,$(1)), \
 		$(if $(findstring backplane-,$(1)),$(patsubst backplane-%,%,$(1)),$(1)))))
 
-WKDIR ?= ../out
+WKDIR ?= $(CURDIR)/../out
 
 .PHONY: build-cluster-api-chart
 build-cluster-api-chart:

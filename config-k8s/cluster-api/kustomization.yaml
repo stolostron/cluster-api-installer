@@ -3,30 +3,13 @@ kind: Kustomization
 
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
-- default/
-- base/mce-capi-webhook-config/
+- ../config/default/
 
 transformers:
 - base/transformer.yaml
 
-## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements. 
-
+## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements.
 patches:
-  - path: delete-certificate.yaml
-    target:
-      kind: Certificate
-  - path: delete-issuer.yaml
-    target:
-      kind: Issuer
-  # Remove cert-manager annotation and add OCP cert service annotation
-  - target:
-      annotationSelector: cert-manager.io/inject-ca-from
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-        value: true
-      - op: remove
-        path: /metadata/annotations/cert-manager.io~1inject-ca-from
   # Replace Deployment with default values & helm chart value
   - target:
       kind: Deployment
@@ -49,11 +32,3 @@ patches:
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
-  # Add OCP cert service annotation
-  - target:
-      kind: Service
-      name: capi-webhook-service
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-        value: capi-webhook-service-cert

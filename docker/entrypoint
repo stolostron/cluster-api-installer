@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+[ -d .venv ] || uv venv
+uv pip install -r scripts/chartify/requirements.txt
+
+exec "$@"

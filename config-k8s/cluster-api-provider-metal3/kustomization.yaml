@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- default/
+
+## Patch the default resources with OCP downstream requirements.
+patches:
+  # Replace Deployment with default values & helm chart value
+  - target:
+      version: v1
+      kind: Deployment
+      name: capm3-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/args/1
+        value: --enableBMHNameBasedPreallocation=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: --diagnostics-address=:8443
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: --insecure-diagnostics=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/4
+        value: --tls-min-version=VersionTLS13
+

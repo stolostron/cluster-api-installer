@@ -5,6 +5,13 @@ resources:
 - default/
 
 patches:
+# Remove cert-manager Certificate and Issuer
+- path: delete-certificate.yaml
+  target:
+    kind: Certificate
+- path: delete-issuer.yaml
+  target:
+    kind: Issuer
 - target:
     version: v1
     kind: Deployment

@@ -1,10 +1,12 @@
+# Resource: rbac.authorization.k8s.io_v1_clusterrole_capoa-bootstrap-manager-role
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: capoa-bootstrap-manager-role
 rules:
 - apiGroups:
-  - ""
+  - ''
   resources:
   - configmaps
   - services
@@ -13,7 +15,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - ""
+  - ''
   resources:
   - secrets
   verbs:

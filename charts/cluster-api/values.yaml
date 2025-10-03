@@ -1,3 +1,5 @@
+global:
+  deployOnOCP: true
 manager:
   cmd: /bin/cluster-api-controller-manager
   image:

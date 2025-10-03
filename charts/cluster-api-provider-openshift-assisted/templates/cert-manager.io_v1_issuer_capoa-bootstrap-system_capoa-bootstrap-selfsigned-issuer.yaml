@@ -1,0 +1,11 @@
+# Resource: cert-manager.io_v1_issuer_capoa-bootstrap-system_capoa-bootstrap-selfsigned-issuer
+---
+{{- if not .Values.global.deployOnOCP }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: capoa-bootstrap-selfsigned-issuer
+  namespace: capoa-bootstrap-system
+spec:
+  selfSigned: {}
+{{- end }}

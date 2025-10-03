@@ -1,3 +1,5 @@
+global:
+  deployOnOCP: true
 manager:
   image:
     tag: latest

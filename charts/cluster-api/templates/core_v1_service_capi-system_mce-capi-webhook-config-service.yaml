@@ -1,0 +1,19 @@
+# Resource: core_v1_service_capi-system_mce-capi-webhook-config-service
+---
+{{- if .Values.global.deployOnOCP }}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: mce-capi-webhook-config-service-cert
+  labels:
+    app: mce-capi-webhook-config
+  name: mce-capi-webhook-config-service
+  namespace: capi-system
+spec:
+  ports:
+  - port: 9443
+    targetPort: 9443
+  selector:
+    app: mce-capi-webhook-config
+{{- end }}

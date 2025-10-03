@@ -1,0 +1,13 @@
+# Resource: cert-manager.io_v1_issuer_capi-system_capi-selfsigned-issuer
+---
+{{- if not .Values.global.deployOnOCP }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: cluster-api
+  name: capi-selfsigned-issuer
+  namespace: capi-system
+spec:
+  selfSigned: {}
+{{- end }}

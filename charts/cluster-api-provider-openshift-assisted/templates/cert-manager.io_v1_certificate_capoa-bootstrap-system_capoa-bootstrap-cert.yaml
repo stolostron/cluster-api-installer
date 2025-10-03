@@ -1,0 +1,19 @@
+# Resource: cert-manager.io_v1_certificate_capoa-bootstrap-system_capoa-bootstrap-cert
+---
+{{- if not .Values.global.deployOnOCP }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: capoa-bootstrap-cert
+  namespace: capoa-bootstrap-system
+spec:
+  commonName: capoa-bootstrap-webhook-service.capoa-bootstrap-system.svc
+  dnsNames:
+  - capoa-bootstrap-webhook-service.capoa-bootstrap-system.svc
+  duration: 8760h
+  issuerRef:
+    kind: Issuer
+    name: capoa-bootstrap-selfsigned-issuer
+  renewBefore: 360h
+  secretName: capoa-bootstrap-webhook-cert-secret
+{{- end }}

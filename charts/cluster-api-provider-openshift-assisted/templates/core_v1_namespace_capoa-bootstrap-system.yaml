@@ -1,0 +1,6 @@
+# Resource: core_v1_namespace_capoa-bootstrap-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capoa-bootstrap-system

@@ -5,8 +5,8 @@ go 1.24.0
 toolchain go1.24.6
 
 require (
-	github.com/onsi/ginkgo/v2 v2.23.4
-	github.com/onsi/gomega v1.38.0
+	github.com/onsi/ginkgo/v2 v2.25.1
+	github.com/onsi/gomega v1.38.2
 	github.com/spf13/pflag v1.0.10
 	gomodules.xyz/jsonpatch/v2 v2.5.0
 	k8s.io/api v0.31.3
@@ -21,6 +21,7 @@ require (
 
 require (
 	cel.dev/expr v0.24.0 // indirect
+	github.com/Masterminds/semver/v3 v3.4.0 // indirect
 	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -107,7 +108,6 @@ require (
 	google.golang.org/protobuf v1.36.9 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/apiextensions-apiserver v0.31.3 // indirect
 	k8s.io/apiserver v0.31.3 // indirect
 	k8s.io/cluster-bootstrap v0.31.3 // indirect

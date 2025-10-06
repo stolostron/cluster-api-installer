@@ -31,6 +31,8 @@ CLUSTERCTL_BIN := clusterctl
 CLUSTERCTL := $(abspath $(TOOLS_BIN_DIR)/$(CLUSTERCTL_BIN))
 CLUSTERCTL_PLATFORM := linux-amd64
 
+CONTAINER_ENGINE ?= docker
+
 build-helm-charts: $(YQ) $(KUSTOMIZE) $(CLUSTERCTL) $(HELM)
 	(export YQ=$(YQ) CLUSTERCTL=$(CLUSTERCTL) KUSTOMIZE=$(KUSTOMIZE) HELM=$(HELM); $(MAKE) -C ./charts build)
 
@@ -45,8 +47,8 @@ clean:
 
 .PHONY: build-docker
 build-docker:
-	docker --version|grep -q podman && MOUNT_FLAGS=",Z" ; \
-	docker run --rm --interactive --workdir=/workspace --mount=type=bind,src=./,target=/workspace$${MOUNT_FLAGS} docker.io/library/golang:1.24.0 make build-helm-charts TOOLS_DIR=hack-docker/tools
+	$(CONTAINER_ENGINE) --version|grep -q podman && MOUNT_FLAGS=",Z" ; \
+	$(CONTAINER_ENGINE) run --rm --interactive --workdir=/workspace --mount=type=bind,src=./,target=/workspace$${MOUNT_FLAGS} docker.io/library/golang:1.24.0 make build-helm-charts TOOLS_DIR=hack-docker/tools
 
 $(KUSTOMIZE): # Build kustomize from tools folder.
 	CGO_ENABLED=0 GOBIN=$(TOOLS_BIN_DIR) $(GO_INSTALL) $(KUSTOMIZE_PKG) $(KUSTOMIZE_BIN) $(KUSTOMIZE_VER)

@@ -2,6 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+- https://raw.githubusercontent.com/metal3-io/ip-address-manager/0b6b7b2f2bd8110520b0ac6529a14f778537c0b7/config/crd/bases/ipam.metal3.io_ipaddresses.yaml
+- https://raw.githubusercontent.com/metal3-io/ip-address-manager/0b6b7b2f2bd8110520b0ac6529a14f778537c0b7/config/crd/bases/ipam.metal3.io_ipclaims.yaml
+- https://raw.githubusercontent.com/metal3-io/ip-address-manager/0b6b7b2f2bd8110520b0ac6529a14f778537c0b7/config/crd/bases/ipam.metal3.io_ippools.yaml
 - default/
 
 ## Patch the default resources with OCP downstream requirements.

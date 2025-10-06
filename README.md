@@ -55,6 +55,7 @@ See [this documentation](./doc/Adding-NewProvider.md) if you want to add a new p
     * The result should be the same as `make`.
     * A Docker container is used for a more unified build environment.
     * Use this if you encounter issues with the standard `make` command.
+    * NOTE: if we want to use a different container engine, set CONTAINER_ENGINE environment variable (i.e. `export CONTAINER_EINGINE=podman`)
 * To check chart deployment:
   ```sh
    make test-charts-crc

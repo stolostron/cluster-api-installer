@@ -1,4 +1,5 @@
 OCP_VERSION ?= 4.20
+MCE_VERSION ?= 2.10.0-1
 SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.20
@@ -49,10 +50,10 @@ build-cluster-api-provider-aws-chart:
 	BRANCH="$(CAPA_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-aws/config/tmp" \
-	CHART_VERSION="$(OCP_VERSION)" \
-	CHART_APP_VERSION="$(OCP_VERSION)" \
-	CHART_VALUES_IMAGE_TAG="$(OCP_VERSION)" \
-	CHART_VALUES_IMAGE_TAG_PREFIX="v" \
+	CHART_VERSION="$(MCE_VERSION)" \
+	CHART_APP_VERSION="$(MCE_VERSION)" \
+	CHART_VALUES_IMAGE_TAG="$(MCE_VERSION)" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api-provider-aws" \
 	../scripts/sync2chart.sh

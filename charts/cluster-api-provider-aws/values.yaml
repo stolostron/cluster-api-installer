@@ -6,5 +6,5 @@ rosa:
 manager:
   cmd: /bin/cluster-api-provider-aws-controller-manager
   image:
-    tag: v4.19
-    url: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9
+    tag: 2.10.0-1
+    url: registry.redhat.io/multicluster-engine/cluster-api-provider-aws-rhel9

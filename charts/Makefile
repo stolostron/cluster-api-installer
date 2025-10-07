@@ -2,7 +2,9 @@ OCP_VERSION ?= 4.20
 SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.20
+CAPA_BRANCH ?= backplane-2.10
 DEFAULT_ORGREPO ?= https://github.com/openshift
+STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ
 OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.10
 METAL3_BRANCH ?= release-4.20
@@ -42,9 +44,9 @@ build-cluster-api-chart:
 build-cluster-api-provider-aws-chart:
 	@echo "Building cluster-api-provider-aws chart"
 	WKDIR="$(WKDIR)" \
-	ORGREPO="$(DEFAULT_ORGREPO)" \
+	ORGREPO="$(STOLOSTRON_ORGREPO)" \
 	PROJECT="cluster-api-provider-aws" \
-	BRANCH="$(DEFAULT_BRANCH)" \
+	BRANCH="$(CAPA_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-aws/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \

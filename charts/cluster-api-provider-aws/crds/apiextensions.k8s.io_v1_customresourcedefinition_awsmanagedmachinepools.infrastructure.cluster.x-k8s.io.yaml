@@ -34,8 +34,8 @@ spec:
     name: v1beta1
     schema:
       openAPIV3Schema:
-        description: AWSManagedMachinePool is the Schema for the awsmanagedmachinepools
-          API.
+        description: AWSManagedMachinePool is the Schema for the
+          awsmanagedmachinepools API.
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSManagedMachinePoolSpec defines the desired state of AWSManagedMachinePool.
+            description: AWSManagedMachinePoolSpec defines the desired state of
+              AWSManagedMachinePool.
             properties:
               additionalTags:
                 additionalProperties:
@@ -83,8 +84,8 @@ spec:
                 minLength: 2
                 type: string
               availabilityZones:
-                description: AvailabilityZones is an array of availability zones instances
-                  can run in
+                description: AvailabilityZones is an array of availability zones
+                  instances can run in
                 items:
                   type: string
                 type: array
@@ -119,8 +120,8 @@ spec:
                                   case-sensitive.
                                 type: string
                               values:
-                                description: Values includes one or more filter values.
-                                  Filter values are case-sensitive.
+                                description: Values includes one or more filter
+                                  values. Filter values are case-sensitive.
                                 items:
                                   type: string
                                 type: array
@@ -177,12 +178,12 @@ spec:
                       also: https://golang.org/pkg/text/template/
                     type: string
                   imageLookupOrg:
-                    description: ImageLookupOrg is the AWS Organization ID to use
-                      for image lookup if AMI is not set.
+                    description: ImageLookupOrg is the AWS Organization ID to use for
+                      image lookup if AMI is not set.
                     type: string
                   instanceType:
-                    description: 'InstanceType is the type of instance to create.
-                      Example: m4.xlarge'
+                    description: 'InstanceType is the type of instance to create. Example:
+                      m4.xlarge'
                     type: string
                   name:
                     description: The name of the launch template.
@@ -195,8 +196,8 @@ spec:
                         description: Device name
                         type: string
                       encrypted:
-                        description: Encrypted is whether the volume should be encrypted
-                          or not.
+                        description: Encrypted is whether the volume should be
+                          encrypted or not.
                         type: boolean
                       encryptionKey:
                         description: |-
@@ -229,8 +230,8 @@ spec:
                     - size
                     type: object
                   spotMarketOptions:
-                    description: SpotMarketOptions are options for configuring AWSMachinePool
-                      instances to be run using AWS Spot instances.
+                    description: SpotMarketOptions are options for configuring
+                      AWSMachinePool instances to be run using AWS Spot instances.
                     properties:
                       maxPrice:
                         description: MaxPrice defines the maximum price the user is
@@ -288,11 +289,12 @@ spec:
                   type: string
                 type: array
               remoteAccess:
-                description: RemoteAccess specifies how machines can be accessed remotely
+                description: RemoteAccess specifies how machines can be accessed
+                  remotely
                 properties:
                   public:
-                    description: Public specifies whether to open port 22 to the public
-                      internet
+                    description: Public specifies whether to open port 22 to the
+                      public internet
                     type: boolean
                   sourceSecurityGroups:
                     description: SourceSecurityGroups specifies which security groups
@@ -339,8 +341,8 @@ spec:
                   type: string
                 type: array
               taints:
-                description: Taints specifies the taints to apply to the nodes of
-                  the machine pool
+                description: Taints specifies the taints to apply to the nodes of the
+                  machine pool
                 items:
                   description: Taint defines the specs for a Kubernetes taint.
                   properties:
@@ -392,8 +394,8 @@ spec:
                 description: Conditions defines current service state of the managed
                   machine pool
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -425,7 +427,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -492,7 +495,8 @@ spec:
                   the cluster
                 type: boolean
               replicas:
-                description: Replicas is the most recently observed number of replicas.
+                description: Replicas is the most recently observed number of
+                  replicas.
                 format: int32
                 type: integer
             required:
@@ -515,8 +519,8 @@ spec:
     name: v1beta2
     schema:
       openAPIV3Schema:
-        description: AWSManagedMachinePool is the Schema for the awsmanagedmachinepools
-          API.
+        description: AWSManagedMachinePool is the Schema for the
+          awsmanagedmachinepools API.
         properties:
           apiVersion:
             description: |-
@@ -536,7 +540,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSManagedMachinePoolSpec defines the desired state of AWSManagedMachinePool.
+            description: AWSManagedMachinePoolSpec defines the desired state of
+              AWSManagedMachinePool.
             properties:
               additionalTags:
                 additionalProperties:
@@ -577,16 +582,16 @@ spec:
                 minLength: 2
                 type: string
               availabilityZoneSubnetType:
-                description: AvailabilityZoneSubnetType specifies which type of subnets
-                  to use when an availability zone is specified.
+                description: AvailabilityZoneSubnetType specifies which type of
+                  subnets to use when an availability zone is specified.
                 enum:
                 - public
                 - private
                 - all
                 type: string
               availabilityZones:
-                description: AvailabilityZones is an array of availability zones instances
-                  can run in
+                description: AvailabilityZones is an array of availability zones
+                  instances can run in
                 items:
                   type: string
                 type: array
@@ -621,8 +626,8 @@ spec:
                                   case-sensitive.
                                 type: string
                               values:
-                                description: Values includes one or more filter values.
-                                  Filter values are case-sensitive.
+                                description: Values includes one or more filter
+                                  values. Filter values are case-sensitive.
                                 items:
                                   type: string
                                 type: array
@@ -660,12 +665,12 @@ spec:
                   capacityReservationPreference:
                     allOf:
                     - enum:
-                      - ""
+                      - ''
                       - None
                       - CapacityReservationsOnly
                       - Open
                     - enum:
-                      - ""
+                      - ''
                       - None
                       - CapacityReservationsOnly
                       - Open
@@ -701,8 +706,8 @@ spec:
                       also: https://golang.org/pkg/text/template/
                     type: string
                   imageLookupOrg:
-                    description: ImageLookupOrg is the AWS Organization ID to use
-                      for image lookup if AMI is not set.
+                    description: ImageLookupOrg is the AWS Organization ID to use for
+                      image lookup if AMI is not set.
                     type: string
                   instanceMetadataOptions:
                     description: InstanceMetadataOptions defines the behavior for
@@ -767,8 +772,8 @@ spec:
                         type: string
                     type: object
                   instanceType:
-                    description: 'InstanceType is the type of instance to create.
-                      Example: m4.xlarge'
+                    description: 'InstanceType is the type of instance to create. Example:
+                      m4.xlarge'
                     type: string
                   marketType:
                     description: |-
@@ -787,7 +792,8 @@ spec:
                     description: The name of the launch template.
                     type: string
                   nonRootVolumes:
-                    description: Configuration options for the non root storage volumes.
+                    description: Configuration options for the non root storage
+                      volumes.
                     items:
                       description: Volume encapsulates the configuration options for
                         the storage device.
@@ -796,8 +802,8 @@ spec:
                           description: Device name
                           type: string
                         encrypted:
-                          description: Encrypted is whether the volume should be encrypted
-                            or not.
+                          description: Encrypted is whether the volume should be
+                            encrypted or not.
                           type: boolean
                         encryptionKey:
                           description: |-
@@ -818,8 +824,8 @@ spec:
                           minimum: 8
                           type: integer
                         throughput:
-                          description: Throughput to provision in MiB/s supported
-                            for the volume type. Not applicable to all types.
+                          description: Throughput to provision in MiB/s supported for
+                            the volume type. Not applicable to all types.
                           format: int64
                           type: integer
                         type:
@@ -831,17 +837,18 @@ spec:
                       type: object
                     type: array
                   privateDnsName:
-                    description: PrivateDNSName is the options for the instance hostname.
+                    description: PrivateDNSName is the options for the instance
+                      hostname.
                     properties:
                       enableResourceNameDnsAAAARecord:
-                        description: EnableResourceNameDNSAAAARecord indicates whether
-                          to respond to DNS queries for instance hostnames with DNS
-                          AAAA records.
+                        description: EnableResourceNameDNSAAAARecord indicates
+                          whether to respond to DNS queries for instance hostnames
+                          with DNS AAAA records.
                         type: boolean
                       enableResourceNameDnsARecord:
                         description: EnableResourceNameDNSARecord indicates whether
-                          to respond to DNS queries for instance hostnames with DNS
-                          A records.
+                          to respond to DNS queries for instance hostnames with DNS A
+                          records.
                         type: boolean
                       hostnameType:
                         description: The type of hostname to assign to an instance.
@@ -858,8 +865,8 @@ spec:
                         description: Device name
                         type: string
                       encrypted:
-                        description: Encrypted is whether the volume should be encrypted
-                          or not.
+                        description: Encrypted is whether the volume should be
+                          encrypted or not.
                         type: boolean
                       encryptionKey:
                         description: |-
@@ -892,8 +899,8 @@ spec:
                     - size
                     type: object
                   spotMarketOptions:
-                    description: SpotMarketOptions are options for configuring AWSMachinePool
-                      instances to be run using AWS Spot instances.
+                    description: SpotMarketOptions are options for configuring
+                      AWSMachinePool instances to be run using AWS Spot instances.
                     properties:
                       maxPrice:
                         description: MaxPrice defines the maximum price the user is
@@ -943,8 +950,8 @@ spec:
                 description: Labels specifies labels for the Kubernetes node objects
                 type: object
               lifecycleHooks:
-                description: AWSLifecycleHooks specifies lifecycle hooks for the managed
-                  node group.
+                description: AWSLifecycleHooks specifies lifecycle hooks for the
+                  managed node group.
                 items:
                   description: AWSLifecycleHook describes an AWS lifecycle hook
                   properties:
@@ -1000,11 +1007,12 @@ spec:
                   type: string
                 type: array
               remoteAccess:
-                description: RemoteAccess specifies how machines can be accessed remotely
+                description: RemoteAccess specifies how machines can be accessed
+                  remotely
                 properties:
                   public:
-                    description: Public specifies whether to open port 22 to the public
-                      internet
+                    description: Public specifies whether to open port 22 to the
+                      public internet
                     type: boolean
                   sourceSecurityGroups:
                     description: SourceSecurityGroups specifies which security groups
@@ -1075,8 +1083,8 @@ spec:
                   type: string
                 type: array
               taints:
-                description: Taints specifies the taints to apply to the nodes of
-                  the machine pool
+                description: Taints specifies the taints to apply to the nodes of the
+                  machine pool
                 items:
                   description: Taint defines the specs for a Kubernetes taint.
                   properties:
@@ -1128,8 +1136,8 @@ spec:
                 description: Conditions defines current service state of the managed
                   machine pool
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -1161,7 +1169,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -1228,7 +1237,8 @@ spec:
                   the cluster
                 type: boolean
               replicas:
-                description: Replicas is the most recently observed number of replicas.
+                description: Replicas is the most recently observed number of
+                  replicas.
                 format: int32
                 type: integer
             required:

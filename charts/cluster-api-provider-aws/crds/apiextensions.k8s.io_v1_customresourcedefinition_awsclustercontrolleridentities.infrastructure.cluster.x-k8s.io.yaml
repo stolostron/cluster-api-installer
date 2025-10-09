@@ -3,13 +3,13 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
     cluster.x-k8s.io/v1alpha4: v1alpha4
     cluster.x-k8s.io/v1beta1: v1beta1_v1beta2
-    clusterctl.cluster.x-k8s.io/move-hierarchy: ""
+    clusterctl.cluster.x-k8s.io/move-hierarchy: ''
   name: awsclustercontrolleridentities.infrastructure.cluster.x-k8s.io
 spec:
   group: infrastructure.cluster.x-k8s.io
@@ -61,8 +61,8 @@ spec:
                 nullable: true
                 properties:
                   list:
-                    description: An nil or empty list indicates that AWSClusters cannot
-                      use the identity from any namespace.
+                    description: An nil or empty list indicates that AWSClusters
+                      cannot use the identity from any namespace.
                     items:
                       type: string
                     nullable: true
@@ -157,8 +157,8 @@ spec:
                 nullable: true
                 properties:
                   list:
-                    description: An nil or empty list indicates that AWSClusters cannot
-                      use the identity from any namespace.
+                    description: An nil or empty list indicates that AWSClusters
+                      cannot use the identity from any namespace.
                     items:
                       type: string
                     nullable: true

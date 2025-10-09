@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusterresourcesetbindings.addons.cluster.x-k8s.io
@@ -48,18 +48,20 @@ spec:
             description: spec is the desired state of ClusterResourceSetBinding.
             properties:
               bindings:
-                description: bindings is a list of ClusterResourceSets and their resources.
+                description: bindings is a list of ClusterResourceSets and their
+                  resources.
                 items:
                   description: ResourceSetBinding keeps info on all of the resources
                     in a ClusterResourceSet.
                   properties:
                     clusterResourceSetName:
-                      description: clusterResourceSetName is the name of the ClusterResourceSet
-                        that is applied to the owner cluster of the binding.
+                      description: clusterResourceSetName is the name of the
+                        ClusterResourceSet that is applied to the owner cluster of
+                        the binding.
                       type: string
                     resources:
-                      description: resources is a list of resources that the ClusterResourceSet
-                        has.
+                      description: resources is a list of resources that the
+                        ClusterResourceSet has.
                       items:
                         description: ResourceBinding shows the status of a resource
                           that belongs to a ClusterResourceSet matched by the owner
@@ -75,15 +77,15 @@ spec:
                               For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
                             type: string
                           kind:
-                            description: 'kind of the resource. Supported kinds are:
-                              Secrets and ConfigMaps.'
+                            description: 'kind of the resource. Supported kinds are: Secrets
+                              and ConfigMaps.'
                             enum:
                             - Secret
                             - ConfigMap
                             type: string
                           lastAppliedTime:
-                            description: lastAppliedTime identifies when this resource
-                              was last applied to the cluster.
+                            description: lastAppliedTime identifies when this
+                              resource was last applied to the cluster.
                             format: date-time
                             type: string
                           name:
@@ -142,18 +144,20 @@ spec:
             description: spec is the desired state of ClusterResourceSetBinding.
             properties:
               bindings:
-                description: bindings is a list of ClusterResourceSets and their resources.
+                description: bindings is a list of ClusterResourceSets and their
+                  resources.
                 items:
                   description: ResourceSetBinding keeps info on all of the resources
                     in a ClusterResourceSet.
                   properties:
                     clusterResourceSetName:
-                      description: clusterResourceSetName is the name of the ClusterResourceSet
-                        that is applied to the owner cluster of the binding.
+                      description: clusterResourceSetName is the name of the
+                        ClusterResourceSet that is applied to the owner cluster of
+                        the binding.
                       type: string
                     resources:
-                      description: resources is a list of resources that the ClusterResourceSet
-                        has.
+                      description: resources is a list of resources that the
+                        ClusterResourceSet has.
                       items:
                         description: ResourceBinding shows the status of a resource
                           that belongs to a ClusterResourceSet matched by the owner
@@ -169,15 +173,15 @@ spec:
                               For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
                             type: string
                           kind:
-                            description: 'kind of the resource. Supported kinds are:
-                              Secrets and ConfigMaps.'
+                            description: 'kind of the resource. Supported kinds are: Secrets
+                              and ConfigMaps.'
                             enum:
                             - Secret
                             - ConfigMap
                             type: string
                           lastAppliedTime:
-                            description: lastAppliedTime identifies when this resource
-                              was last applied to the cluster.
+                            description: lastAppliedTime identifies when this
+                              resource was last applied to the cluster.
                             format: date-time
                             type: string
                           name:
@@ -233,20 +237,22 @@ spec:
             description: spec is the desired state of ClusterResourceSetBinding.
             properties:
               bindings:
-                description: bindings is a list of ClusterResourceSets and their resources.
+                description: bindings is a list of ClusterResourceSets and their
+                  resources.
                 items:
                   description: ResourceSetBinding keeps info on all of the resources
                     in a ClusterResourceSet.
                   properties:
                     clusterResourceSetName:
-                      description: clusterResourceSetName is the name of the ClusterResourceSet
-                        that is applied to the owner cluster of the binding.
+                      description: clusterResourceSetName is the name of the
+                        ClusterResourceSet that is applied to the owner cluster of
+                        the binding.
                       maxLength: 253
                       minLength: 1
                       type: string
                     resources:
-                      description: resources is a list of resources that the ClusterResourceSet
-                        has.
+                      description: resources is a list of resources that the
+                        ClusterResourceSet has.
                       items:
                         description: ResourceBinding shows the status of a resource
                           that belongs to a ClusterResourceSet matched by the owner
@@ -264,15 +270,15 @@ spec:
                             minLength: 1
                             type: string
                           kind:
-                            description: 'kind of the resource. Supported kinds are:
-                              Secrets and ConfigMaps.'
+                            description: 'kind of the resource. Supported kinds are: Secrets
+                              and ConfigMaps.'
                             enum:
                             - Secret
                             - ConfigMap
                             type: string
                           lastAppliedTime:
-                            description: lastAppliedTime identifies when this resource
-                              was last applied to the cluster.
+                            description: lastAppliedTime identifies when this
+                              resource was last applied to the cluster.
                             format: date-time
                             type: string
                           name:

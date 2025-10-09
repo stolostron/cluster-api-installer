@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capm3-system/capm3-serving-cert
     controller-gen.kubebuilder.io/version: v0.16.5
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: infrastructure-metal3
     cluster.x-k8s.io/v1beta1: v1beta1
@@ -69,28 +69,29 @@ spec:
           metadata:
             type: object
           spec:
-            description: Metal3DataTemplateSpec defines the desired state of Metal3DataTemplate.
+            description: Metal3DataTemplateSpec defines the desired state of
+              Metal3DataTemplate.
             properties:
               clusterName:
-                description: ClusterName is the name of the Cluster this object belongs
-                  to.
+                description: ClusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               metaData:
-                description: MetaData contains the information needed to generate
-                  the metadata secret
+                description: MetaData contains the information needed to generate the
+                  metadata secret
                 properties:
                   dnsServersFromIPPool:
-                    description: DNSServersFromPool is the list of metadata items
-                      to be rendered as dns servers.
+                    description: DNSServersFromPool is the list of metadata items to
+                      be rendered as dns servers.
                     items:
                       properties:
                         apiGroup:
                           description: APIGroup is the api group of the IP pool.
                           type: string
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         kind:
                           description: Kind is the kind of the IP pool
@@ -120,12 +121,12 @@ spec:
                             fetch
                           type: string
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         object:
-                          description: Object is the type of the object from which
-                            we retrieve the name
+                          description: Object is the type of the object from which we
+                            retrieve the name
                           enum:
                           - machine
                           - metal3machine
@@ -142,8 +143,8 @@ spec:
                       FromHostInterfaces is the list of metadata items to be rendered as MAC
                       addresses of the host interfaces.
                     items:
-                      description: MetaDataHostInterface contains the information
-                        to render the object name.
+                      description: MetaDataHostInterface contains the information to
+                        render the object name.
                       properties:
                         interface:
                           description: |-
@@ -151,8 +152,8 @@ spec:
                             Details list of interfaces from which to fetch the MAC address.
                           type: string
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                       required:
                       - interface
@@ -160,23 +161,23 @@ spec:
                       type: object
                     type: array
                   fromLabels:
-                    description: FromLabels is the list of metadata items to be fetched
-                      from object labels
+                    description: FromLabels is the list of metadata items to be
+                      fetched from object labels
                     items:
                       description: |-
                         MetaDataFromLabel contains the information to fetch a label content, if the
                         label does not exist, it is rendered as empty string.
                       properties:
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         label:
                           description: Label is the key of the label to fetch
                           type: string
                         object:
-                          description: Object is the type of the object from which
-                            we retrieve the name
+                          description: Object is the type of the object from which we
+                            retrieve the name
                           enum:
                           - machine
                           - metal3machine
@@ -189,16 +190,16 @@ spec:
                       type: object
                     type: array
                   gatewaysFromIPPool:
-                    description: GatewaysFromPool is the list of metadata items to
-                      be rendered as gateway addresses.
+                    description: GatewaysFromPool is the list of metadata items to be
+                      rendered as gateway addresses.
                     items:
                       properties:
                         apiGroup:
                           description: APIGroup is the api group of the IP pool.
                           type: string
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         kind:
                           description: Kind is the kind of the IP pool
@@ -223,8 +224,8 @@ spec:
                         the index.
                       properties:
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         offset:
                           description: Offset is the offset to apply to the index
@@ -245,16 +246,16 @@ spec:
                       type: object
                     type: array
                   ipAddressesFromIPPool:
-                    description: IPAddressesFromPool is the list of metadata items
-                      to be rendered as ip addresses.
+                    description: IPAddressesFromPool is the list of metadata items to
+                      be rendered as ip addresses.
                     items:
                       properties:
                         apiGroup:
                           description: APIGroup is the api group of the IP pool.
                           type: string
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         kind:
                           description: Kind is the kind of the IP pool
@@ -271,15 +272,15 @@ spec:
                       type: object
                     type: array
                   namespaces:
-                    description: Namespaces is the list of metadata items to be rendered
-                      from the namespace
+                    description: Namespaces is the list of metadata items to be
+                      rendered from the namespace
                     items:
-                      description: MetaDataNamespace contains the information to render
-                        the namespace.
+                      description: MetaDataNamespace contains the information to
+                        render the namespace.
                       properties:
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                       required:
                       - key
@@ -294,12 +295,12 @@ spec:
                         render the object name.
                       properties:
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         object:
-                          description: Object is the type of the object from which
-                            we retrieve the name
+                          description: Object is the type of the object from which we
+                            retrieve the name
                           enum:
                           - machine
                           - metal3machine
@@ -311,16 +312,16 @@ spec:
                       type: object
                     type: array
                   prefixesFromIPPool:
-                    description: PrefixesFromPool is the list of metadata items to
-                      be rendered as network prefixes.
+                    description: PrefixesFromPool is the list of metadata items to be
+                      rendered as network prefixes.
                     items:
                       properties:
                         apiGroup:
                           description: APIGroup is the api group of the IP pool.
                           type: string
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         kind:
                           description: Kind is the kind of the IP pool
@@ -344,8 +345,8 @@ spec:
                         the string.
                       properties:
                         key:
-                          description: Key will be used as the key to set in the metadata
-                            map for cloud-init
+                          description: Key will be used as the key to set in the
+                            metadata map for cloud-init
                           type: string
                         value:
                           description: Value is the string to render.
@@ -413,8 +414,8 @@ spec:
                                     MAC address from
                                   properties:
                                     annotation:
-                                      description: Annotation is the key of the Annotation
-                                        to fetch
+                                      description: Annotation is the key of the
+                                        Annotation to fetch
                                       type: string
                                     object:
                                       description: Object is the type of the object
@@ -446,8 +447,8 @@ spec:
                             parameters:
                               additionalProperties:
                                 x-kubernetes-preserve-unknown-fields: true
-                              description: params blob passed without any validation/modifications
-                                into cloud-init config
+                              description: params blob passed without any
+                                validation/modifications into cloud-init config
                               type: object
                           required:
                           - bondMode
@@ -476,8 +477,8 @@ spec:
                                     MAC address from
                                   properties:
                                     annotation:
-                                      description: Annotation is the key of the Annotation
-                                        to fetch
+                                      description: Annotation is the key of the
+                                        Annotation to fetch
                                       type: string
                                     object:
                                       description: Object is the type of the object
@@ -548,8 +549,8 @@ spec:
                                     MAC address from
                                   properties:
                                     annotation:
-                                      description: Annotation is the key of the Annotation
-                                        to fetch
+                                      description: Annotation is the key of the
+                                        Annotation to fetch
                                       type: string
                                     object:
                                       description: Object is the type of the object
@@ -595,18 +596,18 @@ spec:
                         type: array
                     type: object
                   networks:
-                    description: Networks  is a structure containing lists of different
-                      types objects
+                    description: Networks  is a structure containing lists of
+                      different types objects
                     properties:
                       ipv4:
                         description: IPv4 contains a list of IPv4 static allocations
                         items:
-                          description: NetworkDataIPv4 represents an ipv4 static network
-                            object.
+                          description: NetworkDataIPv4 represents an ipv4 static
+                            network object.
                           properties:
                             fromPoolRef:
-                              description: FromPoolRef is a reference to a IP pool
-                                to allocate an address from.
+                              description: FromPoolRef is a reference to a IP pool to
+                                allocate an address from.
                               properties:
                                 apiGroup:
                                   description: |-
@@ -635,7 +636,8 @@ spec:
                                 the IP pool to use to get an ip address
                               type: string
                             link:
-                              description: Link is the link on which the network applies
+                              description: Link is the link on which the network
+                                applies
                               type: string
                             routes:
                               description: Routes contains a list of IPv4 routes
@@ -652,34 +654,38 @@ spec:
                                           IPPool to fetch the gateway from
                                         type: string
                                       string:
-                                        description: String is the gateway given as
-                                          a string
-                                        pattern: ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
+                                        description: String is the gateway given as a
+                                          string
+                                        pattern:
+                                          ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
                                         type: string
                                     type: object
                                   network:
                                     description: Network is the IPv4 network address
-                                    pattern: ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
+                                    pattern:
+                                      ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
                                     type: string
                                   prefix:
-                                    description: Prefix is the mask of the network
-                                      as integer (max 32)
+                                    description: Prefix is the mask of the network as
+                                      integer (max 32)
                                     maximum: 32
                                     type: integer
                                   services:
                                     description: Services is a list of IPv4 services
                                     properties:
                                       dns:
-                                        description: DNS is a list of IPv4 DNS services
+                                        description: DNS is a list of IPv4 DNS
+                                          services
                                         items:
-                                          description: IPAddressv4 is used for validation
-                                            of an IPv6 address.
-                                          pattern: ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
+                                          description: IPAddressv4 is used for
+                                            validation of an IPv6 address.
+                                          pattern:
+                                            ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
                                           type: string
                                         type: array
                                       dnsFromIPPool:
-                                        description: DNSFromIPPool is the name of
-                                          the IPPool from which to get the DNS servers
+                                        description: DNSFromIPPool is the name of the
+                                          IPPool from which to get the DNS servers
                                         type: string
                                     type: object
                                 required:
@@ -702,7 +708,8 @@ spec:
                               description: ID is the network ID (name)
                               type: string
                             link:
-                              description: Link is the link on which the network applies
+                              description: Link is the link on which the network
+                                applies
                               type: string
                             routes:
                               description: Routes contains a list of IPv4 routes
@@ -719,34 +726,38 @@ spec:
                                           IPPool to fetch the gateway from
                                         type: string
                                       string:
-                                        description: String is the gateway given as
-                                          a string
-                                        pattern: ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
+                                        description: String is the gateway given as a
+                                          string
+                                        pattern:
+                                          ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
                                         type: string
                                     type: object
                                   network:
                                     description: Network is the IPv4 network address
-                                    pattern: ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
+                                    pattern:
+                                      ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
                                     type: string
                                   prefix:
-                                    description: Prefix is the mask of the network
-                                      as integer (max 32)
+                                    description: Prefix is the mask of the network as
+                                      integer (max 32)
                                     maximum: 32
                                     type: integer
                                   services:
                                     description: Services is a list of IPv4 services
                                     properties:
                                       dns:
-                                        description: DNS is a list of IPv4 DNS services
+                                        description: DNS is a list of IPv4 DNS
+                                          services
                                         items:
-                                          description: IPAddressv4 is used for validation
-                                            of an IPv6 address.
-                                          pattern: ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
+                                          description: IPAddressv4 is used for
+                                            validation of an IPv6 address.
+                                          pattern:
+                                            ^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$
                                           type: string
                                         type: array
                                       dnsFromIPPool:
-                                        description: DNSFromIPPool is the name of
-                                          the IPPool from which to get the DNS servers
+                                        description: DNSFromIPPool is the name of the
+                                          IPPool from which to get the DNS servers
                                         type: string
                                     type: object
                                 required:
@@ -762,12 +773,12 @@ spec:
                       ipv6:
                         description: IPv4 contains a list of IPv6 static allocations
                         items:
-                          description: NetworkDataIPv6 represents an ipv6 static network
-                            object.
+                          description: NetworkDataIPv6 represents an ipv6 static
+                            network object.
                           properties:
                             fromPoolRef:
-                              description: FromPoolRef is a reference to a IP pool
-                                to allocate an address from.
+                              description: FromPoolRef is a reference to a IP pool to
+                                allocate an address from.
                               properties:
                                 apiGroup:
                                   description: |-
@@ -796,7 +807,8 @@ spec:
                                 the IPPool to use to get an ip address
                               type: string
                             link:
-                              description: Link is the link on which the network applies
+                              description: Link is the link on which the network
+                                applies
                               type: string
                             routes:
                               description: Routes contains a list of IPv6 routes
@@ -813,34 +825,38 @@ spec:
                                           IPPool to fetch the gateway from
                                         type: string
                                       string:
-                                        description: String is the gateway given as
-                                          a string
-                                        pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                        description: String is the gateway given as a
+                                          string
+                                        pattern:
+                                          ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                         type: string
                                     type: object
                                   network:
                                     description: Network is the IPv6 network address
-                                    pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                    pattern:
+                                      ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                     type: string
                                   prefix:
-                                    description: Prefix is the mask of the network
-                                      as integer (max 128)
+                                    description: Prefix is the mask of the network as
+                                      integer (max 128)
                                     maximum: 128
                                     type: integer
                                   services:
                                     description: Services is a list of IPv6 services
                                     properties:
                                       dns:
-                                        description: DNS is a list of IPv6 DNS services
+                                        description: DNS is a list of IPv6 DNS
+                                          services
                                         items:
-                                          description: IPAddressv6 is used for validation
-                                            of an IPv6 address.
-                                          pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                          description: IPAddressv6 is used for
+                                            validation of an IPv6 address.
+                                          pattern:
+                                            ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                           type: string
                                         type: array
                                       dnsFromIPPool:
-                                        description: DNSFromIPPool is the name of
-                                          the IPPool from which to get the DNS servers
+                                        description: DNSFromIPPool is the name of the
+                                          IPPool from which to get the DNS servers
                                         type: string
                                     type: object
                                 required:
@@ -864,7 +880,8 @@ spec:
                               description: ID is the network ID (name)
                               type: string
                             link:
-                              description: Link is the link on which the network applies
+                              description: Link is the link on which the network
+                                applies
                               type: string
                             routes:
                               description: Routes contains a list of IPv6 routes
@@ -881,34 +898,38 @@ spec:
                                           IPPool to fetch the gateway from
                                         type: string
                                       string:
-                                        description: String is the gateway given as
-                                          a string
-                                        pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                        description: String is the gateway given as a
+                                          string
+                                        pattern:
+                                          ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                         type: string
                                     type: object
                                   network:
                                     description: Network is the IPv6 network address
-                                    pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                    pattern:
+                                      ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                     type: string
                                   prefix:
-                                    description: Prefix is the mask of the network
-                                      as integer (max 128)
+                                    description: Prefix is the mask of the network as
+                                      integer (max 128)
                                     maximum: 128
                                     type: integer
                                   services:
                                     description: Services is a list of IPv6 services
                                     properties:
                                       dns:
-                                        description: DNS is a list of IPv6 DNS services
+                                        description: DNS is a list of IPv6 DNS
+                                          services
                                         items:
-                                          description: IPAddressv6 is used for validation
-                                            of an IPv6 address.
-                                          pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                          description: IPAddressv6 is used for
+                                            validation of an IPv6 address.
+                                          pattern:
+                                            ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                           type: string
                                         type: array
                                       dnsFromIPPool:
-                                        description: DNSFromIPPool is the name of
-                                          the IPPool from which to get the DNS servers
+                                        description: DNSFromIPPool is the name of the
+                                          IPPool from which to get the DNS servers
                                         type: string
                                     type: object
                                 required:
@@ -931,7 +952,8 @@ spec:
                               description: ID is the network ID (name)
                               type: string
                             link:
-                              description: Link is the link on which the network applies
+                              description: Link is the link on which the network
+                                applies
                               type: string
                             routes:
                               description: Routes contains a list of IPv6 routes
@@ -948,34 +970,38 @@ spec:
                                           IPPool to fetch the gateway from
                                         type: string
                                       string:
-                                        description: String is the gateway given as
-                                          a string
-                                        pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                        description: String is the gateway given as a
+                                          string
+                                        pattern:
+                                          ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                         type: string
                                     type: object
                                   network:
                                     description: Network is the IPv6 network address
-                                    pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                    pattern:
+                                      ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                     type: string
                                   prefix:
-                                    description: Prefix is the mask of the network
-                                      as integer (max 128)
+                                    description: Prefix is the mask of the network as
+                                      integer (max 128)
                                     maximum: 128
                                     type: integer
                                   services:
                                     description: Services is a list of IPv6 services
                                     properties:
                                       dns:
-                                        description: DNS is a list of IPv6 DNS services
+                                        description: DNS is a list of IPv6 DNS
+                                          services
                                         items:
-                                          description: IPAddressv6 is used for validation
-                                            of an IPv6 address.
-                                          pattern: ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
+                                          description: IPAddressv6 is used for
+                                            validation of an IPv6 address.
+                                          pattern:
+                                            ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$
                                           type: string
                                         type: array
                                       dnsFromIPPool:
-                                        description: DNSFromIPPool is the name of
-                                          the IPPool from which to get the DNS servers
+                                        description: DNSFromIPPool is the name of the
+                                          IPPool from which to get the DNS servers
                                         type: string
                                     type: object
                                 required:
@@ -990,14 +1016,16 @@ spec:
                         type: array
                     type: object
                   services:
-                    description: Services  is a structure containing lists of different
-                      types objects
+                    description: Services  is a structure containing lists of
+                      different types objects
                     properties:
                       dns:
                         description: DNS is a list of DNS services
                         items:
-                          description: IPAddress is used for validation of an IP address.
-                          pattern: ((^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$)|(^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$))
+                          description: IPAddress is used for validation of an IP
+                            address.
+                          pattern:
+                            ((^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$)|(^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$))
                           type: string
                         type: array
                       dnsFromIPPool:
@@ -1018,7 +1046,8 @@ spec:
             - clusterName
             type: object
           status:
-            description: Metal3DataTemplateStatus defines the observed state of Metal3DataTemplate.
+            description: Metal3DataTemplateStatus defines the observed state of
+              Metal3DataTemplate.
             properties:
               indexes:
                 additionalProperties:
@@ -1026,7 +1055,8 @@ spec:
                 description: Indexes contains the map of Metal3Machine and index used
                 type: object
               lastUpdated:
-                description: LastUpdated identifies when this status was last observed.
+                description: LastUpdated identifies when this status was last
+                  observed.
                 format: date-time
                 type: string
             type: object

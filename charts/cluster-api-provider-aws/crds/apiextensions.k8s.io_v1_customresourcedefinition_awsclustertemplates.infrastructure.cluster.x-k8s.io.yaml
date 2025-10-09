@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -52,11 +52,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSClusterTemplateSpec defines the desired state of AWSClusterTemplate.
+            description: AWSClusterTemplateSpec defines the desired state of
+              AWSClusterTemplate.
             properties:
               template:
-                description: AWSClusterTemplateResource defines the desired state
-                  of AWSClusterTemplate.
+                description: AWSClusterTemplateResource defines the desired state of
+                  AWSClusterTemplate.
                 properties:
                   metadata:
                     description: |-
@@ -83,8 +84,8 @@ spec:
                         type: object
                     type: object
                   spec:
-                    description: AWSClusterSpec defines the desired state of an EC2-based
-                      Kubernetes cluster.
+                    description: AWSClusterSpec defines the desired state of an
+                      EC2-based Kubernetes cluster.
                     properties:
                       additionalTags:
                         additionalProperties:
@@ -94,8 +95,8 @@ spec:
                           ones added by default.
                         type: object
                       bastion:
-                        description: Bastion contains options to configure the bastion
-                          host.
+                        description: Bastion contains options to configure the
+                          bastion host.
                         properties:
                           allowedCIDRBlocks:
                             description: |-
@@ -136,8 +137,8 @@ spec:
                             maxLength: 512
                             type: string
                           port:
-                            description: port is the port on which the API server
-                              is serving.
+                            description: port is the port on which the API server is
+                              serving.
                             format: int32
                             type: integer
                         required:
@@ -145,8 +146,8 @@ spec:
                         - port
                         type: object
                       controlPlaneLoadBalancer:
-                        description: ControlPlaneLoadBalancer is optional configuration
-                          for customizing control plane behavior.
+                        description: ControlPlaneLoadBalancer is optional
+                          configuration for customizing control plane behavior.
                         properties:
                           additionalSecurityGroups:
                             description: |-
@@ -178,7 +179,8 @@ spec:
                               contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen. Once
                               set, the value cannot be changed.
                             maxLength: 32
-                            pattern: ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
+                            pattern:
+                              ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
                             type: string
                           scheme:
                             default: internet-facing
@@ -189,10 +191,10 @@ spec:
                             - internal
                             type: string
                           subnets:
-                            description: Subnets sets the subnets that should be applied
-                              to the control plane load balancer (defaults to discovered
-                              subnets for managed VPCs or an empty set for unmanaged
-                              VPCs)
+                            description: Subnets sets the subnets that should be
+                              applied to the control plane load balancer (defaults to
+                              discovered subnets for managed VPCs or an empty set for
+                              unmanaged VPCs)
                             items:
                               type: string
                             type: array
@@ -293,16 +295,17 @@ spec:
                               description: SubnetSpec configures an AWS Subnet.
                               properties:
                                 availabilityZone:
-                                  description: AvailabilityZone defines the availability
-                                    zone to use for this subnet in the cluster's region.
+                                  description: AvailabilityZone defines the
+                                    availability zone to use for this subnet in the
+                                    cluster's region.
                                   type: string
                                 cidrBlock:
                                   description: CidrBlock is the CIDR block to be used
                                     when the provider creates a managed VPC.
                                   type: string
                                 id:
-                                  description: ID defines a unique identifier to reference
-                                    this resource.
+                                  description: ID defines a unique identifier to
+                                    reference this resource.
                                   type: string
                                 ipv6CidrBlock:
                                   description: |-
@@ -316,10 +319,10 @@ spec:
                                     IPv6 is only supported in managed clusters, this field cannot be set on AWSCluster object.
                                   type: boolean
                                 isPublic:
-                                  description: IsPublic defines the subnet as a public
-                                    subnet. A subnet is public when it is associated
-                                    with a route table that has a route to an internet
-                                    gateway.
+                                  description: IsPublic defines the subnet as a
+                                    public subnet. A subnet is public when it is
+                                    associated with a route table that has a route to
+                                    an internet gateway.
                                   type: boolean
                                 natGatewayId:
                                   description: |-
@@ -333,8 +336,8 @@ spec:
                                 tags:
                                   additionalProperties:
                                     type: string
-                                  description: Tags is a collection of tags describing
-                                    the resource.
+                                  description: Tags is a collection of tags
+                                    describing the resource.
                                   type: object
                               type: object
                             type: array
@@ -368,12 +371,12 @@ spec:
                                   Defaults to 10.0.0.0/16.
                                 type: string
                               id:
-                                description: ID is the vpc-id of the VPC this provider
-                                  should use to create resources.
+                                description: ID is the vpc-id of the VPC this
+                                  provider should use to create resources.
                                 type: string
                               internetGatewayId:
-                                description: InternetGatewayID is the id of the internet
-                                  gateway associated with the VPC.
+                                description: InternetGatewayID is the id of the
+                                  internet gateway associated with the VPC.
                                 type: string
                               ipv6:
                                 description: |-
@@ -386,12 +389,12 @@ spec:
                                     type: string
                                   egressOnlyInternetGatewayId:
                                     description: EgressOnlyInternetGatewayID is the
-                                      id of the egress only internet gateway associated
-                                      with an IPv6 enabled VPC.
+                                      id of the egress only internet gateway
+                                      associated with an IPv6 enabled VPC.
                                     type: string
                                   poolId:
-                                    description: PoolID is the IP pool which must
-                                      be defined in case of BYO IP is defined.
+                                    description: PoolID is the IP pool which must be
+                                      defined in case of BYO IP is defined.
                                     type: string
                                 type: object
                               tags:
@@ -418,7 +421,8 @@ spec:
                               to read control-plane node bootstrap data from S3 Bucket.
                             type: string
                           name:
-                            description: Name defines name of S3 Bucket to be created.
+                            description: Name defines name of S3 Bucket to be
+                              created.
                             maxLength: 63
                             minLength: 3
                             pattern: ^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$
@@ -481,11 +485,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSClusterTemplateSpec defines the desired state of AWSClusterTemplate.
+            description: AWSClusterTemplateSpec defines the desired state of
+              AWSClusterTemplate.
             properties:
               template:
-                description: AWSClusterTemplateResource defines the desired state
-                  of AWSClusterTemplateResource.
+                description: AWSClusterTemplateResource defines the desired state of
+                  AWSClusterTemplateResource.
                 properties:
                   metadata:
                     description: |-
@@ -512,8 +517,8 @@ spec:
                         type: object
                     type: object
                   spec:
-                    description: AWSClusterSpec defines the desired state of an EC2-based
-                      Kubernetes cluster.
+                    description: AWSClusterSpec defines the desired state of an
+                      EC2-based Kubernetes cluster.
                     properties:
                       additionalTags:
                         additionalProperties:
@@ -523,8 +528,8 @@ spec:
                           ones added by default.
                         type: object
                       bastion:
-                        description: Bastion contains options to configure the bastion
-                          host.
+                        description: Bastion contains options to configure the
+                          bastion host.
                         properties:
                           allowedCIDRBlocks:
                             description: |-
@@ -565,8 +570,8 @@ spec:
                             maxLength: 512
                             type: string
                           port:
-                            description: port is the port on which the API server
-                              is serving.
+                            description: port is the port on which the API server is
+                              serving.
                             format: int32
                             type: integer
                         required:
@@ -574,8 +579,8 @@ spec:
                         - port
                         type: object
                       controlPlaneLoadBalancer:
-                        description: ControlPlaneLoadBalancer is optional configuration
-                          for customizing control plane behavior.
+                        description: ControlPlaneLoadBalancer is optional
+                          configuration for customizing control plane behavior.
                         properties:
                           additionalListeners:
                             description: |-
@@ -588,7 +593,8 @@ spec:
                               properties:
                                 healthCheck:
                                   description: HealthCheck sets the optional custom
-                                    health check configuration to the API target group.
+                                    health check configuration to the API target
+                                    group.
                                   properties:
                                     intervalSeconds:
                                       description: |-
@@ -688,8 +694,8 @@ spec:
                               file of each instance. This is by default, false.
                             type: boolean
                           healthCheck:
-                            description: HealthCheck sets custom health check configuration
-                              to the API target group.
+                            description: HealthCheck sets custom health check
+                              configuration to the API target group.
                             properties:
                               intervalSeconds:
                                 description: |-
@@ -745,41 +751,43 @@ spec:
                               properties:
                                 cidrBlocks:
                                   description: List of CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                    from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 description:
-                                  description: Description provides extended information
-                                    about the ingress rule.
+                                  description: Description provides extended
+                                    information about the ingress rule.
                                   type: string
                                 fromPort:
                                   description: FromPort is the start of port range.
                                   format: int64
                                   type: integer
                                 ipv6CidrBlocks:
-                                  description: List of IPv6 CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                  description: List of IPv6 CIDR blocks to allow
+                                    access from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 natGatewaysIPsSource:
-                                  description: NatGatewaysIPsSource use the NAT gateways
-                                    IPs as the source for the ingress rule.
+                                  description: NatGatewaysIPsSource use the NAT
+                                    gateways IPs as the source for the ingress rule.
                                   type: boolean
                                 protocol:
-                                  description: Protocol is the protocol for the ingress
-                                    rule. Accepted values are "-1" (all), "4" (IP
-                                    in IP),"tcp", "udp", "icmp", and "58" (ICMPv6),
-                                    "50" (ESP).
+                                  description: Protocol is the protocol for the
+                                    ingress rule. Accepted values are "-1" (all), "4"
+                                    (IP in IP),"tcp", "udp", "icmp", and "58"
+                                    (ICMPv6), "50" (ESP).
                                   enum:
-                                  - "-1"
-                                  - "4"
+                                  - '-1'
+                                  - '4'
                                   - tcp
                                   - udp
                                   - icmp
-                                  - "58"
-                                  - "50"
+                                  - '58'
+                                  - '50'
                                   type: string
                                 sourceSecurityGroupIds:
                                   description: The security group id to allow access
@@ -832,7 +840,8 @@ spec:
                               contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen. Once
                               set, the value cannot be changed.
                             maxLength: 32
-                            pattern: ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
+                            pattern:
+                              ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
                             type: string
                           preserveClientIP:
                             description: |-
@@ -848,10 +857,10 @@ spec:
                             - internal
                             type: string
                           subnets:
-                            description: Subnets sets the subnets that should be applied
-                              to the control plane load balancer (defaults to discovered
-                              subnets for managed VPCs or an empty set for unmanaged
-                              VPCs)
+                            description: Subnets sets the subnets that should be
+                              applied to the control plane load balancer (defaults to
+                              discovered subnets for managed VPCs or an empty set for
+                              unmanaged VPCs)
                             items:
                               type: string
                             type: array
@@ -918,41 +927,43 @@ spec:
                               properties:
                                 cidrBlocks:
                                   description: List of CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                    from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 description:
-                                  description: Description provides extended information
-                                    about the ingress rule.
+                                  description: Description provides extended
+                                    information about the ingress rule.
                                   type: string
                                 fromPort:
                                   description: FromPort is the start of port range.
                                   format: int64
                                   type: integer
                                 ipv6CidrBlocks:
-                                  description: List of IPv6 CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                  description: List of IPv6 CIDR blocks to allow
+                                    access from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 natGatewaysIPsSource:
-                                  description: NatGatewaysIPsSource use the NAT gateways
-                                    IPs as the source for the ingress rule.
+                                  description: NatGatewaysIPsSource use the NAT
+                                    gateways IPs as the source for the ingress rule.
                                   type: boolean
                                 protocol:
-                                  description: Protocol is the protocol for the ingress
-                                    rule. Accepted values are "-1" (all), "4" (IP
-                                    in IP),"tcp", "udp", "icmp", and "58" (ICMPv6),
-                                    "50" (ESP).
+                                  description: Protocol is the protocol for the
+                                    ingress rule. Accepted values are "-1" (all), "4"
+                                    (IP in IP),"tcp", "udp", "icmp", and "58"
+                                    (ICMPv6), "50" (ESP).
                                   enum:
-                                  - "-1"
-                                  - "4"
+                                  - '-1'
+                                  - '4'
                                   - tcp
                                   - udp
                                   - icmp
-                                  - "58"
-                                  - "50"
+                                  - '58'
+                                  - '50'
                                   type: string
                                 sourceSecurityGroupIds:
                                   description: The security group id to allow access
@@ -996,41 +1007,43 @@ spec:
                               properties:
                                 cidrBlocks:
                                   description: List of CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                    from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 description:
-                                  description: Description provides extended information
-                                    about the ingress rule.
+                                  description: Description provides extended
+                                    information about the ingress rule.
                                   type: string
                                 fromPort:
                                   description: FromPort is the start of port range.
                                   format: int64
                                   type: integer
                                 ipv6CidrBlocks:
-                                  description: List of IPv6 CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                  description: List of IPv6 CIDR blocks to allow
+                                    access from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 natGatewaysIPsSource:
-                                  description: NatGatewaysIPsSource use the NAT gateways
-                                    IPs as the source for the ingress rule.
+                                  description: NatGatewaysIPsSource use the NAT
+                                    gateways IPs as the source for the ingress rule.
                                   type: boolean
                                 protocol:
-                                  description: Protocol is the protocol for the ingress
-                                    rule. Accepted values are "-1" (all), "4" (IP
-                                    in IP),"tcp", "udp", "icmp", and "58" (ICMPv6),
-                                    "50" (ESP).
+                                  description: Protocol is the protocol for the
+                                    ingress rule. Accepted values are "-1" (all), "4"
+                                    (IP in IP),"tcp", "udp", "icmp", and "58"
+                                    (ICMPv6), "50" (ESP).
                                   enum:
-                                  - "-1"
-                                  - "4"
+                                  - '-1'
+                                  - '4'
                                   - tcp
                                   - udp
                                   - icmp
-                                  - "58"
-                                  - "50"
+                                  - '58'
+                                  - '50'
                                   type: string
                                 sourceSecurityGroupIds:
                                   description: The security group id to allow access
@@ -1116,8 +1129,9 @@ spec:
                               description: SubnetSpec configures an AWS Subnet.
                               properties:
                                 availabilityZone:
-                                  description: AvailabilityZone defines the availability
-                                    zone to use for this subnet in the cluster's region.
+                                  description: AvailabilityZone defines the
+                                    availability zone to use for this subnet in the
+                                    cluster's region.
                                   type: string
                                 cidrBlock:
                                   description: CidrBlock is the CIDR block to be used
@@ -1146,10 +1160,10 @@ spec:
                                     IPv6 is only supported in managed clusters, this field cannot be set on AWSCluster object.
                                   type: boolean
                                 isPublic:
-                                  description: IsPublic defines the subnet as a public
-                                    subnet. A subnet is public when it is associated
-                                    with a route table that has a route to an internet
-                                    gateway.
+                                  description: IsPublic defines the subnet as a
+                                    public subnet. A subnet is public when it is
+                                    associated with a route table that has a route to
+                                    an internet gateway.
                                   type: boolean
                                 natGatewayId:
                                   description: |-
@@ -1176,8 +1190,8 @@ spec:
                                 tags:
                                   additionalProperties:
                                     type: string
-                                  description: Tags is a collection of tags describing
-                                    the resource.
+                                  description: Tags is a collection of tags
+                                    describing the resource.
                                   type: object
                                 zoneType:
                                   description: |-
@@ -1281,7 +1295,8 @@ spec:
                                     - none
                                     type: string
                                     x-kubernetes-validations:
-                                    - message: allowed values are 'none' and 'amazon-pool'
+                                    - message: allowed values are 'none' and
+                                        'amazon-pool'
                                       rule: self in ['none','amazon-pool']
                                 type: object
                               emptyRoutesDefaultVPCSecurityGroup:
@@ -1296,12 +1311,12 @@ spec:
                                   NOTE: This only applies when the VPC is managed by the Cluster API AWS controller.
                                 type: boolean
                               id:
-                                description: ID is the vpc-id of the VPC this provider
-                                  should use to create resources.
+                                description: ID is the vpc-id of the VPC this
+                                  provider should use to create resources.
                                 type: string
                               internetGatewayId:
-                                description: InternetGatewayID is the id of the internet
-                                  gateway associated with the VPC.
+                                description: InternetGatewayID is the id of the
+                                  internet gateway associated with the VPC.
                                 type: string
                               ipamPool:
                                 description: |-
@@ -1336,8 +1351,8 @@ spec:
                                     type: string
                                   egressOnlyInternetGatewayId:
                                     description: EgressOnlyInternetGatewayID is the
-                                      id of the egress only internet gateway associated
-                                      with an IPv6 enabled VPC.
+                                      id of the egress only internet gateway
+                                      associated with an IPv6 enabled VPC.
                                     type: string
                                   ipamPool:
                                     description: |-
@@ -1431,8 +1446,9 @@ spec:
                           BootstrapFormatIgnition feature flag to be enabled).
                         properties:
                           bestEffortDeleteObjects:
-                            description: BestEffortDeleteObjects defines whether access/permission
-                              errors during object deletion should be ignored.
+                            description: BestEffortDeleteObjects defines whether
+                              access/permission errors during object deletion should
+                              be ignored.
                             type: boolean
                           controlPlaneIAMInstanceProfile:
                             description: |-
@@ -1440,7 +1456,8 @@ spec:
                               to read control-plane node bootstrap data from S3 Bucket.
                             type: string
                           name:
-                            description: Name defines name of S3 Bucket to be created.
+                            description: Name defines name of S3 Bucket to be
+                              created.
                             maxLength: 63
                             minLength: 3
                             pattern: ^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$
@@ -1482,7 +1499,8 @@ spec:
                               properties:
                                 healthCheck:
                                   description: HealthCheck sets the optional custom
-                                    health check configuration to the API target group.
+                                    health check configuration to the API target
+                                    group.
                                   properties:
                                     intervalSeconds:
                                       description: |-
@@ -1582,8 +1600,8 @@ spec:
                               file of each instance. This is by default, false.
                             type: boolean
                           healthCheck:
-                            description: HealthCheck sets custom health check configuration
-                              to the API target group.
+                            description: HealthCheck sets custom health check
+                              configuration to the API target group.
                             properties:
                               intervalSeconds:
                                 description: |-
@@ -1639,41 +1657,43 @@ spec:
                               properties:
                                 cidrBlocks:
                                   description: List of CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                    from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 description:
-                                  description: Description provides extended information
-                                    about the ingress rule.
+                                  description: Description provides extended
+                                    information about the ingress rule.
                                   type: string
                                 fromPort:
                                   description: FromPort is the start of port range.
                                   format: int64
                                   type: integer
                                 ipv6CidrBlocks:
-                                  description: List of IPv6 CIDR blocks to allow access
-                                    from. Cannot be specified with SourceSecurityGroupID.
+                                  description: List of IPv6 CIDR blocks to allow
+                                    access from. Cannot be specified with
+                                    SourceSecurityGroupID.
                                   items:
                                     type: string
                                   type: array
                                 natGatewaysIPsSource:
-                                  description: NatGatewaysIPsSource use the NAT gateways
-                                    IPs as the source for the ingress rule.
+                                  description: NatGatewaysIPsSource use the NAT
+                                    gateways IPs as the source for the ingress rule.
                                   type: boolean
                                 protocol:
-                                  description: Protocol is the protocol for the ingress
-                                    rule. Accepted values are "-1" (all), "4" (IP
-                                    in IP),"tcp", "udp", "icmp", and "58" (ICMPv6),
-                                    "50" (ESP).
+                                  description: Protocol is the protocol for the
+                                    ingress rule. Accepted values are "-1" (all), "4"
+                                    (IP in IP),"tcp", "udp", "icmp", and "58"
+                                    (ICMPv6), "50" (ESP).
                                   enum:
-                                  - "-1"
-                                  - "4"
+                                  - '-1'
+                                  - '4'
                                   - tcp
                                   - udp
                                   - icmp
-                                  - "58"
-                                  - "50"
+                                  - '58'
+                                  - '50'
                                   type: string
                                 sourceSecurityGroupIds:
                                   description: The security group id to allow access
@@ -1726,7 +1746,8 @@ spec:
                               contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen. Once
                               set, the value cannot be changed.
                             maxLength: 32
-                            pattern: ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
+                            pattern:
+                              ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
                             type: string
                           preserveClientIP:
                             description: |-
@@ -1742,10 +1763,10 @@ spec:
                             - internal
                             type: string
                           subnets:
-                            description: Subnets sets the subnets that should be applied
-                              to the control plane load balancer (defaults to discovered
-                              subnets for managed VPCs or an empty set for unmanaged
-                              VPCs)
+                            description: Subnets sets the subnets that should be
+                              applied to the control plane load balancer (defaults to
+                              discovered subnets for managed VPCs or an empty set for
+                              unmanaged VPCs)
                             items:
                               type: string
                             type: array

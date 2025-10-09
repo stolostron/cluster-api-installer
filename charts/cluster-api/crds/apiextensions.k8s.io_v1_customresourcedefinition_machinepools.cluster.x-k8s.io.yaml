@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinepools.cluster.x-k8s.io
@@ -25,8 +25,8 @@ spec:
       jsonPath: .status.replicas
       name: Replicas
       type: string
-    - description: MachinePool status such as Terminating/Pending/Provisioning/Running/Failed
-        etc
+    - description: MachinePool status such as
+        Terminating/Pending/Provisioning/Running/Failed etc
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -64,13 +64,13 @@ spec:
             description: spec is the desired state of MachinePool.
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               failureDomains:
-                description: failureDomains is the list of failure domains this MachinePool
-                  should be attached to.
+                description: failureDomains is the list of failure domains this
+                  MachinePool should be attached to.
                 items:
                   type: string
                 type: array
@@ -249,8 +249,8 @@ spec:
                                 otherwise 422 (Unprocessable Entity) will be returned.
                               type: boolean
                             controller:
-                              description: If true, this reference points to the managing
-                                controller.
+                              description: If true, this reference points to the
+                                managing controller.
                               type: boolean
                             kind:
                               description: |-
@@ -347,8 +347,8 @@ spec:
                             type: string
                         type: object
                       clusterName:
-                        description: clusterName is the name of the Cluster this object
-                          belongs to.
+                        description: clusterName is the name of the Cluster this
+                          object belongs to.
                         minLength: 1
                         type: string
                       failureDomain:
@@ -447,10 +447,11 @@ spec:
                 description: bootstrapReady is the state of the bootstrap provider.
                 type: boolean
               conditions:
-                description: conditions define the current service state of the MachinePool.
+                description: conditions define the current service state of the
+                  MachinePool.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -477,7 +478,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -508,8 +510,8 @@ spec:
                 description: nodeRefs will point to the corresponding Nodes if it
                   they exist.
                 items:
-                  description: ObjectReference contains enough information to let
-                    you inspect or modify the referred object.
+                  description: ObjectReference contains enough information to let you
+                    inspect or modify the referred object.
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -553,8 +555,8 @@ spec:
                   x-kubernetes-map-type: atomic
                 type: array
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               phase:
@@ -569,7 +571,8 @@ spec:
                 format: int32
                 type: integer
               replicas:
-                description: replicas is the most recently observed number of replicas.
+                description: replicas is the most recently observed number of
+                  replicas.
                 format: int32
                 type: integer
               unavailableReplicas:
@@ -599,8 +602,8 @@ spec:
       jsonPath: .status.replicas
       name: Replicas
       type: string
-    - description: MachinePool status such as Terminating/Pending/Provisioning/Running/Failed
-        etc
+    - description: MachinePool status such as
+        Terminating/Pending/Provisioning/Running/Failed etc
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -638,13 +641,13 @@ spec:
             description: spec is the desired state of MachinePool.
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               failureDomains:
-                description: failureDomains is the list of failure domains this MachinePool
-                  should be attached to.
+                description: failureDomains is the list of failure domains this
+                  MachinePool should be attached to.
                 items:
                   type: string
                 type: array
@@ -760,8 +763,8 @@ spec:
                             type: string
                         type: object
                       clusterName:
-                        description: clusterName is the name of the Cluster this object
-                          belongs to.
+                        description: clusterName is the name of the Cluster this
+                          object belongs to.
                         minLength: 1
                         type: string
                       failureDomain:
@@ -860,10 +863,11 @@ spec:
                 description: bootstrapReady is the state of the bootstrap provider.
                 type: boolean
               conditions:
-                description: conditions define the current service state of the MachinePool.
+                description: conditions define the current service state of the
+                  MachinePool.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -890,7 +894,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -921,8 +926,8 @@ spec:
                 description: nodeRefs will point to the corresponding Nodes if it
                   they exist.
                 items:
-                  description: ObjectReference contains enough information to let
-                    you inspect or modify the referred object.
+                  description: ObjectReference contains enough information to let you
+                    inspect or modify the referred object.
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -966,8 +971,8 @@ spec:
                   x-kubernetes-map-type: atomic
                 type: array
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               phase:
@@ -982,7 +987,8 @@ spec:
                 format: int32
                 type: integer
               replicas:
-                description: replicas is the most recently observed number of replicas.
+                description: replicas is the most recently observed number of
+                  replicas.
                 format: int32
                 type: integer
               unavailableReplicas:
@@ -1017,8 +1023,8 @@ spec:
       jsonPath: .status.replicas
       name: Replicas
       type: string
-    - description: MachinePool status such as Terminating/Pending/Provisioning/Running/Failed
-        etc
+    - description: MachinePool status such as
+        Terminating/Pending/Provisioning/Running/Failed etc
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -1056,14 +1062,14 @@ spec:
             description: spec is the desired state of MachinePool.
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 maxLength: 63
                 minLength: 1
                 type: string
               failureDomains:
-                description: failureDomains is the list of failure domains this MachinePool
-                  should be attached to.
+                description: failureDomains is the list of failure domains this
+                  MachinePool should be attached to.
                 items:
                   maxLength: 256
                   minLength: 1
@@ -1187,8 +1193,8 @@ spec:
                             type: string
                         type: object
                       clusterName:
-                        description: clusterName is the name of the Cluster this object
-                          belongs to.
+                        description: clusterName is the name of the Cluster this
+                          object belongs to.
                         maxLength: 63
                         minLength: 1
                         type: string
@@ -1303,7 +1309,8 @@ spec:
                                 Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                               maxLength: 316
                               minLength: 1
-                              pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              pattern:
+                                ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                               type: string
                             polarity:
                               description: |-
@@ -1353,10 +1360,11 @@ spec:
                 description: bootstrapReady is the state of the bootstrap provider.
                 type: boolean
               conditions:
-                description: conditions define the current service state of the MachinePool.
+                description: conditions define the current service state of the
+                  MachinePool.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -1388,7 +1396,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -1428,8 +1437,8 @@ spec:
                 description: nodeRefs will point to the corresponding Nodes if it
                   they exist.
                 items:
-                  description: ObjectReference contains enough information to let
-                    you inspect or modify the referred object.
+                  description: ObjectReference contains enough information to let you
+                    inspect or modify the referred object.
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -1474,8 +1483,8 @@ spec:
                 maxItems: 10000
                 type: array
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               phase:
@@ -1499,7 +1508,8 @@ spec:
                 format: int32
                 type: integer
               replicas:
-                description: replicas is the most recently observed number of replicas.
+                description: replicas is the most recently observed number of
+                  replicas.
                 format: int32
                 type: integer
               unavailableReplicas:
@@ -1514,13 +1524,13 @@ spec:
                 format: int32
                 type: integer
               v1beta2:
-                description: v1beta2 groups all the fields that will be added or modified
-                  in MachinePool's status with the V1Beta2 version.
+                description: v1beta2 groups all the fields that will be added or
+                  modified in MachinePool's status with the V1Beta2 version.
                 properties:
                   availableReplicas:
-                    description: availableReplicas is the number of available replicas
-                      for this MachinePool. A machine is considered available when
-                      Machine's Available condition is true.
+                    description: availableReplicas is the number of available
+                      replicas for this MachinePool. A machine is considered
+                      available when Machine's Available condition is true.
                     format: int32
                     type: integer
                   conditions:
@@ -1567,14 +1577,16 @@ spec:
                           description: status of the condition, one of True, False,
                             Unknown.
                           enum:
-                          - "True"
-                          - "False"
+                          - 'True'
+                          - 'False'
                           - Unknown
                           type: string
                         type:
-                          description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          description: type of condition in CamelCase or in
+                            foo.example.com/CamelCase.
                           maxLength: 316
-                          pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                          pattern:
+                            ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                           type: string
                       required:
                       - lastTransitionTime
@@ -1595,9 +1607,9 @@ spec:
                     format: int32
                     type: integer
                   upToDateReplicas:
-                    description: upToDateReplicas is the number of up-to-date replicas
-                      targeted by this MachinePool. A machine is considered up-to-date
-                      when Machine's UpToDate condition is true.
+                    description: upToDateReplicas is the number of up-to-date
+                      replicas targeted by this MachinePool. A machine is considered
+                      up-to-date when Machine's UpToDate condition is true.
                     format: int32
                     type: integer
                 type: object

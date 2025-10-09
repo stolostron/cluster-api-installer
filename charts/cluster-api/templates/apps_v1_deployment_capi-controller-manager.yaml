@@ -1,3 +1,5 @@
+# Resource: apps_v1_deployment_capi-system_capi-controller-manager
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -1,3 +1,5 @@
+# Resource: v1_configmap_capm3-system_capm3-capm3fasttrack-configmap
+---
 apiVersion: v1
 data:
   CAPM3_FAST_TRACK: ${CAPM3_FAST_TRACK:='false'}

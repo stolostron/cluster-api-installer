@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -116,7 +116,8 @@ spec:
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     maxLength: 512
                     type: string
                   port:
@@ -161,12 +162,13 @@ spec:
                       contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen. Once
                       set, the value cannot be changed.
                     maxLength: 32
-                    pattern: ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
+                    pattern:
+                      ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
                     type: string
                   scheme:
                     default: internet-facing
-                    description: Scheme sets the scheme of the load balancer (defaults
-                      to internet-facing)
+                    description: Scheme sets the scheme of the load balancer
+                      (defaults to internet-facing)
                     enum:
                     - internet-facing
                     - internal
@@ -228,7 +230,8 @@ spec:
                   cluster machines unless a machine specifies a different ImageLookupOrg.
                 type: string
               network:
-                description: NetworkSpec encapsulates all things related to AWS network.
+                description: NetworkSpec encapsulates all things related to AWS
+                  network.
                 properties:
                   cni:
                     description: CNI configuration
@@ -238,8 +241,8 @@ spec:
                           CNIIngressRules specify rules to apply to control plane and worker node security groups.
                           The source for the rule will be set to control plane and worker security group IDs.
                         items:
-                          description: CNIIngressRule defines an AWS ingress rule
-                            for CNI requirements.
+                          description: CNIIngressRule defines an AWS ingress rule for
+                            CNI requirements.
                           properties:
                             description:
                               type: string
@@ -297,9 +300,9 @@ spec:
                             IPv6 is only supported in managed clusters, this field cannot be set on AWSCluster object.
                           type: boolean
                         isPublic:
-                          description: IsPublic defines the subnet as a public subnet.
-                            A subnet is public when it is associated with a route
-                            table that has a route to an internet gateway.
+                          description: IsPublic defines the subnet as a public
+                            subnet. A subnet is public when it is associated with a
+                            route table that has a route to an internet gateway.
                           type: boolean
                         natGatewayId:
                           description: |-
@@ -307,8 +310,8 @@ spec:
                             Ignored unless the subnet is managed by the provider, in which case this is set on the public subnet where the NAT gateway resides. It is then used to determine routes for private subnets in the same AZ as the public subnet.
                           type: string
                         routeTableId:
-                          description: RouteTableID is the routing table id associated
-                            with the subnet.
+                          description: RouteTableID is the routing table id
+                            associated with the subnet.
                           type: string
                         tags:
                           additionalProperties:
@@ -352,8 +355,8 @@ spec:
                           use to create resources.
                         type: string
                       internetGatewayId:
-                        description: InternetGatewayID is the id of the internet gateway
-                          associated with the VPC.
+                        description: InternetGatewayID is the id of the internet
+                          gateway associated with the VPC.
                         type: string
                       ipv6:
                         description: |-
@@ -361,13 +364,13 @@ spec:
                           This field cannot be set on AWSCluster object.
                         properties:
                           cidrBlock:
-                            description: CidrBlock is the CIDR block provided by Amazon
-                              when VPC has enabled IPv6.
+                            description: CidrBlock is the CIDR block provided by
+                              Amazon when VPC has enabled IPv6.
                             type: string
                           egressOnlyInternetGatewayId:
-                            description: EgressOnlyInternetGatewayID is the id of
-                              the egress only internet gateway associated with an
-                              IPv6 enabled VPC.
+                            description: EgressOnlyInternetGatewayID is the id of the
+                              egress only internet gateway associated with an IPv6
+                              enabled VPC.
                             type: string
                           poolId:
                             description: PoolID is the IP pool which must be defined
@@ -377,7 +380,8 @@ spec:
                       tags:
                         additionalProperties:
                           type: string
-                        description: Tags is a collection of tags describing the resource.
+                        description: Tags is a collection of tags describing the
+                          resource.
                         type: object
                     type: object
                 type: object
@@ -427,7 +431,8 @@ spec:
                 description: Instance describes an AWS instance.
                 properties:
                   addresses:
-                    description: Addresses contains the AWS instance associated addresses.
+                    description: Addresses contains the AWS instance associated
+                      addresses.
                     items:
                       description: MachineAddress contains information for the node's
                         address.
@@ -438,8 +443,9 @@ spec:
                           minLength: 1
                           type: string
                         type:
-                          description: type is the machine address type, one of Hostname,
-                            ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+                          description: type is the machine address type, one of
+                            Hostname, ExternalIP, InternalIP, ExternalDNS or
+                            InternalDNS.
                           enum:
                           - Hostname
                           - ExternalIP
@@ -456,8 +462,8 @@ spec:
                     description: Availability zone of instance
                     type: string
                   ebsOptimized:
-                    description: Indicates whether the instance is optimized for Amazon
-                      EBS I/O.
+                    description: Indicates whether the instance is optimized for
+                      Amazon EBS I/O.
                     type: boolean
                   enaSupport:
                     description: Specifies whether enhanced networking with ENA is
@@ -481,7 +487,8 @@ spec:
                       type: string
                     type: array
                   nonRootVolumes:
-                    description: Configuration options for the non root storage volumes.
+                    description: Configuration options for the non root storage
+                      volumes.
                     items:
                       description: Volume encapsulates the configuration options for
                         the storage device.
@@ -490,8 +497,8 @@ spec:
                           description: Device name
                           type: string
                         encrypted:
-                          description: Encrypted is whether the volume should be encrypted
-                            or not.
+                          description: Encrypted is whether the volume should be
+                            encrypted or not.
                           type: boolean
                         encryptionKey:
                           description: |-
@@ -512,8 +519,8 @@ spec:
                           minimum: 8
                           type: integer
                         throughput:
-                          description: Throughput to provision in MiB/s supported
-                            for the volume type. Not applicable to all types.
+                          description: Throughput to provision in MiB/s supported for
+                            the volume type. Not applicable to all types.
                           format: int64
                           type: integer
                         type:
@@ -528,8 +535,8 @@ spec:
                     description: The private IPv4 address assigned to the instance.
                     type: string
                   publicIp:
-                    description: The public IPv4 address assigned to the instance,
-                      if applicable.
+                    description: The public IPv4 address assigned to the instance, if
+                      applicable.
                     type: string
                   rootVolume:
                     description: Configuration options for the root storage volume.
@@ -538,8 +545,8 @@ spec:
                         description: Device name
                         type: string
                       encrypted:
-                        description: Encrypted is whether the volume should be encrypted
-                          or not.
+                        description: Encrypted is whether the volume should be
+                          encrypted or not.
                         type: boolean
                       encryptionKey:
                         description: |-
@@ -621,8 +628,8 @@ spec:
                 description: Conditions provide observations of the operational state
                   of a Cluster API resource.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -654,7 +661,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -683,8 +691,8 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
                 description: FailureDomains is a slice of FailureDomains.
@@ -721,8 +729,8 @@ spec:
                         description: DNSName is the dns name of the load balancer.
                         type: string
                       healthChecks:
-                        description: HealthCheck is the classic elb health check associated
-                          with the load balancer.
+                        description: HealthCheck is the classic elb health check
+                          associated with the load balancer.
                         properties:
                           healthyThreshold:
                             format: int64
@@ -765,15 +773,15 @@ spec:
                               format: int64
                               type: integer
                             instanceProtocol:
-                              description: ClassicELBProtocol defines listener protocols
-                                for a classic load balancer.
+                              description: ClassicELBProtocol defines listener
+                                protocols for a classic load balancer.
                               type: string
                             port:
                               format: int64
                               type: integer
                             protocol:
-                              description: ClassicELBProtocol defines listener protocols
-                                for a classic load balancer.
+                              description: ClassicELBProtocol defines listener
+                                protocols for a classic load balancer.
                               type: string
                           required:
                           - instancePort
@@ -788,8 +796,8 @@ spec:
                           defined in the region. It also serves as identifier.
                         type: string
                       scheme:
-                        description: Scheme is the load balancer scheme, either internet-facing
-                          or private.
+                        description: Scheme is the load balancer scheme, either
+                          internet-facing or private.
                         type: string
                       securityGroupIds:
                         description: SecurityGroupIDs is an array of security groups
@@ -798,8 +806,8 @@ spec:
                           type: string
                         type: array
                       subnetIds:
-                        description: SubnetIDs is an array of subnets in the VPC attached
-                          to the load balancer.
+                        description: SubnetIDs is an array of subnets in the VPC
+                          attached to the load balancer.
                         items:
                           type: string
                         type: array
@@ -825,8 +833,9 @@ spec:
                               security groups.
                             properties:
                               cidrBlocks:
-                                description: List of CIDR blocks to allow access from.
-                                  Cannot be specified with SourceSecurityGroupID.
+                                description: List of CIDR blocks to allow access
+                                  from. Cannot be specified with
+                                  SourceSecurityGroupID.
                                 items:
                                   type: string
                                 type: array
@@ -837,13 +846,14 @@ spec:
                                 type: integer
                               ipv6CidrBlocks:
                                 description: List of IPv6 CIDR blocks to allow access
-                                  from. Cannot be specified with SourceSecurityGroupID.
+                                  from. Cannot be specified with
+                                  SourceSecurityGroupID.
                                 items:
                                   type: string
                                 type: array
                               protocol:
-                                description: SecurityGroupProtocol defines the protocol
-                                  type for a security group rule.
+                                description: SecurityGroupProtocol defines the
+                                  protocol type for a security group rule.
                                 type: string
                               sourceSecurityGroupIds:
                                 description: The security group id to allow access
@@ -867,8 +877,8 @@ spec:
                         tags:
                           additionalProperties:
                             type: string
-                          description: Tags is a map of tags associated with the security
-                            group.
+                          description: Tags is a map of tags associated with the
+                            security group.
                           type: object
                       required:
                       - id
@@ -982,7 +992,8 @@ spec:
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     maxLength: 512
                     type: string
                   port:
@@ -1063,7 +1074,8 @@ spec:
                               type: integer
                           type: object
                         port:
-                          description: Port sets the port for the additional listener.
+                          description: Port sets the port for the additional
+                            listener.
                           format: int64
                           maximum: 65535
                           minimum: 1
@@ -1159,18 +1171,18 @@ spec:
                     description: IngressRules sets the ingress rules for the control
                       plane load balancer.
                     items:
-                      description: IngressRule defines an AWS ingress rule for security
-                        groups.
+                      description: IngressRule defines an AWS ingress rule for
+                        security groups.
                       properties:
                         cidrBlocks:
-                          description: List of CIDR blocks to allow access from. Cannot
-                            be specified with SourceSecurityGroupID.
+                          description: List of CIDR blocks to allow access from.
+                            Cannot be specified with SourceSecurityGroupID.
                           items:
                             type: string
                           type: array
                         description:
-                          description: Description provides extended information about
-                            the ingress rule.
+                          description: Description provides extended information
+                            about the ingress rule.
                           type: string
                         fromPort:
                           description: FromPort is the start of port range.
@@ -1191,13 +1203,13 @@ spec:
                             Accepted values are "-1" (all), "4" (IP in IP),"tcp",
                             "udp", "icmp", and "58" (ICMPv6), "50" (ESP).
                           enum:
-                          - "-1"
-                          - "4"
+                          - '-1'
+                          - '4'
                           - tcp
                           - udp
                           - icmp
-                          - "58"
-                          - "50"
+                          - '58'
+                          - '50'
                           type: string
                         sourceSecurityGroupIds:
                           description: The security group id to allow access from.
@@ -1210,8 +1222,8 @@ spec:
                             The security group role to allow access from. Cannot be specified with CidrBlocks.
                             The field will be combined with source security group IDs if specified.
                           items:
-                            description: SecurityGroupRole defines the unique role
-                              of a security group.
+                            description: SecurityGroupRole defines the unique role of
+                              a security group.
                             enum:
                             - bastion
                             - node
@@ -1250,7 +1262,8 @@ spec:
                       contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen. Once
                       set, the value cannot be changed.
                     maxLength: 32
-                    pattern: ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
+                    pattern:
+                      ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
                     type: string
                   preserveClientIP:
                     description: |-
@@ -1259,8 +1272,8 @@ spec:
                     type: boolean
                   scheme:
                     default: internet-facing
-                    description: Scheme sets the scheme of the load balancer (defaults
-                      to internet-facing)
+                    description: Scheme sets the scheme of the load balancer
+                      (defaults to internet-facing)
                     enum:
                     - internet-facing
                     - internal
@@ -1322,24 +1335,25 @@ spec:
                   cluster machines unless a machine specifies a different ImageLookupOrg.
                 type: string
               network:
-                description: NetworkSpec encapsulates all things related to AWS network.
+                description: NetworkSpec encapsulates all things related to AWS
+                  network.
                 properties:
                   additionalControlPlaneIngressRules:
                     description: AdditionalControlPlaneIngressRules is an optional
                       set of ingress rules to add to the control plane
                     items:
-                      description: IngressRule defines an AWS ingress rule for security
-                        groups.
+                      description: IngressRule defines an AWS ingress rule for
+                        security groups.
                       properties:
                         cidrBlocks:
-                          description: List of CIDR blocks to allow access from. Cannot
-                            be specified with SourceSecurityGroupID.
+                          description: List of CIDR blocks to allow access from.
+                            Cannot be specified with SourceSecurityGroupID.
                           items:
                             type: string
                           type: array
                         description:
-                          description: Description provides extended information about
-                            the ingress rule.
+                          description: Description provides extended information
+                            about the ingress rule.
                           type: string
                         fromPort:
                           description: FromPort is the start of port range.
@@ -1360,13 +1374,13 @@ spec:
                             Accepted values are "-1" (all), "4" (IP in IP),"tcp",
                             "udp", "icmp", and "58" (ICMPv6), "50" (ESP).
                           enum:
-                          - "-1"
-                          - "4"
+                          - '-1'
+                          - '4'
                           - tcp
                           - udp
                           - icmp
-                          - "58"
-                          - "50"
+                          - '58'
+                          - '50'
                           type: string
                         sourceSecurityGroupIds:
                           description: The security group id to allow access from.
@@ -1379,8 +1393,8 @@ spec:
                             The security group role to allow access from. Cannot be specified with CidrBlocks.
                             The field will be combined with source security group IDs if specified.
                           items:
-                            description: SecurityGroupRole defines the unique role
-                              of a security group.
+                            description: SecurityGroupRole defines the unique role of
+                              a security group.
                             enum:
                             - bastion
                             - node
@@ -1405,18 +1419,18 @@ spec:
                     description: AdditionalNodeIngressRules is an optional set of
                       ingress rules to add to every node
                     items:
-                      description: IngressRule defines an AWS ingress rule for security
-                        groups.
+                      description: IngressRule defines an AWS ingress rule for
+                        security groups.
                       properties:
                         cidrBlocks:
-                          description: List of CIDR blocks to allow access from. Cannot
-                            be specified with SourceSecurityGroupID.
+                          description: List of CIDR blocks to allow access from.
+                            Cannot be specified with SourceSecurityGroupID.
                           items:
                             type: string
                           type: array
                         description:
-                          description: Description provides extended information about
-                            the ingress rule.
+                          description: Description provides extended information
+                            about the ingress rule.
                           type: string
                         fromPort:
                           description: FromPort is the start of port range.
@@ -1437,13 +1451,13 @@ spec:
                             Accepted values are "-1" (all), "4" (IP in IP),"tcp",
                             "udp", "icmp", and "58" (ICMPv6), "50" (ESP).
                           enum:
-                          - "-1"
-                          - "4"
+                          - '-1'
+                          - '4'
                           - tcp
                           - udp
                           - icmp
-                          - "58"
-                          - "50"
+                          - '58'
+                          - '50'
                           type: string
                         sourceSecurityGroupIds:
                           description: The security group id to allow access from.
@@ -1456,8 +1470,8 @@ spec:
                             The security group role to allow access from. Cannot be specified with CidrBlocks.
                             The field will be combined with source security group IDs if specified.
                           items:
-                            description: SecurityGroupRole defines the unique role
-                              of a security group.
+                            description: SecurityGroupRole defines the unique role of
+                              a security group.
                             enum:
                             - bastion
                             - node
@@ -1486,8 +1500,8 @@ spec:
                           CNIIngressRules specify rules to apply to control plane and worker node security groups.
                           The source for the rule will be set to control plane and worker security group IDs.
                         items:
-                          description: CNIIngressRule defines an AWS ingress rule
-                            for CNI requirements.
+                          description: CNIIngressRule defines an AWS ingress rule for
+                            CNI requirements.
                           properties:
                             description:
                               type: string
@@ -1559,9 +1573,9 @@ spec:
                             IPv6 is only supported in managed clusters, this field cannot be set on AWSCluster object.
                           type: boolean
                         isPublic:
-                          description: IsPublic defines the subnet as a public subnet.
-                            A subnet is public when it is associated with a route
-                            table that has a route to an internet gateway.
+                          description: IsPublic defines the subnet as a public
+                            subnet. A subnet is public when it is associated with a
+                            route table that has a route to an internet gateway.
                           type: boolean
                         natGatewayId:
                           description: |-
@@ -1582,8 +1596,8 @@ spec:
                             This field is populated when the provider manages the subnet.
                           type: string
                         routeTableId:
-                          description: RouteTableID is the routing table id associated
-                            with the subnet.
+                          description: RouteTableID is the routing table id
+                            associated with the subnet.
                           type: string
                         tags:
                           additionalProperties:
@@ -1712,8 +1726,8 @@ spec:
                           use to create resources.
                         type: string
                       internetGatewayId:
-                        description: InternetGatewayID is the id of the internet gateway
-                          associated with the VPC.
+                        description: InternetGatewayID is the id of the internet
+                          gateway associated with the VPC.
                         type: string
                       ipamPool:
                         description: |-
@@ -1725,8 +1739,8 @@ spec:
                               should use to create VPC.
                             type: string
                           name:
-                            description: Name is the name of the IPAM pool this provider
-                              should use to create VPC.
+                            description: Name is the name of the IPAM pool this
+                              provider should use to create VPC.
                             type: string
                           netmaskLength:
                             description: |-
@@ -1747,9 +1761,9 @@ spec:
                               Mutually exclusive with IPAMPool.
                             type: string
                           egressOnlyInternetGatewayId:
-                            description: EgressOnlyInternetGatewayID is the id of
-                              the egress only internet gateway associated with an
-                              IPv6 enabled VPC.
+                            description: EgressOnlyInternetGatewayID is the id of the
+                              egress only internet gateway associated with an IPv6
+                              enabled VPC.
                             type: string
                           ipamPool:
                             description: |-
@@ -1757,8 +1771,8 @@ spec:
                               Mutually exclusive with CidrBlock.
                             properties:
                               id:
-                                description: ID is the ID of the IPAM pool this provider
-                                  should use to create VPC.
+                                description: ID is the ID of the IPAM pool this
+                                  provider should use to create VPC.
                                 type: string
                               name:
                                 description: Name is the name of the IPAM pool this
@@ -1794,9 +1808,9 @@ spec:
                           Defaults to none. Mutually exclusive with IPAMPool. This makes sense to use if, for example, you want to use
                           a separate IP range for pods (e.g. Cilium ENI mode).
                         items:
-                          description: VpcCidrBlock defines the CIDR block and settings
-                            to associate with the managed VPC. Currently, only IPv4
-                            is supported.
+                          description: VpcCidrBlock defines the CIDR block and
+                            settings to associate with the managed VPC. Currently,
+                            only IPv4 is supported.
                           properties:
                             ipv4CidrBlock:
                               description: IPv4CidrBlock is the IPv4 CIDR block to
@@ -1822,13 +1836,14 @@ spec:
                       tags:
                         additionalProperties:
                           type: string
-                        description: Tags is a collection of tags describing the resource.
+                        description: Tags is a collection of tags describing the
+                          resource.
                         type: object
                     type: object
                 type: object
               partition:
-                description: Partition is the AWS security partition being used. Defaults
-                  to "aws"
+                description: Partition is the AWS security partition being used.
+                  Defaults to "aws"
                 type: string
               region:
                 description: The AWS Region the cluster lives in.
@@ -1841,8 +1856,9 @@ spec:
                   BootstrapFormatIgnition feature flag to be enabled).
                 properties:
                   bestEffortDeleteObjects:
-                    description: BestEffortDeleteObjects defines whether access/permission
-                      errors during object deletion should be ignored.
+                    description: BestEffortDeleteObjects defines whether
+                      access/permission errors during object deletion should be
+                      ignored.
                     type: boolean
                   controlPlaneIAMInstanceProfile:
                     description: |-
@@ -1947,7 +1963,8 @@ spec:
                               type: integer
                           type: object
                         port:
-                          description: Port sets the port for the additional listener.
+                          description: Port sets the port for the additional
+                            listener.
                           format: int64
                           maximum: 65535
                           minimum: 1
@@ -2043,18 +2060,18 @@ spec:
                     description: IngressRules sets the ingress rules for the control
                       plane load balancer.
                     items:
-                      description: IngressRule defines an AWS ingress rule for security
-                        groups.
+                      description: IngressRule defines an AWS ingress rule for
+                        security groups.
                       properties:
                         cidrBlocks:
-                          description: List of CIDR blocks to allow access from. Cannot
-                            be specified with SourceSecurityGroupID.
+                          description: List of CIDR blocks to allow access from.
+                            Cannot be specified with SourceSecurityGroupID.
                           items:
                             type: string
                           type: array
                         description:
-                          description: Description provides extended information about
-                            the ingress rule.
+                          description: Description provides extended information
+                            about the ingress rule.
                           type: string
                         fromPort:
                           description: FromPort is the start of port range.
@@ -2075,13 +2092,13 @@ spec:
                             Accepted values are "-1" (all), "4" (IP in IP),"tcp",
                             "udp", "icmp", and "58" (ICMPv6), "50" (ESP).
                           enum:
-                          - "-1"
-                          - "4"
+                          - '-1'
+                          - '4'
                           - tcp
                           - udp
                           - icmp
-                          - "58"
-                          - "50"
+                          - '58'
+                          - '50'
                           type: string
                         sourceSecurityGroupIds:
                           description: The security group id to allow access from.
@@ -2094,8 +2111,8 @@ spec:
                             The security group role to allow access from. Cannot be specified with CidrBlocks.
                             The field will be combined with source security group IDs if specified.
                           items:
-                            description: SecurityGroupRole defines the unique role
-                              of a security group.
+                            description: SecurityGroupRole defines the unique role of
+                              a security group.
                             enum:
                             - bastion
                             - node
@@ -2134,7 +2151,8 @@ spec:
                       contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen. Once
                       set, the value cannot be changed.
                     maxLength: 32
-                    pattern: ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
+                    pattern:
+                      ^[A-Za-z0-9]([A-Za-z0-9]{0,31}|[-A-Za-z0-9]{0,30}[A-Za-z0-9])$
                     type: string
                   preserveClientIP:
                     description: |-
@@ -2143,8 +2161,8 @@ spec:
                     type: boolean
                   scheme:
                     default: internet-facing
-                    description: Scheme sets the scheme of the load balancer (defaults
-                      to internet-facing)
+                    description: Scheme sets the scheme of the load balancer
+                      (defaults to internet-facing)
                     enum:
                     - internet-facing
                     - internal
@@ -2170,7 +2188,8 @@ spec:
                 description: Instance describes an AWS instance.
                 properties:
                   addresses:
-                    description: Addresses contains the AWS instance associated addresses.
+                    description: Addresses contains the AWS instance associated
+                      addresses.
                     items:
                       description: MachineAddress contains information for the node's
                         address.
@@ -2181,8 +2200,9 @@ spec:
                           minLength: 1
                           type: string
                         type:
-                          description: type is the machine address type, one of Hostname,
-                            ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+                          description: type is the machine address type, one of
+                            Hostname, ExternalIP, InternalIP, ExternalDNS or
+                            InternalDNS.
                           enum:
                           - Hostname
                           - ExternalIP
@@ -2205,12 +2225,12 @@ spec:
                   capacityReservationPreference:
                     allOf:
                     - enum:
-                      - ""
+                      - ''
                       - None
                       - CapacityReservationsOnly
                       - Open
                     - enum:
-                      - ""
+                      - ''
                       - None
                       - CapacityReservationsOnly
                       - Open
@@ -2246,8 +2266,8 @@ spec:
                         type: string
                     type: object
                   ebsOptimized:
-                    description: Indicates whether the instance is optimized for Amazon
-                      EBS I/O.
+                    description: Indicates whether the instance is optimized for
+                      Amazon EBS I/O.
                     type: boolean
                   enaSupport:
                     description: Specifies whether enhanced networking with ENA is
@@ -2364,7 +2384,8 @@ spec:
                       type: string
                     type: array
                   nonRootVolumes:
-                    description: Configuration options for the non root storage volumes.
+                    description: Configuration options for the non root storage
+                      volumes.
                     items:
                       description: Volume encapsulates the configuration options for
                         the storage device.
@@ -2373,8 +2394,8 @@ spec:
                           description: Device name
                           type: string
                         encrypted:
-                          description: Encrypted is whether the volume should be encrypted
-                            or not.
+                          description: Encrypted is whether the volume should be
+                            encrypted or not.
                           type: boolean
                         encryptionKey:
                           description: |-
@@ -2395,8 +2416,8 @@ spec:
                           minimum: 8
                           type: integer
                         throughput:
-                          description: Throughput to provision in MiB/s supported
-                            for the volume type. Not applicable to all types.
+                          description: Throughput to provision in MiB/s supported for
+                            the volume type. Not applicable to all types.
                           format: int64
                           type: integer
                         type:
@@ -2408,8 +2429,8 @@ spec:
                       type: object
                     type: array
                   placementGroupName:
-                    description: PlacementGroupName specifies the name of the placement
-                      group in which to launch the instance.
+                    description: PlacementGroupName specifies the name of the
+                      placement group in which to launch the instance.
                     type: string
                   placementGroupPartition:
                     description: |-
@@ -2421,17 +2442,18 @@ spec:
                     minimum: 1
                     type: integer
                   privateDnsName:
-                    description: PrivateDNSName is the options for the instance hostname.
+                    description: PrivateDNSName is the options for the instance
+                      hostname.
                     properties:
                       enableResourceNameDnsAAAARecord:
-                        description: EnableResourceNameDNSAAAARecord indicates whether
-                          to respond to DNS queries for instance hostnames with DNS
-                          AAAA records.
+                        description: EnableResourceNameDNSAAAARecord indicates
+                          whether to respond to DNS queries for instance hostnames
+                          with DNS AAAA records.
                         type: boolean
                       enableResourceNameDnsARecord:
                         description: EnableResourceNameDNSARecord indicates whether
-                          to respond to DNS queries for instance hostnames with DNS
-                          A records.
+                          to respond to DNS queries for instance hostnames with DNS A
+                          records.
                         type: boolean
                       hostnameType:
                         description: The type of hostname to assign to an instance.
@@ -2448,8 +2470,8 @@ spec:
                       IP on instance launch
                     type: boolean
                   publicIp:
-                    description: The public IPv4 address assigned to the instance,
-                      if applicable.
+                    description: The public IPv4 address assigned to the instance, if
+                      applicable.
                     type: string
                   rootVolume:
                     description: Configuration options for the root storage volume.
@@ -2458,8 +2480,8 @@ spec:
                         description: Device name
                         type: string
                       encrypted:
-                        description: Encrypted is whether the volume should be encrypted
-                          or not.
+                        description: Encrypted is whether the volume should be
+                          encrypted or not.
                         type: boolean
                       encryptionKey:
                         description: |-
@@ -2541,8 +2563,8 @@ spec:
                 description: Conditions provide observations of the operational state
                   of a Cluster API resource.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -2574,7 +2596,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -2603,8 +2626,8 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
                 description: FailureDomains is a slice of FailureDomains.
@@ -2613,7 +2636,8 @@ spec:
                 description: NetworkStatus encapsulates AWS networking resources.
                 properties:
                   apiServerElb:
-                    description: APIServerELB is the Kubernetes api server load balancer.
+                    description: APIServerELB is the Kubernetes api server load
+                      balancer.
                     properties:
                       arn:
                         description: |-
@@ -2647,8 +2671,8 @@ spec:
                       elbAttributes:
                         additionalProperties:
                           type: string
-                        description: ELBAttributes defines extra attributes associated
-                          with v2 load balancers.
+                        description: ELBAttributes defines extra attributes
+                          associated with v2 load balancers.
                         type: object
                       elbListeners:
                         description: ELBListeners is an array of listeners associated
@@ -2661,8 +2685,8 @@ spec:
                               format: int64
                               type: integer
                             protocol:
-                              description: ELBProtocol defines listener protocols
-                                for a load balancer.
+                              description: ELBProtocol defines listener protocols for
+                                a load balancer.
                               type: string
                             targetGroup:
                               description: |-
@@ -2670,8 +2694,8 @@ spec:
                                 This is created first, and the ARN is then passed to the listener.
                               properties:
                                 name:
-                                  description: Name of the TargetGroup. Must be unique
-                                    over the same group of listeners.
+                                  description: Name of the TargetGroup. Must be
+                                    unique over the same group of listeners.
                                   maxLength: 32
                                   type: string
                                 port:
@@ -2727,8 +2751,8 @@ spec:
                           type: object
                         type: array
                       healthChecks:
-                        description: HealthCheck is the classic elb health check associated
-                          with the load balancer.
+                        description: HealthCheck is the classic elb health check
+                          associated with the load balancer.
                         properties:
                           healthyThreshold:
                             format: int64
@@ -2761,8 +2785,8 @@ spec:
                         type: object
                       listeners:
                         description: ClassicELBListeners is an array of classic elb
-                          listeners associated with the load balancer. There must
-                          be at least one.
+                          listeners associated with the load balancer. There must be
+                          at least one.
                         items:
                           description: ClassicELBListener defines an AWS classic load
                             balancer listener.
@@ -2771,15 +2795,15 @@ spec:
                               format: int64
                               type: integer
                             instanceProtocol:
-                              description: ELBProtocol defines listener protocols
-                                for a load balancer.
+                              description: ELBProtocol defines listener protocols for
+                                a load balancer.
                               type: string
                             port:
                               format: int64
                               type: integer
                             protocol:
-                              description: ELBProtocol defines listener protocols
-                                for a load balancer.
+                              description: ELBProtocol defines listener protocols for
+                                a load balancer.
                               type: string
                           required:
                           - instancePort
@@ -2789,8 +2813,8 @@ spec:
                           type: object
                         type: array
                       loadBalancerType:
-                        description: LoadBalancerType sets the type for a load balancer.
-                          The default type is classic.
+                        description: LoadBalancerType sets the type for a load
+                          balancer. The default type is classic.
                         enum:
                         - classic
                         - elb
@@ -2803,8 +2827,8 @@ spec:
                           defined in the region. It also serves as identifier.
                         type: string
                       scheme:
-                        description: Scheme is the load balancer scheme, either internet-facing
-                          or private.
+                        description: Scheme is the load balancer scheme, either
+                          internet-facing or private.
                         type: string
                       securityGroupIds:
                         description: SecurityGroupIDs is an array of security groups
@@ -2813,8 +2837,8 @@ spec:
                           type: string
                         type: array
                       subnetIds:
-                        description: SubnetIDs is an array of subnets in the VPC attached
-                          to the load balancer.
+                        description: SubnetIDs is an array of subnets in the VPC
+                          attached to the load balancer.
                         items:
                           type: string
                         type: array
@@ -2867,8 +2891,8 @@ spec:
                       elbAttributes:
                         additionalProperties:
                           type: string
-                        description: ELBAttributes defines extra attributes associated
-                          with v2 load balancers.
+                        description: ELBAttributes defines extra attributes
+                          associated with v2 load balancers.
                         type: object
                       elbListeners:
                         description: ELBListeners is an array of listeners associated
@@ -2881,8 +2905,8 @@ spec:
                               format: int64
                               type: integer
                             protocol:
-                              description: ELBProtocol defines listener protocols
-                                for a load balancer.
+                              description: ELBProtocol defines listener protocols for
+                                a load balancer.
                               type: string
                             targetGroup:
                               description: |-
@@ -2890,8 +2914,8 @@ spec:
                                 This is created first, and the ARN is then passed to the listener.
                               properties:
                                 name:
-                                  description: Name of the TargetGroup. Must be unique
-                                    over the same group of listeners.
+                                  description: Name of the TargetGroup. Must be
+                                    unique over the same group of listeners.
                                   maxLength: 32
                                   type: string
                                 port:
@@ -2947,8 +2971,8 @@ spec:
                           type: object
                         type: array
                       healthChecks:
-                        description: HealthCheck is the classic elb health check associated
-                          with the load balancer.
+                        description: HealthCheck is the classic elb health check
+                          associated with the load balancer.
                         properties:
                           healthyThreshold:
                             format: int64
@@ -2981,8 +3005,8 @@ spec:
                         type: object
                       listeners:
                         description: ClassicELBListeners is an array of classic elb
-                          listeners associated with the load balancer. There must
-                          be at least one.
+                          listeners associated with the load balancer. There must be
+                          at least one.
                         items:
                           description: ClassicELBListener defines an AWS classic load
                             balancer listener.
@@ -2991,15 +3015,15 @@ spec:
                               format: int64
                               type: integer
                             instanceProtocol:
-                              description: ELBProtocol defines listener protocols
-                                for a load balancer.
+                              description: ELBProtocol defines listener protocols for
+                                a load balancer.
                               type: string
                             port:
                               format: int64
                               type: integer
                             protocol:
-                              description: ELBProtocol defines listener protocols
-                                for a load balancer.
+                              description: ELBProtocol defines listener protocols for
+                                a load balancer.
                               type: string
                           required:
                           - instancePort
@@ -3009,8 +3033,8 @@ spec:
                           type: object
                         type: array
                       loadBalancerType:
-                        description: LoadBalancerType sets the type for a load balancer.
-                          The default type is classic.
+                        description: LoadBalancerType sets the type for a load
+                          balancer. The default type is classic.
                         enum:
                         - classic
                         - elb
@@ -3023,8 +3047,8 @@ spec:
                           defined in the region. It also serves as identifier.
                         type: string
                       scheme:
-                        description: Scheme is the load balancer scheme, either internet-facing
-                          or private.
+                        description: Scheme is the load balancer scheme, either
+                          internet-facing or private.
                         type: string
                       securityGroupIds:
                         description: SecurityGroupIDs is an array of security groups
@@ -3033,8 +3057,8 @@ spec:
                           type: string
                         type: array
                       subnetIds:
-                        description: SubnetIDs is an array of subnets in the VPC attached
-                          to the load balancer.
+                        description: SubnetIDs is an array of subnets in the VPC
+                          attached to the load balancer.
                         items:
                           type: string
                         type: array
@@ -3060,14 +3084,15 @@ spec:
                               security groups.
                             properties:
                               cidrBlocks:
-                                description: List of CIDR blocks to allow access from.
-                                  Cannot be specified with SourceSecurityGroupID.
+                                description: List of CIDR blocks to allow access
+                                  from. Cannot be specified with
+                                  SourceSecurityGroupID.
                                 items:
                                   type: string
                                 type: array
                               description:
-                                description: Description provides extended information
-                                  about the ingress rule.
+                                description: Description provides extended
+                                  information about the ingress rule.
                                 type: string
                               fromPort:
                                 description: FromPort is the start of port range.
@@ -3075,13 +3100,14 @@ spec:
                                 type: integer
                               ipv6CidrBlocks:
                                 description: List of IPv6 CIDR blocks to allow access
-                                  from. Cannot be specified with SourceSecurityGroupID.
+                                  from. Cannot be specified with
+                                  SourceSecurityGroupID.
                                 items:
                                   type: string
                                 type: array
                               natGatewaysIPsSource:
-                                description: NatGatewaysIPsSource use the NAT gateways
-                                  IPs as the source for the ingress rule.
+                                description: NatGatewaysIPsSource use the NAT
+                                  gateways IPs as the source for the ingress rule.
                                 type: boolean
                               protocol:
                                 description: Protocol is the protocol for the ingress
@@ -3089,13 +3115,13 @@ spec:
                                   IP),"tcp", "udp", "icmp", and "58" (ICMPv6), "50"
                                   (ESP).
                                 enum:
-                                - "-1"
-                                - "4"
+                                - '-1'
+                                - '4'
                                 - tcp
                                 - udp
                                 - icmp
-                                - "58"
-                                - "50"
+                                - '58'
+                                - '50'
                                 type: string
                               sourceSecurityGroupIds:
                                 description: The security group id to allow access
@@ -3136,8 +3162,8 @@ spec:
                         tags:
                           additionalProperties:
                             type: string
-                          description: Tags is a map of tags associated with the security
-                            group.
+                          description: Tags is a map of tags associated with the
+                            security group.
                           type: object
                       required:
                       - id

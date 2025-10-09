@@ -1,9 +1,12 @@
+# Resource: admissionregistration.k8s.io_v1_mutatingwebhookconfiguration_mce-capi-webhook-config-configuration
+---
+{{- if .Values.global.deployOnOCP }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   annotations:
-    service.beta.openshift.io/inject-cabundle: "true"
-  creationTimestamp: null
+    service.beta.openshift.io/inject-cabundle: 'true'
+  creationTimestamp:
   name: mce-capi-webhook-config-configuration
 webhooks:
 - admissionReviewVersions:
@@ -33,3 +36,5 @@ webhooks:
     - '*'
     scope: Namespaced
   sideEffects: None
+
+{{- end }}

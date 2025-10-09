@@ -54,7 +54,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: RosaMachinePoolSpec defines the desired state of RosaMachinePool.
+            description: RosaMachinePoolSpec defines the desired state of
+              RosaMachinePool.
             properties:
               additionalSecurityGroups:
                 description: |-
@@ -136,8 +137,8 @@ spec:
                 - message: subnet is immutable
                   rule: self == oldSelf
               taints:
-                description: Taints specifies the taints to apply to the nodes of
-                  the machine pool
+                description: Taints specifies the taints to apply to the nodes of the
+                  machine pool
                 items:
                   description: RosaTaint represents a taint to be applied to a node.
                   properties:
@@ -224,8 +225,8 @@ spec:
                   ROSAControlPlane version is used if not set.
                 type: string
               volumeSize:
-                description: VolumeSize set the disk volume size for the machine pool,
-                  in Gib. The default is 300 GiB.
+                description: VolumeSize set the disk volume size for the machine
+                  pool, in Gib. The default is 300 GiB.
                 maximum: 16384
                 minimum: 75
                 type: integer
@@ -234,7 +235,8 @@ spec:
             - nodePoolName
             type: object
           status:
-            description: RosaMachinePoolStatus defines the observed state of RosaMachinePool.
+            description: RosaMachinePoolStatus defines the observed state of
+              RosaMachinePool.
             properties:
               availableUpgrades:
                 description: Available upgrades for the ROSA MachinePool.
@@ -245,8 +247,8 @@ spec:
                 description: Conditions defines current service state of the managed
                   machine pool
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -278,7 +280,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -315,7 +318,8 @@ spec:
                   the cluster
                 type: boolean
               replicas:
-                description: Replicas is the most recently observed number of replicas.
+                description: Replicas is the most recently observed number of
+                  replicas.
                 format: int32
                 type: integer
             required:

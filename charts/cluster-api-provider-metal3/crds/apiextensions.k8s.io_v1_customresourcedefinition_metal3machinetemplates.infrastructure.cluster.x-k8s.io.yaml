@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capm3-system/capm3-serving-cert
     controller-gen.kubebuilder.io/version: v0.16.5
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: infrastructure-metal3
     cluster.x-k8s.io/v1beta1: v1beta1
@@ -44,8 +44,8 @@ spec:
     name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Metal3MachineTemplate is the Schema for the metal3machinetemplates
-          API.
+        description: Metal3MachineTemplate is the Schema for the
+          metal3machinetemplates API.
         properties:
           apiVersion:
             description: |-
@@ -65,7 +65,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: Metal3MachineTemplateSpec defines the desired state of Metal3MachineTemplate.
+            description: Metal3MachineTemplateSpec defines the desired state of
+              Metal3MachineTemplate.
             properties:
               nodeReuse:
                 default: false
@@ -78,8 +79,8 @@ spec:
                   to create a Metal3Machine from a template.
                 properties:
                   spec:
-                    description: Spec is the specification of the desired behavior
-                      of the machine.
+                    description: Spec is the specification of the desired behavior of
+                      the machine.
                     properties:
                       automatedCleaningMode:
                         description: |-
@@ -154,8 +155,8 @@ spec:
                           claiming for a metal3machine.
                         properties:
                           matchExpressions:
-                            description: Label match expressions that must be true
-                              on a chosen BareMetalHost
+                            description: Label match expressions that must be true on
+                              a chosen BareMetalHost
                             items:
                               properties:
                                 key:
@@ -178,8 +179,8 @@ spec:
                           matchLabels:
                             additionalProperties:
                               type: string
-                            description: Key/value pairs of labels that must exist
-                              on a chosen BareMetalHost
+                            description: Key/value pairs of labels that must exist on
+                              a chosen BareMetalHost
                             type: object
                         type: object
                       image:
@@ -220,12 +221,12 @@ spec:
                           Metadata given by the user.
                         properties:
                           name:
-                            description: name is unique within a namespace to reference
-                              a secret resource.
+                            description: name is unique within a namespace to
+                              reference a secret resource.
                             type: string
                           namespace:
-                            description: namespace defines the space within which
-                              the secret name must be unique.
+                            description: namespace defines the space within which the
+                              secret name must be unique.
                             type: string
                         type: object
                         x-kubernetes-map-type: atomic
@@ -235,12 +236,12 @@ spec:
                           network data given by the user.
                         properties:
                           name:
-                            description: name is unique within a namespace to reference
-                              a secret resource.
+                            description: name is unique within a namespace to
+                              reference a secret resource.
                             type: string
                           namespace:
-                            description: namespace defines the space within which
-                              the secret name must be unique.
+                            description: namespace defines the space within which the
+                              secret name must be unique.
                             type: string
                         type: object
                         x-kubernetes-map-type: atomic
@@ -256,12 +257,12 @@ spec:
                           namespace if not specified.
                         properties:
                           name:
-                            description: name is unique within a namespace to reference
-                              a secret resource.
+                            description: name is unique within a namespace to
+                              reference a secret resource.
                             type: string
                           namespace:
-                            description: namespace defines the space within which
-                              the secret name must be unique.
+                            description: namespace defines the space within which the
+                              secret name must be unique.
                             type: string
                         type: object
                         x-kubernetes-map-type: atomic

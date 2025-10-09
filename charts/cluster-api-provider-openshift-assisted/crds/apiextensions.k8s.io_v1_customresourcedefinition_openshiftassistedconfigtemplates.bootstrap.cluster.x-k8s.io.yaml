@@ -18,8 +18,8 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OpenshiftAssistedConfigTemplate is the Schema for the openshiftassistedconfigtemplates
-          API
+        description: OpenshiftAssistedConfigTemplate is the Schema for the
+          openshiftassistedconfigtemplates API
         properties:
           apiVersion:
             description: |-
@@ -39,8 +39,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: OpenshiftAssistedConfigTemplateSpec defines the desired state
-              of OpenshiftAssistedConfigTemplate
+            description: OpenshiftAssistedConfigTemplateSpec defines the desired
+              state of OpenshiftAssistedConfigTemplate
             properties:
               template:
                 description: OpenshiftAssistedConfig template
@@ -70,8 +70,8 @@ spec:
                         type: object
                     type: object
                   spec:
-                    description: OpenshiftAssistedConfigSpec defines the desired state
-                      of OpenshiftAssistedConfig
+                    description: OpenshiftAssistedConfigSpec defines the desired
+                      state of OpenshiftAssistedConfig
                     properties:
                       additionalNTPSources:
                         description: |-
@@ -89,8 +89,8 @@ spec:
                         type: string
                       cpuArchitecture:
                         default: x86_64
-                        description: CpuArchitecture specifies the target CPU architecture.
-                          Default is x86_64
+                        description: CpuArchitecture specifies the target CPU
+                          architecture. Default is x86_64
                         type: string
                       kernelArguments:
                         description: |-
@@ -99,8 +99,8 @@ spec:
                         items:
                           properties:
                             operation:
-                              description: Operation is the operation to apply on
-                                the kernel argument.
+                              description: Operation is the operation to apply on the
+                                kernel argument.
                               enum:
                               - append
                               - replace
@@ -206,11 +206,11 @@ spec:
                             type: string
                         type: object
                       pullSecretRef:
-                        description: PullSecretRef is the reference to the secret
-                          to use when pulling images.
+                        description: PullSecretRef is the reference to the secret to
+                          use when pulling images.
                         properties:
                           name:
-                            default: ""
+                            default: ''
                             description: |-
                               Name of the referent.
                               This field is effectively required, but due to backwards compatibility is

@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinehealthchecks.cluster.x-k8s.io
@@ -64,8 +64,8 @@ spec:
             description: spec is the specification of machine health check policy
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               maxUnhealthy:
@@ -136,8 +136,8 @@ spec:
                   health will be exercised
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -190,7 +190,8 @@ spec:
                     status for at least the timeout value, a node is considered unhealthy.
                   properties:
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       minLength: 1
                       type: string
                     timeout:
@@ -217,14 +218,15 @@ spec:
             - unhealthyConditions
             type: object
           status:
-            description: status is the most recently observed status of MachineHealthCheck
-              resource
+            description: status is the most recently observed status of
+              MachineHealthCheck resource
             properties:
               conditions:
-                description: conditions defines current service state of the MachineHealthCheck.
+                description: conditions defines current service state of the
+                  MachineHealthCheck.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -251,7 +253,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -277,8 +280,8 @@ spec:
                 minimum: 0
                 type: integer
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               remediationsAllowed:
@@ -351,8 +354,8 @@ spec:
             description: spec is the specification of machine health check policy
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               maxUnhealthy:
@@ -425,8 +428,8 @@ spec:
                   health will be exercised
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -479,7 +482,8 @@ spec:
                     status for at least the timeout value, a node is considered unhealthy.
                   properties:
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       minLength: 1
                       type: string
                     timeout:
@@ -516,14 +520,15 @@ spec:
             - unhealthyConditions
             type: object
           status:
-            description: status is the most recently observed status of MachineHealthCheck
-              resource
+            description: status is the most recently observed status of
+              MachineHealthCheck resource
             properties:
               conditions:
-                description: conditions defines current service state of the MachineHealthCheck.
+                description: conditions defines current service state of the
+                  MachineHealthCheck.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -550,7 +555,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -576,8 +582,8 @@ spec:
                 minimum: 0
                 type: integer
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               remediationsAllowed:
@@ -647,8 +653,8 @@ spec:
             description: spec is the specification of machine health check policy
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 maxLength: 63
                 minLength: 1
                 type: string
@@ -732,8 +738,8 @@ spec:
                   health will be exercised
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -786,7 +792,8 @@ spec:
                     status for at least the timeout value, a node is considered unhealthy.
                   properties:
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       minLength: 1
                       type: string
                     timeout:
@@ -826,14 +833,15 @@ spec:
             - selector
             type: object
           status:
-            description: status is the most recently observed status of MachineHealthCheck
-              resource
+            description: status is the most recently observed status of
+              MachineHealthCheck resource
             properties:
               conditions:
-                description: conditions defines current service state of the MachineHealthCheck.
+                description: conditions defines current service state of the
+                  MachineHealthCheck.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -865,7 +873,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -894,8 +903,8 @@ spec:
                 minimum: 0
                 type: integer
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               remediationsAllowed:
@@ -915,8 +924,8 @@ spec:
                 maxItems: 10000
                 type: array
               v1beta2:
-                description: v1beta2 groups all the fields that will be added or modified
-                  in MachineHealthCheck's status with the V1Beta2 version.
+                description: v1beta2 groups all the fields that will be added or
+                  modified in MachineHealthCheck's status with the V1Beta2 version.
                 properties:
                   conditions:
                     description: |-
@@ -961,14 +970,16 @@ spec:
                           description: status of the condition, one of True, False,
                             Unknown.
                           enum:
-                          - "True"
-                          - "False"
+                          - 'True'
+                          - 'False'
                           - Unknown
                           type: string
                         type:
-                          description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          description: type of condition in CamelCase or in
+                            foo.example.com/CamelCase.
                           maxLength: 316
-                          pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                          pattern:
+                            ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                           type: string
                       required:
                       - lastTransitionTime

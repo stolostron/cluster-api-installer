@@ -1,3 +1,6 @@
+# Resource: rbac.authorization.k8s.io_v1_role_capa-system_capa-leader-elect-role
+---
+{{- if .Values.global.deployOnOCP }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -7,7 +10,7 @@ metadata:
   namespace: capa-system
 rules:
 - apiGroups:
-  - ""
+  - ''
   resources:
   - configmaps
   verbs:
@@ -19,7 +22,7 @@ rules:
   - patch
   - delete
 - apiGroups:
-  - ""
+  - ''
   resources:
   - configmaps/status
   verbs:
@@ -27,7 +30,7 @@ rules:
   - update
   - patch
 - apiGroups:
-  - ""
+  - ''
   resources:
   - events
   verbs:
@@ -44,3 +47,5 @@ rules:
   - update
   - patch
   - delete
+
+{{- end }}

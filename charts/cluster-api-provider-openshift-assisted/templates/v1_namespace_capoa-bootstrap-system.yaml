@@ -1,3 +1,5 @@
+# Resource: v1_namespace_capoa-bootstrap-system
+---
 apiVersion: v1
 kind: Namespace
 metadata:

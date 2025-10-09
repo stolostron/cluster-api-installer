@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -93,10 +93,12 @@ spec:
                         They are applied according to the rules defined by the AWS API:
                         https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                       items:
-                        description: Filter is a filter used to identify an AWS resource.
+                        description: Filter is a filter used to identify an AWS
+                          resource.
                         properties:
                           name:
-                            description: Name of the filter. Filter names are case-sensitive.
+                            description: Name of the filter. Filter names are
+                              case-sensitive.
                             type: string
                           values:
                             description: Values includes one or more filter values.
@@ -123,12 +125,12 @@ spec:
                   AWSMachine's value takes precedence.
                 type: object
               ami:
-                description: AMI is the reference to the AMI from which to create
-                  the machine instance.
+                description: AMI is the reference to the AMI from which to create the
+                  machine instance.
                 properties:
                   eksLookupType:
-                    description: EKSOptimizedLookupType If specified, will look up
-                      an EKS Optimized image in SSM Parameter store
+                    description: EKSOptimizedLookupType If specified, will look up an
+                      EKS Optimized image in SSM Parameter store
                     enum:
                     - AmazonLinux
                     - AmazonLinuxGPU
@@ -185,11 +187,11 @@ spec:
                   systems where Ignition is used.
                 properties:
                   version:
-                    default: "2.3"
+                    default: '2.3'
                     description: Version defines which version of Ignition will be
                       used to generate bootstrap data.
                     enum:
-                    - "2.3"
+                    - '2.3'
                     type: string
                 type: object
               imageLookupBaseOS:
@@ -241,8 +243,8 @@ spec:
                       description: Device name
                       type: string
                     encrypted:
-                      description: Encrypted is whether the volume should be encrypted
-                        or not.
+                      description: Encrypted is whether the volume should be
+                        encrypted or not.
                       type: boolean
                     encryptionKey:
                       description: |-
@@ -263,8 +265,8 @@ spec:
                       minimum: 8
                       type: integer
                     throughput:
-                      description: Throughput to provision in MiB/s supported for
-                        the volume type. Not applicable to all types.
+                      description: Throughput to provision in MiB/s supported for the
+                        volume type. Not applicable to all types.
                       format: int64
                       type: integer
                     type:
@@ -322,18 +324,19 @@ spec:
                     format: int64
                     type: integer
                   type:
-                    description: Type is the type of the volume (e.g. gp2, io1, etc...).
+                    description: Type is the type of the volume (e.g. gp2, io1,
+                      etc...).
                     type: string
                 required:
                 - size
                 type: object
               spotMarketOptions:
-                description: SpotMarketOptions allows users to configure instances
-                  to be run using AWS Spot instances.
+                description: SpotMarketOptions allows users to configure instances to
+                  be run using AWS Spot instances.
                 properties:
                   maxPrice:
-                    description: MaxPrice defines the maximum price the user is willing
-                      to pay for Spot VM instances
+                    description: MaxPrice defines the maximum price the user is
+                      willing to pay for Spot VM instances
                     type: string
                 type: object
               sshKeyName:
@@ -357,10 +360,12 @@ spec:
                       They are applied according to the rules defined by the AWS API:
                       https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                     items:
-                      description: Filter is a filter used to identify an AWS resource.
+                      description: Filter is a filter used to identify an AWS
+                        resource.
                       properties:
                         name:
-                          description: Name of the filter. Filter names are case-sensitive.
+                          description: Name of the filter. Filter names are
+                            case-sensitive.
                           type: string
                         values:
                           description: Values includes one or more filter values.
@@ -398,7 +403,8 @@ spec:
             description: AWSMachineStatus defines the observed state of AWSMachine.
             properties:
               addresses:
-                description: Addresses contains the AWS instance associated addresses.
+                description: Addresses contains the AWS instance associated
+                  addresses.
                 items:
                   description: MachineAddress contains information for the node's
                     address.
@@ -424,10 +430,11 @@ spec:
                   type: object
                 type: array
               conditions:
-                description: Conditions defines current service state of the AWSMachine.
+                description: Conditions defines current service state of the
+                  AWSMachine.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -459,7 +466,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -596,10 +604,12 @@ spec:
                         They are applied according to the rules defined by the AWS API:
                         https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                       items:
-                        description: Filter is a filter used to identify an AWS resource.
+                        description: Filter is a filter used to identify an AWS
+                          resource.
                         properties:
                           name:
-                            description: Name of the filter. Filter names are case-sensitive.
+                            description: Name of the filter. Filter names are
+                              case-sensitive.
                             type: string
                           values:
                             description: Values includes one or more filter values.
@@ -626,12 +636,12 @@ spec:
                   AWSMachine's value takes precedence.
                 type: object
               ami:
-                description: AMI is the reference to the AMI from which to create
-                  the machine instance.
+                description: AMI is the reference to the AMI from which to create the
+                  machine instance.
                 properties:
                   eksLookupType:
-                    description: EKSOptimizedLookupType If specified, will look up
-                      an EKS Optimized image in SSM Parameter store
+                    description: EKSOptimizedLookupType If specified, will look up an
+                      EKS Optimized image in SSM Parameter store
                     enum:
                     - AmazonLinux
                     - AmazonLinuxGPU
@@ -643,18 +653,18 @@ spec:
                     type: string
                 type: object
               capacityReservationId:
-                description: CapacityReservationID specifies the target Capacity Reservation
-                  into which the instance should be launched.
+                description: CapacityReservationID specifies the target Capacity
+                  Reservation into which the instance should be launched.
                 type: string
               capacityReservationPreference:
                 allOf:
                 - enum:
-                  - ""
+                  - ''
                   - None
                   - CapacityReservationsOnly
                   - Open
                 - enum:
-                  - ""
+                  - ''
                   - None
                   - CapacityReservationsOnly
                   - Open
@@ -762,8 +772,8 @@ spec:
                 - host
                 type: string
               hostID:
-                description: HostID specifies the Dedicated Host on which the instance
-                  must be started.
+                description: HostID specifies the Dedicated Host on which the
+                  instance must be started.
                 type: string
               iamInstanceProfile:
                 description: IAMInstanceProfile is a name of an IAM instance profile
@@ -805,8 +815,8 @@ spec:
 
                           An IP address prefix and domain name can also include a literal port number (1.2.3.4:80).
                         items:
-                          description: IgnitionNoProxy defines the list of domains
-                            to not proxy for Ignition.
+                          description: IgnitionNoProxy defines the list of domains to
+                            not proxy for Ignition.
                           maxLength: 2048
                           type: string
                         maxItems: 64
@@ -857,12 +867,12 @@ spec:
                       Defaults to `2.3` if storageType is set to `ClusterObjectStore`.
                       It will be ignored if storageType is set to `UnencryptedUserData`, as the userdata defines its own version.
                     enum:
-                    - "2.3"
-                    - "3.0"
-                    - "3.1"
-                    - "3.2"
-                    - "3.3"
-                    - "3.4"
+                    - '2.3'
+                    - '3.0'
+                    - '3.1'
+                    - '3.2'
+                    - '3.3'
+                    - '3.4'
                     type: string
                 type: object
               imageLookupBaseOS:
@@ -997,8 +1007,8 @@ spec:
                       description: Device name
                       type: string
                     encrypted:
-                      description: Encrypted is whether the volume should be encrypted
-                        or not.
+                      description: Encrypted is whether the volume should be
+                        encrypted or not.
                       type: boolean
                     encryptionKey:
                       description: |-
@@ -1019,8 +1029,8 @@ spec:
                       minimum: 8
                       type: integer
                     throughput:
-                      description: Throughput to provision in MiB/s supported for
-                        the volume type. Not applicable to all types.
+                      description: Throughput to provision in MiB/s supported for the
+                        volume type. Not applicable to all types.
                       format: int64
                       type: integer
                     type:
@@ -1048,13 +1058,14 @@ spec:
                 description: PrivateDNSName is the options for the instance hostname.
                 properties:
                   enableResourceNameDnsAAAARecord:
-                    description: EnableResourceNameDNSAAAARecord indicates whether
-                      to respond to DNS queries for instance hostnames with DNS AAAA
+                    description: EnableResourceNameDNSAAAARecord indicates whether to
+                      respond to DNS queries for instance hostnames with DNS AAAA
                       records.
                     type: boolean
                   enableResourceNameDnsARecord:
                     description: EnableResourceNameDNSARecord indicates whether to
-                      respond to DNS queries for instance hostnames with DNS A records.
+                      respond to DNS queries for instance hostnames with DNS A
+                      records.
                     type: boolean
                   hostnameType:
                     description: The type of hostname to assign to an instance.
@@ -1110,7 +1121,8 @@ spec:
                     format: int64
                     type: integer
                   type:
-                    description: Type is the type of the volume (e.g. gp2, io1, etc...).
+                    description: Type is the type of the volume (e.g. gp2, io1,
+                      etc...).
                     type: string
                 required:
                 - size
@@ -1123,12 +1135,12 @@ spec:
                   This is optional - if not provided security groups from the cluster will be used.
                 type: object
               spotMarketOptions:
-                description: SpotMarketOptions allows users to configure instances
-                  to be run using AWS Spot instances.
+                description: SpotMarketOptions allows users to configure instances to
+                  be run using AWS Spot instances.
                 properties:
                   maxPrice:
-                    description: MaxPrice defines the maximum price the user is willing
-                      to pay for Spot VM instances
+                    description: MaxPrice defines the maximum price the user is
+                      willing to pay for Spot VM instances
                     type: string
                 type: object
               sshKeyName:
@@ -1147,10 +1159,12 @@ spec:
                       They are applied according to the rules defined by the AWS API:
                       https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                     items:
-                      description: Filter is a filter used to identify an AWS resource.
+                      description: Filter is a filter used to identify an AWS
+                        resource.
                       properties:
                         name:
-                          description: Name of the filter. Filter names are case-sensitive.
+                          description: Name of the filter. Filter names are
+                            case-sensitive.
                           type: string
                         values:
                           description: Values includes one or more filter values.
@@ -1186,16 +1200,17 @@ spec:
             type: object
             x-kubernetes-validations:
             - message: capacityReservationId may not be set when marketType is Spot
-              rule: '!has(self.capacityReservationId) || !has(self.marketType) ||
-                self.marketType != ''Spot'''
-            - message: capacityReservationId cannot be set when spotMarketOptions
-                is specified
+              rule: "!has(self.capacityReservationId) || !has(self.marketType) || self.marketType
+                != 'Spot'"
+            - message: capacityReservationId cannot be set when spotMarketOptions is
+                specified
               rule: '!has(self.capacityReservationId) || !has(self.spotMarketOptions)'
           status:
             description: AWSMachineStatus defines the observed state of AWSMachine.
             properties:
               addresses:
-                description: Addresses contains the AWS instance associated addresses.
+                description: Addresses contains the AWS instance associated
+                  addresses.
                 items:
                   description: MachineAddress contains information for the node's
                     address.
@@ -1221,10 +1236,11 @@ spec:
                   type: object
                 type: array
               conditions:
-                description: Conditions defines current service state of the AWSMachine.
+                description: Conditions defines current service state of the
+                  AWSMachine.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -1256,7 +1272,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-

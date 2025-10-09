@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -26,8 +26,8 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: AWSMachineTemplate is the schema for the Amazon EC2 Machine Templates
-          API.
+        description: AWSMachineTemplate is the schema for the Amazon EC2 Machine
+          Templates API.
         properties:
           apiVersion:
             description: |-
@@ -47,11 +47,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSMachineTemplateSpec defines the desired state of AWSMachineTemplate.
+            description: AWSMachineTemplateSpec defines the desired state of
+              AWSMachineTemplate.
             properties:
               template:
-                description: AWSMachineTemplateResource describes the data needed
-                  to create am AWSMachine from a template.
+                description: AWSMachineTemplateResource describes the data needed to
+                  create am AWSMachine from a template.
                 properties:
                   metadata:
                     description: |-
@@ -78,8 +79,8 @@ spec:
                         type: object
                     type: object
                   spec:
-                    description: Spec is the specification of the desired behavior
-                      of the machine.
+                    description: Spec is the specification of the desired behavior of
+                      the machine.
                     properties:
                       additionalSecurityGroups:
                         description: |-
@@ -108,8 +109,8 @@ spec:
                                   AWS resource.
                                 properties:
                                   name:
-                                    description: Name of the filter. Filter names
-                                      are case-sensitive.
+                                    description: Name of the filter. Filter names are
+                                      case-sensitive.
                                     type: string
                                   values:
                                     description: Values includes one or more filter
@@ -163,8 +164,8 @@ spec:
                               the userdata from Secrets Manager and additionally delete the secret.
                             type: boolean
                           secretCount:
-                            description: SecretCount is the number of secrets used
-                              to form the complete secret
+                            description: SecretCount is the number of secrets used to
+                              form the complete secret
                             format: int32
                             type: integer
                           secretPrefix:
@@ -194,15 +195,15 @@ spec:
                           profile to assign to the instance
                         type: string
                       ignition:
-                        description: Ignition defined options related to the bootstrapping
-                          systems where Ignition is used.
+                        description: Ignition defined options related to the
+                          bootstrapping systems where Ignition is used.
                         properties:
                           version:
-                            default: "2.3"
+                            default: '2.3'
                             description: Version defines which version of Ignition
                               will be used to generate bootstrap data.
                             enum:
-                            - "2.3"
+                            - '2.3'
                             type: string
                         type: object
                       imageLookupBaseOS:
@@ -225,15 +226,16 @@ spec:
                           also: https://golang.org/pkg/text/template/
                         type: string
                       imageLookupOrg:
-                        description: ImageLookupOrg is the AWS Organization ID to
-                          use for image lookup if AMI is not set.
+                        description: ImageLookupOrg is the AWS Organization ID to use
+                          for image lookup if AMI is not set.
                         type: string
                       instanceID:
-                        description: InstanceID is the EC2 instance ID for this machine.
+                        description: InstanceID is the EC2 instance ID for this
+                          machine.
                         type: string
                       instanceType:
-                        description: 'InstanceType is the type of instance to create.
-                          Example: m4.xlarge'
+                        description: 'InstanceType is the type of instance to create. Example:
+                          m4.xlarge'
                         minLength: 2
                         type: string
                       networkInterfaces:
@@ -255,8 +257,8 @@ spec:
                               description: Device name
                               type: string
                             encrypted:
-                              description: Encrypted is whether the volume should
-                                be encrypted or not.
+                              description: Encrypted is whether the volume should be
+                                encrypted or not.
                               type: boolean
                             encryptionKey:
                               description: |-
@@ -302,8 +304,8 @@ spec:
                           3. Subnet default
                         type: boolean
                       rootVolume:
-                        description: RootVolume encapsulates the configuration options
-                          for the root volume
+                        description: RootVolume encapsulates the configuration
+                          options for the root volume
                         properties:
                           deviceName:
                             description: Device name
@@ -319,8 +321,8 @@ spec:
                               The key must already exist and be accessible by the controller.
                             type: string
                           iops:
-                            description: IOPS is the number of IOPS requested for
-                              the disk. Not applicable to all types.
+                            description: IOPS is the number of IOPS requested for the
+                              disk. Not applicable to all types.
                             format: int64
                             type: integer
                           size:
@@ -343,8 +345,8 @@ spec:
                         - size
                         type: object
                       spotMarketOptions:
-                        description: SpotMarketOptions allows users to configure instances
-                          to be run using AWS Spot instances.
+                        description: SpotMarketOptions allows users to configure
+                          instances to be run using AWS Spot instances.
                         properties:
                           maxPrice:
                             description: MaxPrice defines the maximum price the user
@@ -354,8 +356,8 @@ spec:
                       sshKeyName:
                         description: SSHKeyName is the name of the ssh key to attach
                           to the instance. Valid values are empty string (do not use
-                          SSH keys), a valid SSH key name, or omitted (use the default
-                          SSH key name)
+                          SSH keys), a valid SSH key name, or omitted (use the
+                          default SSH key name)
                         type: string
                       subnet:
                         description: |-
@@ -373,8 +375,8 @@ spec:
                               They are applied according to the rules defined by the AWS API:
                               https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                             items:
-                              description: Filter is a filter used to identify an
-                                AWS resource.
+                              description: Filter is a filter used to identify an AWS
+                                resource.
                               properties:
                                 name:
                                   description: Name of the filter. Filter names are
@@ -396,8 +398,8 @@ spec:
                             type: string
                         type: object
                       tenancy:
-                        description: Tenancy indicates if instance should run on shared
-                          or single-tenant hardware.
+                        description: Tenancy indicates if instance should run on
+                          shared or single-tenant hardware.
                         enum:
                         - default
                         - dedicated
@@ -419,14 +421,16 @@ spec:
             - template
             type: object
           status:
-            description: AWSMachineTemplateStatus defines a status for an AWSMachineTemplate.
+            description: AWSMachineTemplateStatus defines a status for an
+              AWSMachineTemplate.
             properties:
               capacity:
                 additionalProperties:
                   anyOf:
                   - type: integer
                   - type: string
-                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                  pattern:
+                    ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                   x-kubernetes-int-or-string: true
                 description: |-
                   Capacity defines the resource capacity for this machine.
@@ -440,8 +444,8 @@ spec:
   - name: v1beta2
     schema:
       openAPIV3Schema:
-        description: AWSMachineTemplate is the schema for the Amazon EC2 Machine Templates
-          API.
+        description: AWSMachineTemplate is the schema for the Amazon EC2 Machine
+          Templates API.
         properties:
           apiVersion:
             description: |-
@@ -461,11 +465,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSMachineTemplateSpec defines the desired state of AWSMachineTemplate.
+            description: AWSMachineTemplateSpec defines the desired state of
+              AWSMachineTemplate.
             properties:
               template:
-                description: AWSMachineTemplateResource describes the data needed
-                  to create am AWSMachine from a template.
+                description: AWSMachineTemplateResource describes the data needed to
+                  create am AWSMachine from a template.
                 properties:
                   metadata:
                     description: |-
@@ -492,8 +497,8 @@ spec:
                         type: object
                     type: object
                   spec:
-                    description: Spec is the specification of the desired behavior
-                      of the machine.
+                    description: Spec is the specification of the desired behavior of
+                      the machine.
                     properties:
                       additionalSecurityGroups:
                         description: |-
@@ -517,8 +522,8 @@ spec:
                                   AWS resource.
                                 properties:
                                   name:
-                                    description: Name of the filter. Filter names
-                                      are case-sensitive.
+                                    description: Name of the filter. Filter names are
+                                      case-sensitive.
                                     type: string
                                   values:
                                     description: Values includes one or more filter
@@ -562,18 +567,19 @@ spec:
                             type: string
                         type: object
                       capacityReservationId:
-                        description: CapacityReservationID specifies the target Capacity
-                          Reservation into which the instance should be launched.
+                        description: CapacityReservationID specifies the target
+                          Capacity Reservation into which the instance should be
+                          launched.
                         type: string
                       capacityReservationPreference:
                         allOf:
                         - enum:
-                          - ""
+                          - ''
                           - None
                           - CapacityReservationsOnly
                           - Open
                         - enum:
-                          - ""
+                          - ''
                           - None
                           - CapacityReservationsOnly
                           - Open
@@ -596,8 +602,8 @@ spec:
                               the userdata from Secrets Manager and additionally delete the secret.
                             type: boolean
                           secretCount:
-                            description: SecretCount is the number of secrets used
-                              to form the complete secret
+                            description: SecretCount is the number of secrets used to
+                              form the complete secret
                             format: int32
                             type: integer
                           secretPrefix:
@@ -643,7 +649,8 @@ spec:
                         type: object
                       elasticIpPool:
                         description: ElasticIPPool is the configuration to allocate
-                          Public IPv4 address (Elastic IP/EIP) from user-defined pool.
+                          Public IPv4 address (Elastic IP/EIP) from user-defined
+                          pool.
                         properties:
                           publicIpv4Pool:
                             description: |-
@@ -681,16 +688,16 @@ spec:
                         - host
                         type: string
                       hostID:
-                        description: HostID specifies the Dedicated Host on which
-                          the instance must be started.
+                        description: HostID specifies the Dedicated Host on which the
+                          instance must be started.
                         type: string
                       iamInstanceProfile:
                         description: IAMInstanceProfile is a name of an IAM instance
                           profile to assign to the instance
                         type: string
                       ignition:
-                        description: Ignition defined options related to the bootstrapping
-                          systems where Ignition is used.
+                        description: Ignition defined options related to the
+                          bootstrapping systems where Ignition is used.
                         properties:
                           proxy:
                             description: |-
@@ -763,8 +770,8 @@ spec:
                                   The value is the certificate bundle (in PEM format). The bundle can contain multiple concatenated certificates.
                                   Supported schemes are http, https, tftp, s3, arn, gs, and `data` (RFC 2397) URL scheme.
                                 items:
-                                  description: IgnitionCASource defines the source
-                                    of the certificate authority to use for Ignition.
+                                  description: IgnitionCASource defines the source of
+                                    the certificate authority to use for Ignition.
                                   maxLength: 65536
                                   type: string
                                 maxItems: 64
@@ -776,12 +783,12 @@ spec:
                               Defaults to `2.3` if storageType is set to `ClusterObjectStore`.
                               It will be ignored if storageType is set to `UnencryptedUserData`, as the userdata defines its own version.
                             enum:
-                            - "2.3"
-                            - "3.0"
-                            - "3.1"
-                            - "3.2"
-                            - "3.3"
-                            - "3.4"
+                            - '2.3'
+                            - '3.0'
+                            - '3.1'
+                            - '3.2'
+                            - '3.3'
+                            - '3.4'
                             type: string
                         type: object
                       imageLookupBaseOS:
@@ -804,11 +811,12 @@ spec:
                           also: https://golang.org/pkg/text/template/
                         type: string
                       imageLookupOrg:
-                        description: ImageLookupOrg is the AWS Organization ID to
-                          use for image lookup if AMI is not set.
+                        description: ImageLookupOrg is the AWS Organization ID to use
+                          for image lookup if AMI is not set.
                         type: string
                       instanceID:
-                        description: InstanceID is the EC2 instance ID for this machine.
+                        description: InstanceID is the EC2 instance ID for this
+                          machine.
                         type: string
                       instanceMetadataOptions:
                         description: InstanceMetadataOptions is the metadata options
@@ -873,8 +881,8 @@ spec:
                             type: string
                         type: object
                       instanceType:
-                        description: 'InstanceType is the type of instance to create.
-                          Example: m4.xlarge'
+                        description: 'InstanceType is the type of instance to create. Example:
+                          m4.xlarge'
                         minLength: 2
                         type: string
                       marketType:
@@ -917,8 +925,8 @@ spec:
                               description: Device name
                               type: string
                             encrypted:
-                              description: Encrypted is whether the volume should
-                                be encrypted or not.
+                              description: Encrypted is whether the volume should be
+                                encrypted or not.
                               type: boolean
                             encryptionKey:
                               description: |-
@@ -970,16 +978,17 @@ spec:
                         properties:
                           enableResourceNameDnsAAAARecord:
                             description: EnableResourceNameDNSAAAARecord indicates
-                              whether to respond to DNS queries for instance hostnames
-                              with DNS AAAA records.
+                              whether to respond to DNS queries for instance
+                              hostnames with DNS AAAA records.
                             type: boolean
                           enableResourceNameDnsARecord:
-                            description: EnableResourceNameDNSARecord indicates whether
-                              to respond to DNS queries for instance hostnames with
-                              DNS A records.
+                            description: EnableResourceNameDNSARecord indicates
+                              whether to respond to DNS queries for instance
+                              hostnames with DNS A records.
                             type: boolean
                           hostnameType:
-                            description: The type of hostname to assign to an instance.
+                            description: The type of hostname to assign to an
+                              instance.
                             enum:
                             - ip-name
                             - resource-name
@@ -998,8 +1007,8 @@ spec:
                           3. Subnet default
                         type: boolean
                       rootVolume:
-                        description: RootVolume encapsulates the configuration options
-                          for the root volume
+                        description: RootVolume encapsulates the configuration
+                          options for the root volume
                         properties:
                           deviceName:
                             description: Device name
@@ -1015,8 +1024,8 @@ spec:
                               The key must already exist and be accessible by the controller.
                             type: string
                           iops:
-                            description: IOPS is the number of IOPS requested for
-                              the disk. Not applicable to all types.
+                            description: IOPS is the number of IOPS requested for the
+                              disk. Not applicable to all types.
                             format: int64
                             type: integer
                           size:
@@ -1046,8 +1055,8 @@ spec:
                           This is optional - if not provided security groups from the cluster will be used.
                         type: object
                       spotMarketOptions:
-                        description: SpotMarketOptions allows users to configure instances
-                          to be run using AWS Spot instances.
+                        description: SpotMarketOptions allows users to configure
+                          instances to be run using AWS Spot instances.
                         properties:
                           maxPrice:
                             description: MaxPrice defines the maximum price the user
@@ -1057,8 +1066,8 @@ spec:
                       sshKeyName:
                         description: SSHKeyName is the name of the ssh key to attach
                           to the instance. Valid values are empty string (do not use
-                          SSH keys), a valid SSH key name, or omitted (use the default
-                          SSH key name)
+                          SSH keys), a valid SSH key name, or omitted (use the
+                          default SSH key name)
                         type: string
                       subnet:
                         description: |-
@@ -1071,8 +1080,8 @@ spec:
                               They are applied according to the rules defined by the AWS API:
                               https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                             items:
-                              description: Filter is a filter used to identify an
-                                AWS resource.
+                              description: Filter is a filter used to identify an AWS
+                                resource.
                               properties:
                                 name:
                                   description: Name of the filter. Filter names are
@@ -1094,8 +1103,8 @@ spec:
                             type: string
                         type: object
                       tenancy:
-                        description: Tenancy indicates if instance should run on shared
-                          or single-tenant hardware.
+                        description: Tenancy indicates if instance should run on
+                          shared or single-tenant hardware.
                         enum:
                         - default
                         - dedicated
@@ -1113,10 +1122,10 @@ spec:
                     x-kubernetes-validations:
                     - message: capacityReservationId may not be set when marketType
                         is Spot
-                      rule: '!has(self.capacityReservationId) || !has(self.marketType)
-                        || self.marketType != ''Spot'''
-                    - message: capacityReservationId cannot be set when spotMarketOptions
-                        is specified
+                      rule: "!has(self.capacityReservationId) || !has(self.marketType)
+                        || self.marketType != 'Spot'"
+                    - message: capacityReservationId cannot be set when
+                        spotMarketOptions is specified
                       rule: '!has(self.capacityReservationId) || !has(self.spotMarketOptions)'
                 required:
                 - spec
@@ -1125,14 +1134,16 @@ spec:
             - template
             type: object
           status:
-            description: AWSMachineTemplateStatus defines a status for an AWSMachineTemplate.
+            description: AWSMachineTemplateStatus defines a status for an
+              AWSMachineTemplate.
             properties:
               capacity:
                 additionalProperties:
                   anyOf:
                   - type: integer
                   - type: string
-                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                  pattern:
+                    ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                   x-kubernetes-int-or-string: true
                 description: |-
                   Capacity defines the resource capacity for this machine.

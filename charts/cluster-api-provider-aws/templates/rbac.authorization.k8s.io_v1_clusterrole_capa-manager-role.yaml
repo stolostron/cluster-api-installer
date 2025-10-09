@@ -1,3 +1,6 @@
+# Resource: rbac.authorization.k8s.io_v1_clusterrole_capa-manager-role
+---
+{{- if .Values.global.deployOnOCP }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -6,7 +9,7 @@ metadata:
   name: capa-manager-role
 rules:
 - apiGroups:
-  - ""
+  - ''
   resources:
   - configmaps
   - secrets
@@ -19,7 +22,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ""
+  - ''
   resources:
   - events
   verbs:
@@ -30,7 +33,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ""
+  - ''
   resources:
   - namespaces
   verbs:
@@ -227,3 +230,5 @@ rules:
   - patch
   - update
   - watch
+
+{{- end }}

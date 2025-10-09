@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinedeployments.cluster.x-k8s.io
@@ -21,11 +21,13 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - description: MachineDeployment status such as ScalingUp/ScalingDown/Running/Failed/Unknown
+    - description: MachineDeployment status such as
+        ScalingUp/ScalingDown/Running/Failed/Unknown
       jsonPath: .status.phase
       name: Phase
       type: string
-    - description: Total number of non-terminated machines targeted by this MachineDeployment
+    - description: Total number of non-terminated machines targeted by this
+        MachineDeployment
       jsonPath: .status.replicas
       name: Replicas
       type: integer
@@ -33,12 +35,13 @@ spec:
       jsonPath: .status.readyReplicas
       name: Ready
       type: integer
-    - description: Total number of non-terminated machines targeted by this deployment
-        that have the desired template spec
+    - description: Total number of non-terminated machines targeted by this
+        deployment that have the desired template spec
       jsonPath: .status.updatedReplicas
       name: Updated
       type: integer
-    - description: Total number of unavailable machines targeted by this MachineDeployment
+    - description: Total number of unavailable machines targeted by this
+        MachineDeployment
       jsonPath: .status.unavailableReplicas
       name: Unavailable
       type: integer
@@ -72,8 +75,8 @@ spec:
             description: spec is the desired state of MachineDeployment.
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               minReadySeconds:
@@ -116,8 +119,8 @@ spec:
                   It must match the machine template's labels.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -312,8 +315,8 @@ spec:
                                 otherwise 422 (Unprocessable Entity) will be returned.
                               type: boolean
                             controller:
-                              description: If true, this reference points to the managing
-                                controller.
+                              description: If true, this reference points to the
+                                managing controller.
                               type: boolean
                             kind:
                               description: |-
@@ -410,8 +413,8 @@ spec:
                             type: string
                         type: object
                       clusterName:
-                        description: clusterName is the name of the Cluster this object
-                          belongs to.
+                        description: clusterName is the name of the Cluster this
+                          object belongs to.
                         minLength: 1
                         type: string
                       failureDomain:
@@ -514,12 +517,13 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: phase represents the current phase of a MachineDeployment
-                  (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+                description: phase represents the current phase of a
+                  MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or
+                  Unknown).
                 type: string
               readyReplicas:
-                description: readyReplicas is the total number of ready machines targeted
-                  by this deployment.
+                description: readyReplicas is the total number of ready machines
+                  targeted by this deployment.
                 format: int32
                 type: integer
               replicas:
@@ -568,11 +572,13 @@ spec:
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    - description: MachineDeployment status such as ScalingUp/ScalingDown/Running/Failed/Unknown
+    - description: MachineDeployment status such as
+        ScalingUp/ScalingDown/Running/Failed/Unknown
       jsonPath: .status.phase
       name: Phase
       type: string
-    - description: Total number of non-terminated machines targeted by this MachineDeployment
+    - description: Total number of non-terminated machines targeted by this
+        MachineDeployment
       jsonPath: .status.replicas
       name: Replicas
       type: integer
@@ -580,12 +586,13 @@ spec:
       jsonPath: .status.readyReplicas
       name: Ready
       type: integer
-    - description: Total number of non-terminated machines targeted by this deployment
-        that have the desired template spec
+    - description: Total number of non-terminated machines targeted by this
+        deployment that have the desired template spec
       jsonPath: .status.updatedReplicas
       name: Updated
       type: integer
-    - description: Total number of unavailable machines targeted by this MachineDeployment
+    - description: Total number of unavailable machines targeted by this
+        MachineDeployment
       jsonPath: .status.unavailableReplicas
       name: Unavailable
       type: integer
@@ -619,8 +626,8 @@ spec:
             description: spec is the desired state of MachineDeployment.
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 minLength: 1
                 type: string
               minReadySeconds:
@@ -664,8 +671,8 @@ spec:
                   It must match the machine template's labels.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -864,8 +871,8 @@ spec:
                             type: string
                         type: object
                       clusterName:
-                        description: clusterName is the name of the Cluster this object
-                          belongs to.
+                        description: clusterName is the name of the Cluster this
+                          object belongs to.
                         minLength: 1
                         type: string
                       failureDomain:
@@ -963,10 +970,11 @@ spec:
                 format: int32
                 type: integer
               conditions:
-                description: conditions defines current service state of the MachineDeployment.
+                description: conditions defines current service state of the
+                  MachineDeployment.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -993,7 +1001,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -1012,12 +1021,13 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: phase represents the current phase of a MachineDeployment
-                  (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+                description: phase represents the current phase of a
+                  MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or
+                  Unknown).
                 type: string
               readyReplicas:
-                description: readyReplicas is the total number of ready machines targeted
-                  by this deployment.
+                description: readyReplicas is the total number of ready machines
+                  targeted by this deployment.
                 format: int32
                 type: integer
               replicas:
@@ -1067,7 +1077,8 @@ spec:
       name: Desired
       priority: 10
       type: integer
-    - description: Total number of non-terminated machines targeted by this MachineDeployment
+    - description: Total number of non-terminated machines targeted by this
+        MachineDeployment
       jsonPath: .status.replicas
       name: Replicas
       type: integer
@@ -1075,16 +1086,18 @@ spec:
       jsonPath: .status.readyReplicas
       name: Ready
       type: integer
-    - description: Total number of non-terminated machines targeted by this deployment
-        that have the desired template spec
+    - description: Total number of non-terminated machines targeted by this
+        deployment that have the desired template spec
       jsonPath: .status.updatedReplicas
       name: Updated
       type: integer
-    - description: Total number of unavailable machines targeted by this MachineDeployment
+    - description: Total number of unavailable machines targeted by this
+        MachineDeployment
       jsonPath: .status.unavailableReplicas
       name: Unavailable
       type: integer
-    - description: MachineDeployment status such as ScalingUp/ScalingDown/Running/Failed/Unknown
+    - description: MachineDeployment status such as
+        ScalingUp/ScalingDown/Running/Failed/Unknown
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -1122,8 +1135,8 @@ spec:
             description: spec is the desired state of MachineDeployment.
             properties:
               clusterName:
-                description: clusterName is the name of the Cluster this object belongs
-                  to.
+                description: clusterName is the name of the Cluster this object
+                  belongs to.
                 maxLength: 63
                 minLength: 1
                 type: string
@@ -1221,8 +1234,8 @@ spec:
                   It must match the machine template's labels.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -1449,8 +1462,8 @@ spec:
                             type: string
                         type: object
                       clusterName:
-                        description: clusterName is the name of the Cluster this object
-                          belongs to.
+                        description: clusterName is the name of the Cluster this
+                          object belongs to.
                         maxLength: 63
                         minLength: 1
                         type: string
@@ -1565,7 +1578,8 @@ spec:
                                 Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                               maxLength: 316
                               minLength: 1
-                              pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              pattern:
+                                ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                               type: string
                             polarity:
                               description: |-
@@ -1614,10 +1628,11 @@ spec:
                 format: int32
                 type: integer
               conditions:
-                description: conditions defines current service state of the MachineDeployment.
+                description: conditions defines current service state of the
+                  MachineDeployment.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -1649,7 +1664,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -1671,8 +1687,9 @@ spec:
                 format: int64
                 type: integer
               phase:
-                description: phase represents the current phase of a MachineDeployment
-                  (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+                description: phase represents the current phase of a
+                  MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or
+                  Unknown).
                 enum:
                 - ScalingUp
                 - ScalingDown
@@ -1681,8 +1698,8 @@ spec:
                 - Unknown
                 type: string
               readyReplicas:
-                description: readyReplicas is the total number of ready machines targeted
-                  by this deployment.
+                description: readyReplicas is the total number of ready machines
+                  targeted by this deployment.
                 format: int32
                 type: integer
               replicas:
@@ -1717,13 +1734,13 @@ spec:
                 format: int32
                 type: integer
               v1beta2:
-                description: v1beta2 groups all the fields that will be added or modified
-                  in MachineDeployment's status with the V1Beta2 version.
+                description: v1beta2 groups all the fields that will be added or
+                  modified in MachineDeployment's status with the V1Beta2 version.
                 properties:
                   availableReplicas:
-                    description: availableReplicas is the number of available replicas
-                      for this MachineDeployment. A machine is considered available
-                      when Machine's Available condition is true.
+                    description: availableReplicas is the number of available
+                      replicas for this MachineDeployment. A machine is considered
+                      available when Machine's Available condition is true.
                     format: int32
                     type: integer
                   conditions:
@@ -1769,14 +1786,16 @@ spec:
                           description: status of the condition, one of True, False,
                             Unknown.
                           enum:
-                          - "True"
-                          - "False"
+                          - 'True'
+                          - 'False'
                           - Unknown
                           type: string
                         type:
-                          description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          description: type of condition in CamelCase or in
+                            foo.example.com/CamelCase.
                           maxLength: 316
-                          pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                          pattern:
+                            ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                           type: string
                       required:
                       - lastTransitionTime
@@ -1792,14 +1811,14 @@ spec:
                     x-kubernetes-list-type: map
                   readyReplicas:
                     description: readyReplicas is the number of ready replicas for
-                      this MachineDeployment. A machine is considered ready when Machine's
-                      Ready condition is true.
+                      this MachineDeployment. A machine is considered ready when
+                      Machine's Ready condition is true.
                     format: int32
                     type: integer
                   upToDateReplicas:
-                    description: upToDateReplicas is the number of up-to-date replicas
-                      targeted by this deployment. A machine is considered up-to-date
-                      when Machine's UpToDate condition is true.
+                    description: upToDateReplicas is the number of up-to-date
+                      replicas targeted by this deployment. A machine is considered
+                      up-to-date when Machine's UpToDate condition is true.
                     format: int32
                     type: integer
                 type: object

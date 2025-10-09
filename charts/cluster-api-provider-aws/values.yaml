@@ -1,10 +1,12 @@
 aws:
-  encodedCredentials: ""
-  iamRole: ""
+  encodedCredentials: ''
+  iamRole: ''
 rosa:
-  ocmToken: ""
+  ocmToken: ''
 manager:
   cmd: /bin/cluster-api-provider-aws-controller-manager
   image:
     tag: 2.10.0-1
     url: registry.redhat.io/multicluster-engine/cluster-api-provider-aws-rhel9
+global:
+  deployOnOCP: true

@@ -51,7 +51,8 @@ spec:
       jsonPath: .status.updatedReplicas
       name: Updated
       type: integer
-    - description: Total number of unavailable machines targeted by this control plane
+    - description: Total number of unavailable machines targeted by this control
+        plane
       jsonPath: .status.unavailableReplicas
       name: Unavailable
       type: integer
@@ -66,8 +67,8 @@ spec:
     name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: OpenshiftAssistedControlPlane is the Schema for the openshiftassistedcontrolplane
-          API
+        description: OpenshiftAssistedControlPlane is the Schema for the
+          openshiftassistedcontrolplane API
         properties:
           apiVersion:
             description: |-
@@ -133,8 +134,8 @@ spec:
                       If not defined ClusterName will be set as the CAPI ClusterName
                     type: string
                   diskEncryption:
-                    description: DiskEncryption is the configuration to enable/disable
-                      disk encryption for cluster nodes.
+                    description: DiskEncryption is the configuration to
+                      enable/disable disk encryption for cluster nodes.
                     properties:
                       enableOn:
                         default: none
@@ -153,8 +154,8 @@ spec:
                         - tang
                         type: string
                       tangServers:
-                        description: JSON-formatted string containing additional information
-                          regarding tang's configuration
+                        description: JSON-formatted string containing additional
+                          information regarding tang's configuration
                         type: string
                     type: object
                   imageRegistryRef:
@@ -163,7 +164,7 @@ spec:
                       image registries and their corresponding certificate bundles to be used in the spoke cluster
                     properties:
                       name:
-                        default: ""
+                        default: ''
                         description: |-
                           Name of the referent.
                           This field is effectively required, but due to backwards compatibility is
@@ -201,14 +202,16 @@ spec:
                       type: object
                     type: array
                   mastersSchedulable:
-                    description: Set to true to allow control plane nodes to be schedulable
+                    description: Set to true to allow control plane nodes to be
+                      schedulable
                     type: boolean
                   proxy:
-                    description: Proxy defines the proxy settings used for the install
-                      config
+                    description: Proxy defines the proxy settings used for the
+                      install config
                     properties:
                       httpProxy:
-                        description: HTTPProxy is the URL of the proxy for HTTP requests.
+                        description: HTTPProxy is the URL of the proxy for HTTP
+                          requests.
                         type: string
                       httpsProxy:
                         description: HTTPSProxy is the URL of the proxy for HTTPS
@@ -225,7 +228,7 @@ spec:
                       the cluster installation
                     properties:
                       name:
-                        default: ""
+                        default: ''
                         description: |-
                           Name of the referent.
                           This field is effectively required, but due to backwards compatibility is
@@ -338,8 +341,8 @@ spec:
                 - infrastructureRef
                 type: object
               openshiftAssistedConfigSpec:
-                description: OpenshiftAssistedConfigSpec defines the desired state
-                  of OpenshiftAssistedConfig
+                description: OpenshiftAssistedConfigSpec defines the desired state of
+                  OpenshiftAssistedConfig
                 properties:
                   additionalNTPSources:
                     description: |-
@@ -357,8 +360,8 @@ spec:
                     type: string
                   cpuArchitecture:
                     default: x86_64
-                    description: CpuArchitecture specifies the target CPU architecture.
-                      Default is x86_64
+                    description: CpuArchitecture specifies the target CPU
+                      architecture. Default is x86_64
                     type: string
                   kernelArguments:
                     description: |-
@@ -433,16 +436,18 @@ spec:
                     type: object
                     x-kubernetes-map-type: atomic
                   nodeRegistration:
-                    description: NodeRegistrationOption holds fields related to registering
-                      nodes to the cluster
+                    description: NodeRegistrationOption holds fields related to
+                      registering nodes to the cluster
                     properties:
                       kubeletExtraLabels:
-                        description: KubeletExtraLabels passes extra labels to kubelet.
+                        description: KubeletExtraLabels passes extra labels to
+                          kubelet.
                         items:
                           type: string
                         type: array
                       name:
-                        description: Defaults to the hostname of the node if not provided.
+                        description: Defaults to the hostname of the node if not
+                          provided.
                         type: string
                     type: object
                   osImageVersion:
@@ -458,7 +463,8 @@ spec:
                       unset, the agents and clusters will not be configured to use a proxy.
                     properties:
                       httpProxy:
-                        description: HTTPProxy is the URL of the proxy for HTTP requests.
+                        description: HTTPProxy is the URL of the proxy for HTTP
+                          requests.
                         type: string
                       httpsProxy:
                         description: HTTPSProxy is the URL of the proxy for HTTPS
@@ -475,7 +481,7 @@ spec:
                       when pulling images.
                     properties:
                       name:
-                        default: ""
+                        default: ''
                         description: |-
                           Name of the referent.
                           This field is effectively required, but due to backwards compatibility is
@@ -546,10 +552,11 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               conditions:
-                description: Conditions defines current service state of the KubeadmControlPlane.
+                description: Conditions defines current service state of the
+                  KubeadmControlPlane.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -576,7 +583,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-

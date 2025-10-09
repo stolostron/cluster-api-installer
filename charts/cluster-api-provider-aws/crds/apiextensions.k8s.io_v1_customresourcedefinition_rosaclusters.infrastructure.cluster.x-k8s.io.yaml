@@ -66,7 +66,8 @@ spec:
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     maxLength: 512
                     type: string
                   port:
@@ -82,10 +83,11 @@ spec:
             description: ROSAClusterStatus defines the observed state of ROSACluster.
             properties:
               conditions:
-                description: Conditions defines current service state of the ROSACluster.
+                description: Conditions defines current service state of the
+                  ROSACluster.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -117,7 +119,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -146,12 +149,12 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
-                description: FailureDomains specifies a list fo available availability
-                  zones that can be used
+                description: FailureDomains specifies a list fo available
+                  availability zones that can be used
                 type: object
               ready:
                 description: Ready is when the ROSAControlPlane has a API server URL.

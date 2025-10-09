@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -46,7 +46,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: ROSARoleConfigSpec defines the desired state of ROSARoleConfig
+            description: ROSARoleConfigSpec defines the desired state of
+              ROSARoleConfig
             properties:
               accountRoleConfig:
                 description: AccountRoleConfig defines account-wide IAM roles before
@@ -57,8 +58,8 @@ spec:
                       as their policies.
                     type: string
                   permissionsBoundaryARN:
-                    description: The ARN of the policy that is used to set the permissions
-                      boundary for the account roles.
+                    description: The ARN of the policy that is used to set the
+                      permissions boundary for the account roles.
                     type: string
                   prefix:
                     description: User-defined prefix for all generated AWS account
@@ -78,8 +79,8 @@ spec:
                           contains policies to be used with Route 53
                         type: string
                       vpcEndpointRoleArn:
-                        description: Role ARN associated with the shared VPC used
-                          for Hosted Control Plane clusters, this role contains policies
+                        description: Role ARN associated with the shared VPC used for
+                          Hosted Control Plane clusters, this role contains policies
                           to be used with the VPC endpoint
                         type: string
                     type: object
@@ -100,7 +101,7 @@ spec:
                   credentials to connect to the OCM API.
                 properties:
                   name:
-                    default: ""
+                    default: ''
                     description: |-
                       Name of the referent.
                       This field is effectively required, but due to backwards compatibility is
@@ -139,8 +140,8 @@ spec:
                 - Unmanaged
                 type: string
               operatorRoleConfig:
-                description: OperatorRoleConfig defines cluster-specific operator
-                  IAM roles based on your cluster configuration.
+                description: OperatorRoleConfig defines cluster-specific operator IAM
+                  roles based on your cluster configuration.
                 properties:
                   oidcID:
                     description: |-
@@ -151,12 +152,11 @@ spec:
                     - message: oidcID is immutable
                       rule: self == oldSelf
                   permissionsBoundaryARN:
-                    description: The ARN of the policy that is used to set the permissions
-                      boundary for the operator roles.
+                    description: The ARN of the policy that is used to set the
+                      permissions boundary for the operator roles.
                     type: string
                   prefix:
-                    description: ' User-defined prefix for generated AWS operator
-                      roles.'
+                    description: ' User-defined prefix for generated AWS operator roles.'
                     maxLength: 4
                     pattern: ^[a-z]([-a-z0-9]*[a-z0-9])?$
                     type: string
@@ -172,8 +172,8 @@ spec:
                           contains policies to be used with Route 53
                         type: string
                       vpcEndpointRoleArn:
-                        description: Role ARN associated with the shared VPC used
-                          for Hosted Control Plane clusters, this role contains policies
+                        description: Role ARN associated with the shared VPC used for
+                          Hosted Control Plane clusters, this role contains policies
                           to be used with the VPC endpoint
                         type: string
                     type: object
@@ -186,7 +186,8 @@ spec:
             - operatorRoleConfig
             type: object
           status:
-            description: ROSARoleConfigStatus defines the observed state of ROSARoleConfig
+            description: ROSARoleConfigStatus defines the observed state of
+              ROSARoleConfig
             properties:
               accountRolesRef:
                 description: Created Account roles that can be used to
@@ -201,15 +202,15 @@ spec:
                       access to the cluster account in order to provide support.
                     type: string
                   workerRoleARN:
-                    description: WorkerRoleARN is an AWS IAM role that will be attached
-                      to worker instances.
+                    description: WorkerRoleARN is an AWS IAM role that will be
+                      attached to worker instances.
                     type: string
                 type: object
               conditions:
                 description: Conditions specifies the ROSARoleConfig conditions
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -241,7 +242,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -261,46 +263,67 @@ spec:
                 description: ID of created OIDC config
                 type: string
               oidcProviderARN:
-                description: Create OIDC provider for operators to authenticate against
-                  in an STS cluster.
+                description: Create OIDC provider for operators to authenticate
+                  against in an STS cluster.
                 type: string
               operatorRolesRef:
-                description: AWS IAM roles used to perform credential requests by
-                  the openshift operators.
+                description: AWS IAM roles used to perform credential requests by the
+                  openshift operators.
                 properties:
                   controlPlaneOperatorARN:
                     description: "ControlPlaneOperatorARN  is an ARN value referencing
                       a role appropriate for the Control Plane Operator.\n\nThe following
-                      is an example of a valid policy document:\n\n{\n\t\"Version\":
-                      \"2012-10-17\",\n\t\"Statement\": [\n\t\t{\n\t\t\t\"Effect\":
-                      \"Allow\",\n\t\t\t\"Action\": [\n\t\t\t\t\"ec2:CreateVpcEndpoint\",\n\t\t\t\t\"ec2:DescribeVpcEndpoints\",\n\t\t\t\t\"ec2:ModifyVpcEndpoint\",\n\t\t\t\t\"ec2:DeleteVpcEndpoints\",\n\t\t\t\t\"ec2:CreateTags\",\n\t\t\t\t\"route53:ListHostedZones\",\n\t\t\t\t\"ec2:CreateSecurityGroup\",\n\t\t\t\t\"ec2:AuthorizeSecurityGroupIngress\",\n\t\t\t\t\"ec2:AuthorizeSecurityGroupEgress\",\n\t\t\t\t\"ec2:DeleteSecurityGroup\",\n\t\t\t\t\"ec2:RevokeSecurityGroupIngress\",\n\t\t\t\t\"ec2:RevokeSecurityGroupEgress\",\n\t\t\t\t\"ec2:DescribeSecurityGroups\",\n\t\t\t\t\"ec2:DescribeVpcs\",\n\t\t\t],\n\t\t\t\"Resource\":
-                      \"*\"\n\t\t},\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\":
-                      [\n\t\t\t\t\"route53:ChangeResourceRecordSets\",\n\t\t\t\t\"route53:ListResourceRecordSets\"\n\t\t\t],\n\t\t\t\"Resource\":
-                      \"arn:aws:route53:::%s\"\n\t\t}\n\t]\n}"
+                      is an example of a valid policy document:\n\n{\n\t\"Version\": \"\
+                      2012-10-17\",\n\t\"Statement\": [\n\t\t{\n\t\t\t\"Effect\": \"Allow\"\
+                      ,\n\t\t\t\"Action\": [\n\t\t\t\t\"ec2:CreateVpcEndpoint\",\n\t\t\t\
+                      \t\"ec2:DescribeVpcEndpoints\",\n\t\t\t\t\"ec2:ModifyVpcEndpoint\"\
+                      ,\n\t\t\t\t\"ec2:DeleteVpcEndpoints\",\n\t\t\t\t\"ec2:CreateTags\"\
+                      ,\n\t\t\t\t\"route53:ListHostedZones\",\n\t\t\t\t\"ec2:CreateSecurityGroup\"\
+                      ,\n\t\t\t\t\"ec2:AuthorizeSecurityGroupIngress\",\n\t\t\t\t\"ec2:AuthorizeSecurityGroupEgress\"\
+                      ,\n\t\t\t\t\"ec2:DeleteSecurityGroup\",\n\t\t\t\t\"ec2:RevokeSecurityGroupIngress\"\
+                      ,\n\t\t\t\t\"ec2:RevokeSecurityGroupEgress\",\n\t\t\t\t\"ec2:DescribeSecurityGroups\"\
+                      ,\n\t\t\t\t\"ec2:DescribeVpcs\",\n\t\t\t],\n\t\t\t\"Resource\": \"\
+                      *\"\n\t\t},\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\"\
+                      : [\n\t\t\t\t\"route53:ChangeResourceRecordSets\",\n\t\t\t\t\"route53:ListResourceRecordSets\"\
+                      \n\t\t\t],\n\t\t\t\"Resource\": \"arn:aws:route53:::%s\"\n\t\t}\n\
+                      \t]\n}"
                     type: string
                   imageRegistryARN:
-                    description: "ImageRegistryARN is an ARN value referencing a role
-                      appropriate for the Image Registry Operator.\n\nThe following
-                      is an example of a valid policy document:\n\n{\n\t\"Version\":
-                      \"2012-10-17\",\n\t\"Statement\": [\n\t\t{\n\t\t\t\"Effect\":
-                      \"Allow\",\n\t\t\t\"Action\": [\n\t\t\t\t\"s3:CreateBucket\",\n\t\t\t\t\"s3:DeleteBucket\",\n\t\t\t\t\"s3:PutBucketTagging\",\n\t\t\t\t\"s3:GetBucketTagging\",\n\t\t\t\t\"s3:PutBucketPublicAccessBlock\",\n\t\t\t\t\"s3:GetBucketPublicAccessBlock\",\n\t\t\t\t\"s3:PutEncryptionConfiguration\",\n\t\t\t\t\"s3:GetEncryptionConfiguration\",\n\t\t\t\t\"s3:PutLifecycleConfiguration\",\n\t\t\t\t\"s3:GetLifecycleConfiguration\",\n\t\t\t\t\"s3:GetBucketLocation\",\n\t\t\t\t\"s3:ListBucket\",\n\t\t\t\t\"s3:GetObject\",\n\t\t\t\t\"s3:PutObject\",\n\t\t\t\t\"s3:DeleteObject\",\n\t\t\t\t\"s3:ListBucketMultipartUploads\",\n\t\t\t\t\"s3:AbortMultipartUpload\",\n\t\t\t\t\"s3:ListMultipartUploadParts\"\n\t\t\t],\n\t\t\t\"Resource\":
-                      \"*\"\n\t\t}\n\t]\n}"
+                    description: "ImageRegistryARN is an ARN value referencing a role appropriate
+                      for the Image Registry Operator.\n\nThe following is an example of
+                      a valid policy document:\n\n{\n\t\"Version\": \"2012-10-17\",\n\t\
+                      \"Statement\": [\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\"\
+                      : [\n\t\t\t\t\"s3:CreateBucket\",\n\t\t\t\t\"s3:DeleteBucket\",\n\
+                      \t\t\t\t\"s3:PutBucketTagging\",\n\t\t\t\t\"s3:GetBucketTagging\"\
+                      ,\n\t\t\t\t\"s3:PutBucketPublicAccessBlock\",\n\t\t\t\t\"s3:GetBucketPublicAccessBlock\"\
+                      ,\n\t\t\t\t\"s3:PutEncryptionConfiguration\",\n\t\t\t\t\"s3:GetEncryptionConfiguration\"\
+                      ,\n\t\t\t\t\"s3:PutLifecycleConfiguration\",\n\t\t\t\t\"s3:GetLifecycleConfiguration\"\
+                      ,\n\t\t\t\t\"s3:GetBucketLocation\",\n\t\t\t\t\"s3:ListBucket\",\n\
+                      \t\t\t\t\"s3:GetObject\",\n\t\t\t\t\"s3:PutObject\",\n\t\t\t\t\"\
+                      s3:DeleteObject\",\n\t\t\t\t\"s3:ListBucketMultipartUploads\",\n\t\
+                      \t\t\t\"s3:AbortMultipartUpload\",\n\t\t\t\t\"s3:ListMultipartUploadParts\"\
+                      \n\t\t\t],\n\t\t\t\"Resource\": \"*\"\n\t\t}\n\t]\n}"
                     type: string
                   ingressARN:
-                    description: "The referenced role must have a trust relationship
-                      that allows it to be assumed via web identity.\nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html.\nExample:\n{\n\t\t\"Version\":
-                      \"2012-10-17\",\n\t\t\"Statement\": [\n\t\t\t{\n\t\t\t\t\"Effect\":
-                      \"Allow\",\n\t\t\t\t\"Principal\": {\n\t\t\t\t\t\"Federated\":
-                      \"{{ .ProviderARN }}\"\n\t\t\t\t},\n\t\t\t\t\t\"Action\": \"sts:AssumeRoleWithWebIdentity\",\n\t\t\t\t\"Condition\":
-                      {\n\t\t\t\t\t\"StringEquals\": {\n\t\t\t\t\t\t\"{{ .ProviderName
-                      }}:sub\": {{ .ServiceAccounts }}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t]\n\t}\n\nIngressARN
-                      is an ARN value referencing a role appropriate for the Ingress
-                      Operator.\n\nThe following is an example of a valid policy document:\n\n{\n\t\"Version\":
-                      \"2012-10-17\",\n\t\"Statement\": [\n\t\t{\n\t\t\t\"Effect\":
-                      \"Allow\",\n\t\t\t\"Action\": [\n\t\t\t\t\"elasticloadbalancing:DescribeLoadBalancers\",\n\t\t\t\t\"tag:GetResources\",\n\t\t\t\t\"route53:ListHostedZones\"\n\t\t\t],\n\t\t\t\"Resource\":
-                      \"*\"\n\t\t},\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\":
-                      [\n\t\t\t\t\"route53:ChangeResourceRecordSets\"\n\t\t\t],\n\t\t\t\"Resource\":
-                      [\n\t\t\t\t\"arn:aws:route53:::PUBLIC_ZONE_ID\",\n\t\t\t\t\"arn:aws:route53:::PRIVATE_ZONE_ID\"\n\t\t\t]\n\t\t}\n\t]\n}"
+                    description: "The referenced role must have a trust relationship that
+                      allows it to be assumed via web identity.\nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html.\n\
+                      Example:\n{\n\t\t\"Version\": \"2012-10-17\",\n\t\t\"Statement\"\
+                      : [\n\t\t\t{\n\t\t\t\t\"Effect\": \"Allow\",\n\t\t\t\t\"Principal\"\
+                      : {\n\t\t\t\t\t\"Federated\": \"{{ .ProviderARN }}\"\n\t\t\t\t},\n\
+                      \t\t\t\t\t\"Action\": \"sts:AssumeRoleWithWebIdentity\",\n\t\t\t\t\
+                      \"Condition\": {\n\t\t\t\t\t\"StringEquals\": {\n\t\t\t\t\t\t\"{{
+                      .ProviderName }}:sub\": {{ .ServiceAccounts }}\n\t\t\t\t\t}\n\t\t\
+                      \t\t}\n\t\t\t}\n\t\t]\n\t}\n\nIngressARN is an ARN value referencing
+                      a role appropriate for the Ingress Operator.\n\nThe following is
+                      an example of a valid policy document:\n\n{\n\t\"Version\": \"2012-10-17\"\
+                      ,\n\t\"Statement\": [\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\
+                      \"Action\": [\n\t\t\t\t\"elasticloadbalancing:DescribeLoadBalancers\"\
+                      ,\n\t\t\t\t\"tag:GetResources\",\n\t\t\t\t\"route53:ListHostedZones\"\
+                      \n\t\t\t],\n\t\t\t\"Resource\": \"*\"\n\t\t},\n\t\t{\n\t\t\t\"Effect\"\
+                      : \"Allow\",\n\t\t\t\"Action\": [\n\t\t\t\t\"route53:ChangeResourceRecordSets\"\
+                      \n\t\t\t],\n\t\t\t\"Resource\": [\n\t\t\t\t\"arn:aws:route53:::PUBLIC_ZONE_ID\"\
+                      ,\n\t\t\t\t\"arn:aws:route53:::PRIVATE_ZONE_ID\"\n\t\t\t]\n\t\t}\n\
+                      \t]\n}"
                     type: string
                   kmsProviderARN:
                     type: string
@@ -384,66 +407,74 @@ spec:
                     type: string
                   networkARN:
                     description: "NetworkARN is an ARN value referencing a role appropriate
-                      for the Network Operator.\n\nThe following is an example of
-                      a valid policy document:\n\n{\n\t\"Version\": \"2012-10-17\",\n\t\"Statement\":
-                      [\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\": [\n\t\t\t\t\"ec2:DescribeInstances\",\n
-                      \      \"ec2:DescribeInstanceStatus\",\n       \"ec2:DescribeInstanceTypes\",\n
-                      \      \"ec2:UnassignPrivateIpAddresses\",\n       \"ec2:AssignPrivateIpAddresses\",\n
-                      \      \"ec2:UnassignIpv6Addresses\",\n       \"ec2:AssignIpv6Addresses\",\n
-                      \      \"ec2:DescribeSubnets\",\n       \"ec2:DescribeNetworkInterfaces\"\n\t\t\t],\n\t\t\t\"Resource\":
-                      \"*\"\n\t\t}\n\t]\n}"
+                      for the Network Operator.\n\nThe following is an example of a valid
+                      policy document:\n\n{\n\t\"Version\": \"2012-10-17\",\n\t\"Statement\"\
+                      : [\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\": [\n\t\
+                      \t\t\t\"ec2:DescribeInstances\",\n       \"ec2:DescribeInstanceStatus\"\
+                      ,\n       \"ec2:DescribeInstanceTypes\",\n       \"ec2:UnassignPrivateIpAddresses\"\
+                      ,\n       \"ec2:AssignPrivateIpAddresses\",\n       \"ec2:UnassignIpv6Addresses\"\
+                      ,\n       \"ec2:AssignIpv6Addresses\",\n       \"ec2:DescribeSubnets\"\
+                      ,\n       \"ec2:DescribeNetworkInterfaces\"\n\t\t\t],\n\t\t\t\"Resource\"\
+                      : \"*\"\n\t\t}\n\t]\n}"
                     type: string
                   nodePoolManagementARN:
-                    description: "NodePoolManagementARN is an ARN value referencing
-                      a role appropriate for the CAPI Controller.\n\nThe following
-                      is an example of a valid policy document:\n\n{\n  \"Version\":
-                      \"2012-10-17\",\n \"Statement\": [\n   {\n     \"Action\": [\n
-                      \      \"ec2:AssociateRouteTable\",\n       \"ec2:AttachInternetGateway\",\n
-                      \      \"ec2:AuthorizeSecurityGroupIngress\",\n       \"ec2:CreateInternetGateway\",\n
-                      \      \"ec2:CreateNatGateway\",\n       \"ec2:CreateRoute\",\n
-                      \      \"ec2:CreateRouteTable\",\n       \"ec2:CreateSecurityGroup\",\n
-                      \      \"ec2:CreateSubnet\",\n       \"ec2:CreateTags\",\n       \"ec2:DeleteInternetGateway\",\n
-                      \      \"ec2:DeleteNatGateway\",\n       \"ec2:DeleteRouteTable\",\n
-                      \      \"ec2:DeleteSecurityGroup\",\n       \"ec2:DeleteSubnet\",\n
-                      \      \"ec2:DeleteTags\",\n       \"ec2:DescribeAccountAttributes\",\n
-                      \      \"ec2:DescribeAddresses\",\n       \"ec2:DescribeAvailabilityZones\",\n
-                      \      \"ec2:DescribeImages\",\n       \"ec2:DescribeInstances\",\n
-                      \      \"ec2:DescribeInternetGateways\",\n       \"ec2:DescribeNatGateways\",\n
-                      \      \"ec2:DescribeNetworkInterfaces\",\n       \"ec2:DescribeNetworkInterfaceAttribute\",\n
-                      \      \"ec2:DescribeRouteTables\",\n       \"ec2:DescribeSecurityGroups\",\n
-                      \      \"ec2:DescribeSubnets\",\n       \"ec2:DescribeVpcs\",\n
-                      \      \"ec2:DescribeVpcAttribute\",\n       \"ec2:DescribeVolumes\",\n
-                      \      \"ec2:DetachInternetGateway\",\n       \"ec2:DisassociateRouteTable\",\n
-                      \      \"ec2:DisassociateAddress\",\n       \"ec2:ModifyInstanceAttribute\",\n
-                      \      \"ec2:ModifyNetworkInterfaceAttribute\",\n       \"ec2:ModifySubnetAttribute\",\n
-                      \      \"ec2:RevokeSecurityGroupIngress\",\n       \"ec2:RunInstances\",\n
-                      \      \"ec2:TerminateInstances\",\n       \"tag:GetResources\",\n
-                      \      \"ec2:CreateLaunchTemplate\",\n       \"ec2:CreateLaunchTemplateVersion\",\n
-                      \      \"ec2:DescribeLaunchTemplates\",\n       \"ec2:DescribeLaunchTemplateVersions\",\n
-                      \      \"ec2:DeleteLaunchTemplate\",\n       \"ec2:DeleteLaunchTemplateVersions\"\n
-                      \    ],\n     \"Resource\": [\n       \"*\"\n     ],\n     \"Effect\":
-                      \"Allow\"\n   },\n   {\n     \"Condition\": {\n       \"StringLike\":
-                      {\n         \"iam:AWSServiceName\": \"elasticloadbalancing.amazonaws.com\"\n
-                      \      }\n     },\n     \"Action\": [\n       \"iam:CreateServiceLinkedRole\"\n
-                      \    ],\n     \"Resource\": [\n       \"arn:*:iam::*:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing\"\n
-                      \    ],\n     \"Effect\": \"Allow\"\n   },\n   {\n     \"Action\":
-                      [\n       \"iam:PassRole\"\n     ],\n     \"Resource\": [\n
-                      \      \"arn:*:iam::*:role/*-worker-role\"\n     ],\n     \"Effect\":
-                      \"Allow\"\n   },\n\t  {\n\t  \t\"Effect\": \"Allow\",\n\t  \t\"Action\":
-                      [\n\t  \t\t\"kms:Decrypt\",\n\t  \t\t\"kms:ReEncrypt\",\n\t
-                      \ \t\t\"kms:GenerateDataKeyWithoutPlainText\",\n\t  \t\t\"kms:DescribeKey\"\n\t
-                      \ \t],\n\t  \t\"Resource\": \"*\"\n\t  },\n\t  {\n\t  \t\"Effect\":
-                      \"Allow\",\n\t  \t\"Action\": [\n\t  \t\t\"kms:CreateGrant\"\n\t
-                      \ \t],\n\t  \t\"Resource\": \"*\",\n\t  \t\"Condition\": {\n\t
-                      \ \t\t\"Bool\": {\n\t  \t\t\t\"kms:GrantIsForAWSResource\":
-                      true\n\t  \t\t}\n\t  \t}\n\t  }\n ]\n}"
+                    description: "NodePoolManagementARN is an ARN value referencing a role
+                      appropriate for the CAPI Controller.\n\nThe following is an example
+                      of a valid policy document:\n\n{\n  \"Version\": \"2012-10-17\",\n\
+                      \ \"Statement\": [\n   {\n     \"Action\": [\n       \"ec2:AssociateRouteTable\"\
+                      ,\n       \"ec2:AttachInternetGateway\",\n       \"ec2:AuthorizeSecurityGroupIngress\"\
+                      ,\n       \"ec2:CreateInternetGateway\",\n       \"ec2:CreateNatGateway\"\
+                      ,\n       \"ec2:CreateRoute\",\n       \"ec2:CreateRouteTable\",\n\
+                      \       \"ec2:CreateSecurityGroup\",\n       \"ec2:CreateSubnet\"\
+                      ,\n       \"ec2:CreateTags\",\n       \"ec2:DeleteInternetGateway\"\
+                      ,\n       \"ec2:DeleteNatGateway\",\n       \"ec2:DeleteRouteTable\"\
+                      ,\n       \"ec2:DeleteSecurityGroup\",\n       \"ec2:DeleteSubnet\"\
+                      ,\n       \"ec2:DeleteTags\",\n       \"ec2:DescribeAccountAttributes\"\
+                      ,\n       \"ec2:DescribeAddresses\",\n       \"ec2:DescribeAvailabilityZones\"\
+                      ,\n       \"ec2:DescribeImages\",\n       \"ec2:DescribeInstances\"\
+                      ,\n       \"ec2:DescribeInternetGateways\",\n       \"ec2:DescribeNatGateways\"\
+                      ,\n       \"ec2:DescribeNetworkInterfaces\",\n       \"ec2:DescribeNetworkInterfaceAttribute\"\
+                      ,\n       \"ec2:DescribeRouteTables\",\n       \"ec2:DescribeSecurityGroups\"\
+                      ,\n       \"ec2:DescribeSubnets\",\n       \"ec2:DescribeVpcs\",\n\
+                      \       \"ec2:DescribeVpcAttribute\",\n       \"ec2:DescribeVolumes\"\
+                      ,\n       \"ec2:DetachInternetGateway\",\n       \"ec2:DisassociateRouteTable\"\
+                      ,\n       \"ec2:DisassociateAddress\",\n       \"ec2:ModifyInstanceAttribute\"\
+                      ,\n       \"ec2:ModifyNetworkInterfaceAttribute\",\n       \"ec2:ModifySubnetAttribute\"\
+                      ,\n       \"ec2:RevokeSecurityGroupIngress\",\n       \"ec2:RunInstances\"\
+                      ,\n       \"ec2:TerminateInstances\",\n       \"tag:GetResources\"\
+                      ,\n       \"ec2:CreateLaunchTemplate\",\n       \"ec2:CreateLaunchTemplateVersion\"\
+                      ,\n       \"ec2:DescribeLaunchTemplates\",\n       \"ec2:DescribeLaunchTemplateVersions\"\
+                      ,\n       \"ec2:DeleteLaunchTemplate\",\n       \"ec2:DeleteLaunchTemplateVersions\"\
+                      \n     ],\n     \"Resource\": [\n       \"*\"\n     ],\n     \"Effect\"\
+                      : \"Allow\"\n   },\n   {\n     \"Condition\": {\n       \"StringLike\"\
+                      : {\n         \"iam:AWSServiceName\": \"elasticloadbalancing.amazonaws.com\"\
+                      \n       }\n     },\n     \"Action\": [\n       \"iam:CreateServiceLinkedRole\"\
+                      \n     ],\n     \"Resource\": [\n       \"arn:*:iam::*:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing\"\
+                      \n     ],\n     \"Effect\": \"Allow\"\n   },\n   {\n     \"Action\"\
+                      : [\n       \"iam:PassRole\"\n     ],\n     \"Resource\": [\n   \
+                      \    \"arn:*:iam::*:role/*-worker-role\"\n     ],\n     \"Effect\"\
+                      : \"Allow\"\n   },\n\t  {\n\t  \t\"Effect\": \"Allow\",\n\t  \t\"\
+                      Action\": [\n\t  \t\t\"kms:Decrypt\",\n\t  \t\t\"kms:ReEncrypt\"\
+                      ,\n\t  \t\t\"kms:GenerateDataKeyWithoutPlainText\",\n\t  \t\t\"kms:DescribeKey\"\
+                      \n\t  \t],\n\t  \t\"Resource\": \"*\"\n\t  },\n\t  {\n\t  \t\"Effect\"\
+                      : \"Allow\",\n\t  \t\"Action\": [\n\t  \t\t\"kms:CreateGrant\"\n\t\
+                      \  \t],\n\t  \t\"Resource\": \"*\",\n\t  \t\"Condition\": {\n\t \
+                      \ \t\t\"Bool\": {\n\t  \t\t\t\"kms:GrantIsForAWSResource\": true\n\
+                      \t  \t\t}\n\t  \t}\n\t  }\n ]\n}"
                     type: string
                   storageARN:
                     description: "StorageARN is an ARN value referencing a role appropriate
-                      for the Storage Operator.\n\nThe following is an example of
-                      a valid policy document:\n\n{\n\t\"Version\": \"2012-10-17\",\n\t\"Statement\":
-                      [\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\": [\n\t\t\t\t\"ec2:AttachVolume\",\n\t\t\t\t\"ec2:CreateSnapshot\",\n\t\t\t\t\"ec2:CreateTags\",\n\t\t\t\t\"ec2:CreateVolume\",\n\t\t\t\t\"ec2:DeleteSnapshot\",\n\t\t\t\t\"ec2:DeleteTags\",\n\t\t\t\t\"ec2:DeleteVolume\",\n\t\t\t\t\"ec2:DescribeInstances\",\n\t\t\t\t\"ec2:DescribeSnapshots\",\n\t\t\t\t\"ec2:DescribeTags\",\n\t\t\t\t\"ec2:DescribeVolumes\",\n\t\t\t\t\"ec2:DescribeVolumesModifications\",\n\t\t\t\t\"ec2:DetachVolume\",\n\t\t\t\t\"ec2:ModifyVolume\"\n\t\t\t],\n\t\t\t\"Resource\":
-                      \"*\"\n\t\t}\n\t]\n}"
+                      for the Storage Operator.\n\nThe following is an example of a valid
+                      policy document:\n\n{\n\t\"Version\": \"2012-10-17\",\n\t\"Statement\"\
+                      : [\n\t\t{\n\t\t\t\"Effect\": \"Allow\",\n\t\t\t\"Action\": [\n\t\
+                      \t\t\t\"ec2:AttachVolume\",\n\t\t\t\t\"ec2:CreateSnapshot\",\n\t\t\
+                      \t\t\"ec2:CreateTags\",\n\t\t\t\t\"ec2:CreateVolume\",\n\t\t\t\t\"\
+                      ec2:DeleteSnapshot\",\n\t\t\t\t\"ec2:DeleteTags\",\n\t\t\t\t\"ec2:DeleteVolume\"\
+                      ,\n\t\t\t\t\"ec2:DescribeInstances\",\n\t\t\t\t\"ec2:DescribeSnapshots\"\
+                      ,\n\t\t\t\t\"ec2:DescribeTags\",\n\t\t\t\t\"ec2:DescribeVolumes\"\
+                      ,\n\t\t\t\t\"ec2:DescribeVolumesModifications\",\n\t\t\t\t\"ec2:DetachVolume\"\
+                      ,\n\t\t\t\t\"ec2:ModifyVolume\"\n\t\t\t],\n\t\t\t\"Resource\": \"\
+                      *\"\n\t\t}\n\t]\n}"
                     type: string
                 required:
                 - controlPlaneOperatorARN

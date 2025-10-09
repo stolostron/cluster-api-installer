@@ -21,8 +21,8 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OpenshiftAssistedConfig is the Schema for the openshiftassistedconfig
-          API
+        description: OpenshiftAssistedConfig is the Schema for the
+          openshiftassistedconfig API
         properties:
           apiVersion:
             description: |-
@@ -94,8 +94,8 @@ spec:
                   of this installation environment.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -137,8 +137,8 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               nodeRegistration:
-                description: NodeRegistrationOption holds fields related to registering
-                  nodes to the cluster
+                description: NodeRegistrationOption holds fields related to
+                  registering nodes to the cluster
                 properties:
                   kubeletExtraLabels:
                     description: KubeletExtraLabels passes extra labels to kubelet.
@@ -146,7 +146,8 @@ spec:
                       type: string
                     type: array
                   name:
-                    description: Defaults to the hostname of the node if not provided.
+                    description: Defaults to the hostname of the node if not
+                      provided.
                     type: string
                 type: object
               osImageVersion:
@@ -165,7 +166,8 @@ spec:
                     description: HTTPProxy is the URL of the proxy for HTTP requests.
                     type: string
                   httpsProxy:
-                    description: HTTPSProxy is the URL of the proxy for HTTPS requests.
+                    description: HTTPSProxy is the URL of the proxy for HTTPS
+                      requests.
                     type: string
                   noProxy:
                     description: |-
@@ -178,7 +180,7 @@ spec:
                   pulling images.
                 properties:
                   name:
-                    default: ""
+                    default: ''
                     description: |-
                       Name of the referent.
                       This field is effectively required, but due to backwards compatibility is
@@ -194,15 +196,15 @@ spec:
                 type: string
             type: object
           status:
-            description: OpenshiftAssistedConfigStatus defines the observed state
-              of OpenshiftAssistedConfig
+            description: OpenshiftAssistedConfigStatus defines the observed state of
+              OpenshiftAssistedConfig
             properties:
               agentRef:
-                description: AgentRef references the agent this agent bootstrap config
-                  has booted
+                description: AgentRef references the agent this agent bootstrap
+                  config has booted
                 properties:
                   name:
-                    default: ""
+                    default: ''
                     description: |-
                       Name of the referent.
                       This field is effectively required, but due to backwards compatibility is
@@ -213,10 +215,11 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               conditions:
-                description: Conditions defines current service state of the OpenshiftAssistedConfig.
+                description: Conditions defines current service state of the
+                  OpenshiftAssistedConfig.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -243,7 +246,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -258,8 +262,8 @@ spec:
                   type: object
                 type: array
               dataSecretName:
-                description: DataSecretName is the name of the secret that stores
-                  the bootstrap data script.
+                description: DataSecretName is the name of the secret that stores the
+                  bootstrap data script.
                 type: string
               failureMessage:
                 description: FailureMessage will be set on non-retryable errors
@@ -314,8 +318,8 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               observedGeneration:
-                description: ObservedGeneration is the latest generation observed
-                  by the controller.
+                description: ObservedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               ready:

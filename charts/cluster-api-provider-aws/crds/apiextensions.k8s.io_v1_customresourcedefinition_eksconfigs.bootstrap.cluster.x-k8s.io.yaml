@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -56,20 +56,20 @@ spec:
           metadata:
             type: object
           spec:
-            description: EKSConfigSpec defines the desired state of Amazon EKS Bootstrap
-              Configuration.
+            description: EKSConfigSpec defines the desired state of Amazon EKS
+              Bootstrap Configuration.
             properties:
               apiRetryAttempts:
-                description: APIRetryAttempts is the number of retry attempts for
-                  AWS API call.
+                description: APIRetryAttempts is the number of retry attempts for AWS
+                  API call.
                 type: integer
               containerRuntime:
                 description: ContainerRuntime specify the container runtime to use
                   when bootstrapping EKS.
                 type: string
               dnsClusterIP:
-                description: ' DNSClusterIP overrides the IP address to use for DNS
-                  queries within the cluster.'
+                description: ' DNSClusterIP overrides the IP address to use for DNS queries
+                  within the cluster.'
                 type: string
               dockerConfigJson:
                 description: |-
@@ -83,12 +83,12 @@ spec:
                   the Amazon EKS machine bootstrap script
                 type: object
               pauseContainer:
-                description: PauseContainer allows customization of the pause container
-                  to use.
+                description: PauseContainer allows customization of the pause
+                  container to use.
                 properties:
                   accountNumber:
-                    description: ' AccountNumber is the AWS account number to pull
-                      the pause container from.'
+                    description: ' AccountNumber is the AWS account number to pull the
+                      pause container from.'
                     type: string
                   version:
                     description: Version is the tag of the pause container to use.
@@ -107,14 +107,15 @@ spec:
                 type: boolean
             type: object
           status:
-            description: EKSConfigStatus defines the observed state of the Amazon
-              EKS Bootstrap Configuration.
+            description: EKSConfigStatus defines the observed state of the Amazon EKS
+              Bootstrap Configuration.
             properties:
               conditions:
-                description: Conditions defines current service state of the EKSConfig.
+                description: Conditions defines current service state of the
+                  EKSConfig.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -146,7 +147,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -163,8 +165,8 @@ spec:
                   type: object
                 type: array
               dataSecretName:
-                description: DataSecretName is the name of the secret that stores
-                  the bootstrap data script.
+                description: DataSecretName is the name of the secret that stores the
+                  bootstrap data script.
                 type: string
               failureMessage:
                 description: FailureMessage will be set on non-retryable errors
@@ -173,13 +175,13 @@ spec:
                 description: FailureReason will be set on non-retryable errors
                 type: string
               observedGeneration:
-                description: ObservedGeneration is the latest generation observed
-                  by the controller.
+                description: ObservedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               ready:
-                description: Ready indicates the BootstrapData secret is ready to
-                  be consumed
+                description: Ready indicates the BootstrapData secret is ready to be
+                  consumed
                 type: boolean
             type: object
         type: object
@@ -220,24 +222,24 @@ spec:
           metadata:
             type: object
           spec:
-            description: EKSConfigSpec defines the desired state of Amazon EKS Bootstrap
-              Configuration.
+            description: EKSConfigSpec defines the desired state of Amazon EKS
+              Bootstrap Configuration.
             properties:
               apiRetryAttempts:
-                description: APIRetryAttempts is the number of retry attempts for
-                  AWS API call.
+                description: APIRetryAttempts is the number of retry attempts for AWS
+                  API call.
                 type: integer
               boostrapCommandOverride:
-                description: BootstrapCommandOverride allows you to override the bootstrap
-                  command to use for EKS nodes.
+                description: BootstrapCommandOverride allows you to override the
+                  bootstrap command to use for EKS nodes.
                 type: string
               containerRuntime:
                 description: ContainerRuntime specify the container runtime to use
                   when bootstrapping EKS.
                 type: string
               diskSetup:
-                description: DiskSetup specifies options for the creation of partition
-                  tables and file systems on devices.
+                description: DiskSetup specifies options for the creation of
+                  partition tables and file systems on devices.
                 properties:
                   filesystems:
                     description: Filesystems specifies the list of file systems to
@@ -267,9 +269,9 @@ spec:
                             If true, any pre-existing file system will be destroyed. Use with Caution.
                           type: boolean
                         partition:
-                          description: 'Partition specifies the partition to use.
-                            The valid options are: "auto|any", "auto", "any", "none",
-                            and <NUM>, where NUM is the actual partition number.'
+                          description: 'Partition specifies the partition to use. The valid
+                            options are: "auto|any", "auto", "any", "none", and <NUM>,
+                            where NUM is the actual partition number.'
                           type: string
                       required:
                       - device
@@ -281,7 +283,8 @@ spec:
                     description: Partitions specifies the list of the partitions to
                       setup.
                     items:
-                      description: Partition defines how to create and layout a partition.
+                      description: Partition defines how to create and layout a
+                        partition.
                       properties:
                         device:
                           description: Device is the name of the device.
@@ -310,8 +313,8 @@ spec:
                     type: array
                 type: object
               dnsClusterIP:
-                description: ' DNSClusterIP overrides the IP address to use for DNS
-                  queries within the cluster.'
+                description: ' DNSClusterIP overrides the IP address to use for DNS queries
+                  within the cluster.'
                 type: string
               dockerConfigJson:
                 description: |-
@@ -326,8 +329,8 @@ spec:
                     cloud-init.
                   properties:
                     append:
-                      description: Append specifies whether to append Content to existing
-                        file if Path exists.
+                      description: Append specifies whether to append Content to
+                        existing file if Path exists.
                       type: boolean
                     content:
                       description: Content is the actual content of the file.
@@ -337,16 +340,16 @@ spec:
                         populate the file.
                       properties:
                         secret:
-                          description: Secret represents a secret that should populate
-                            this file.
+                          description: Secret represents a secret that should
+                            populate this file.
                           properties:
                             key:
                               description: Key is the key in the secret's data map
                                 for this value.
                               type: string
                             name:
-                              description: Name of the secret in the KubeadmBootstrapConfig's
-                                namespace to use.
+                              description: Name of the secret in the
+                                KubeadmBootstrapConfig's namespace to use.
                               type: string
                           required:
                           - key
@@ -356,7 +359,8 @@ spec:
                       - secret
                       type: object
                     encoding:
-                      description: Encoding specifies the encoding of the file contents.
+                      description: Encoding specifies the encoding of the file
+                        contents.
                       enum:
                       - base64
                       - gzip
@@ -367,12 +371,12 @@ spec:
                         "root:root".
                       type: string
                     path:
-                      description: Path specifies the full path on disk where to store
-                        the file.
+                      description: Path specifies the full path on disk where to
+                        store the file.
                       type: string
                     permissions:
-                      description: Permissions specifies the permissions to assign
-                        to the file, e.g. "0640".
+                      description: Permissions specifies the permissions to assign to
+                        the file, e.g. "0640".
                       type: string
                   required:
                   - path
@@ -387,7 +391,8 @@ spec:
               mounts:
                 description: Mounts specifies a list of mount points to be setup.
                 items:
-                  description: MountPoints defines input for generated mounts in cloud-init.
+                  description: MountPoints defines input for generated mounts in
+                    cloud-init.
                   items:
                     type: string
                   type: array
@@ -405,12 +410,12 @@ spec:
                     type: array
                 type: object
               pauseContainer:
-                description: PauseContainer allows customization of the pause container
-                  to use.
+                description: PauseContainer allows customization of the pause
+                  container to use.
                 properties:
                   accountNumber:
-                    description: ' AccountNumber is the AWS account number to pull
-                      the pause container from.'
+                    description: ' AccountNumber is the AWS account number to pull the
+                      pause container from.'
                     type: string
                   version:
                     description: Version is the tag of the pause container to use.
@@ -442,7 +447,8 @@ spec:
               users:
                 description: Users specifies extra users to add
                 items:
-                  description: User defines the input for a generated user in cloud-init.
+                  description: User defines the input for a generated user in
+                    cloud-init.
                   properties:
                     gecos:
                       description: Gecos specifies the gecos to use for the user
@@ -460,8 +466,8 @@ spec:
                         inactive
                       type: boolean
                     lockPassword:
-                      description: LockPassword specifies if password login should
-                        be disabled
+                      description: LockPassword specifies if password login should be
+                        disabled
                       type: boolean
                     name:
                       description: Name specifies the username
@@ -474,16 +480,16 @@ spec:
                         populate the passwd.
                       properties:
                         secret:
-                          description: Secret represents a secret that should populate
-                            this password.
+                          description: Secret represents a secret that should
+                            populate this password.
                           properties:
                             key:
                               description: Key is the key in the secret's data map
                                 for this value.
                               type: string
                             name:
-                              description: Name of the secret in the KubeadmBootstrapConfig's
-                                namespace to use.
+                              description: Name of the secret in the
+                                KubeadmBootstrapConfig's namespace to use.
                               type: string
                           required:
                           - key
@@ -500,8 +506,8 @@ spec:
                       description: Shell specifies the user's shell
                       type: string
                     sshAuthorizedKeys:
-                      description: SSHAuthorizedKeys specifies a list of ssh authorized
-                        keys for the user
+                      description: SSHAuthorizedKeys specifies a list of ssh
+                        authorized keys for the user
                       items:
                         type: string
                       type: array
@@ -514,14 +520,15 @@ spec:
                 type: array
             type: object
           status:
-            description: EKSConfigStatus defines the observed state of the Amazon
-              EKS Bootstrap Configuration.
+            description: EKSConfigStatus defines the observed state of the Amazon EKS
+              Bootstrap Configuration.
             properties:
               conditions:
-                description: Conditions defines current service state of the EKSConfig.
+                description: Conditions defines current service state of the
+                  EKSConfig.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -553,7 +560,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -570,8 +578,8 @@ spec:
                   type: object
                 type: array
               dataSecretName:
-                description: DataSecretName is the name of the secret that stores
-                  the bootstrap data script.
+                description: DataSecretName is the name of the secret that stores the
+                  bootstrap data script.
                 type: string
               failureMessage:
                 description: FailureMessage will be set on non-retryable errors
@@ -580,13 +588,13 @@ spec:
                 description: FailureReason will be set on non-retryable errors
                 type: string
               observedGeneration:
-                description: ObservedGeneration is the latest generation observed
-                  by the controller.
+                description: ObservedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               ready:
-                description: Ready indicates the BootstrapData secret is ready to
-                  be consumed
+                description: Ready indicates the BootstrapData secret is ready to be
+                  consumed
                 type: boolean
             type: object
         type: object

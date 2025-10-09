@@ -1,3 +1,5 @@
+# Resource: v1_namespace_capi-system
+---
 apiVersion: v1
 kind: Namespace
 metadata:

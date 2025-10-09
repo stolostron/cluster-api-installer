@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cluster-api
-description: Cluster API
+description: Helm chart for cluster-api
 type: application
-version: "4.20"
-appVersion: "4.20"
+version: '4.20'
+appVersion: '4.20'

@@ -50,8 +50,8 @@ spec:
             description: spec is the desired state of the ExtensionConfig.
             properties:
               clientConfig:
-                description: clientConfig defines how to communicate with the Extension
-                  server.
+                description: clientConfig defines how to communicate with the
+                  Extension server.
                 properties:
                   caBundle:
                     description: caBundle is a PEM encoded CA bundle which will be
@@ -123,8 +123,8 @@ spec:
                   Defaults to the empty LabelSelector, which matches all objects.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -180,10 +180,11 @@ spec:
             description: status is the current state of the ExtensionConfig
             properties:
               conditions:
-                description: conditions define the current service state of the ExtensionConfig.
+                description: conditions define the current service state of the
+                  ExtensionConfig.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -215,7 +216,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -286,8 +288,8 @@ spec:
                 - name
                 x-kubernetes-list-type: map
               v1beta2:
-                description: v1beta2 groups all the fields that will be added or modified
-                  in ExtensionConfig's status with the V1Beta2 version.
+                description: v1beta2 groups all the fields that will be added or
+                  modified in ExtensionConfig's status with the V1Beta2 version.
                 properties:
                   conditions:
                     description: |-
@@ -332,14 +334,16 @@ spec:
                           description: status of the condition, one of True, False,
                             Unknown.
                           enum:
-                          - "True"
-                          - "False"
+                          - 'True'
+                          - 'False'
                           - Unknown
                           type: string
                         type:
-                          description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          description: type of condition in CamelCase or in
+                            foo.example.com/CamelCase.
                           maxLength: 316
-                          pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                          pattern:
+                            ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                           type: string
                       required:
                       - lastTransitionTime

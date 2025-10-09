@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinedrainrules.cluster.x-k8s.io
@@ -117,8 +117,8 @@ spec:
                          values:
                          - production
                 items:
-                  description: MachineDrainRuleMachineSelector defines to which Machines
-                    this MachineDrainRule should be applied.
+                  description: MachineDrainRuleMachineSelector defines to which
+                    Machines this MachineDrainRule should be applied.
                   minProperties: 1
                   properties:
                     clusterSelector:

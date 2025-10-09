@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusterresourcesets.addons.cluster.x-k8s.io
@@ -54,8 +54,8 @@ spec:
                   It must match the Cluster labels. This field is immutable.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -120,8 +120,8 @@ spec:
                   type: object
                 type: array
               strategy:
-                description: strategy is the strategy to be used during applying resources.
-                  Defaults to ApplyOnce. This field is immutable.
+                description: strategy is the strategy to be used during applying
+                  resources. Defaults to ApplyOnce. This field is immutable.
                 enum:
                 - ApplyOnce
                 type: string
@@ -132,10 +132,11 @@ spec:
             description: status is the observed state of ClusterResourceSet.
             properties:
               conditions:
-                description: conditions defines current state of the ClusterResourceSet.
+                description: conditions defines current state of the
+                  ClusterResourceSet.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -162,7 +163,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -228,8 +230,8 @@ spec:
                   Label selector cannot be empty.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -294,8 +296,8 @@ spec:
                   type: object
                 type: array
               strategy:
-                description: strategy is the strategy to be used during applying resources.
-                  Defaults to ApplyOnce. This field is immutable.
+                description: strategy is the strategy to be used during applying
+                  resources. Defaults to ApplyOnce. This field is immutable.
                 enum:
                 - ApplyOnce
                 type: string
@@ -306,10 +308,11 @@ spec:
             description: status is the observed state of ClusterResourceSet.
             properties:
               conditions:
-                description: conditions defines current state of the ClusterResourceSet.
+                description: conditions defines current state of the
+                  ClusterResourceSet.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -336,7 +339,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -400,8 +404,8 @@ spec:
                   Label selector cannot be empty.
                 properties:
                   matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
+                    description: matchExpressions is a list of label selector
+                      requirements. The requirements are ANDed.
                     items:
                       description: |-
                         A label selector requirement is a selector that contains values, a key, and an operator that
@@ -468,8 +472,8 @@ spec:
                 maxItems: 100
                 type: array
               strategy:
-                description: strategy is the strategy to be used during applying resources.
-                  Defaults to ApplyOnce. This field is immutable.
+                description: strategy is the strategy to be used during applying
+                  resources. Defaults to ApplyOnce. This field is immutable.
                 enum:
                 - ApplyOnce
                 - Reconcile
@@ -481,10 +485,11 @@ spec:
             description: status is the observed state of ClusterResourceSet.
             properties:
               conditions:
-                description: conditions defines current state of the ClusterResourceSet.
+                description: conditions defines current state of the
+                  ClusterResourceSet.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -516,7 +521,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -538,8 +544,8 @@ spec:
                 format: int64
                 type: integer
               v1beta2:
-                description: v1beta2 groups all the fields that will be added or modified
-                  in ClusterResourceSet's status with the V1Beta2 version.
+                description: v1beta2 groups all the fields that will be added or
+                  modified in ClusterResourceSet's status with the V1Beta2 version.
                 properties:
                   conditions:
                     description: |-
@@ -584,14 +590,16 @@ spec:
                           description: status of the condition, one of True, False,
                             Unknown.
                           enum:
-                          - "True"
-                          - "False"
+                          - 'True'
+                          - 'False'
                           - Unknown
                           type: string
                         type:
-                          description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          description: type of condition in CamelCase or in
+                            foo.example.com/CamelCase.
                           maxLength: 316
-                          pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                          pattern:
+                            ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                           type: string
                       required:
                       - lastTransitionTime

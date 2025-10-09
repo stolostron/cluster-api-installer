@@ -1,3 +1,6 @@
+# Resource: apps_v1_deployment_capa-system_capa-controller-manager
+---
+{{- if .Values.global.deployOnOCP }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -109,3 +112,5 @@ spec:
       - name: credentials
         secret:
           secretName: capa-manager-bootstrap-credentials
+
+{{- end }}

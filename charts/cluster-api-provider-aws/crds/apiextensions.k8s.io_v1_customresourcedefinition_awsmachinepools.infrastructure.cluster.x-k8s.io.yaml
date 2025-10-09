@@ -66,7 +66,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSMachinePoolSpec defines the desired state of AWSMachinePool.
+            description: AWSMachinePoolSpec defines the desired state of
+              AWSMachinePool.
             properties:
               additionalTags:
                 additionalProperties:
@@ -76,14 +77,14 @@ spec:
                   AWS provider.
                 type: object
               availabilityZones:
-                description: AvailabilityZones is an array of availability zones instances
-                  can run in
+                description: AvailabilityZones is an array of availability zones
+                  instances can run in
                 items:
                   type: string
                 type: array
               awsLaunchTemplate:
-                description: AWSLaunchTemplate specifies the launch template and version
-                  to use when an instance is launched.
+                description: AWSLaunchTemplate specifies the launch template and
+                  version to use when an instance is launched.
                 properties:
                   additionalSecurityGroups:
                     description: |-
@@ -110,8 +111,8 @@ spec:
                                   case-sensitive.
                                 type: string
                               values:
-                                description: Values includes one or more filter values.
-                                  Filter values are case-sensitive.
+                                description: Values includes one or more filter
+                                  values. Filter values are case-sensitive.
                                 items:
                                   type: string
                                 type: array
@@ -168,12 +169,12 @@ spec:
                       also: https://golang.org/pkg/text/template/
                     type: string
                   imageLookupOrg:
-                    description: ImageLookupOrg is the AWS Organization ID to use
-                      for image lookup if AMI is not set.
+                    description: ImageLookupOrg is the AWS Organization ID to use for
+                      image lookup if AMI is not set.
                     type: string
                   instanceType:
-                    description: 'InstanceType is the type of instance to create.
-                      Example: m4.xlarge'
+                    description: 'InstanceType is the type of instance to create. Example:
+                      m4.xlarge'
                     type: string
                   name:
                     description: The name of the launch template.
@@ -186,8 +187,8 @@ spec:
                         description: Device name
                         type: string
                       encrypted:
-                        description: Encrypted is whether the volume should be encrypted
-                          or not.
+                        description: Encrypted is whether the volume should be
+                          encrypted or not.
                         type: boolean
                       encryptionKey:
                         description: |-
@@ -220,8 +221,8 @@ spec:
                     - size
                     type: object
                   spotMarketOptions:
-                    description: SpotMarketOptions are options for configuring AWSMachinePool
-                      instances to be run using AWS Spot instances.
+                    description: SpotMarketOptions are options for configuring
+                      AWSMachinePool instances to be run using AWS Spot instances.
                     properties:
                       maxPrice:
                         description: MaxPrice defines the maximum price the user is
@@ -274,8 +275,8 @@ spec:
                     properties:
                       onDemandAllocationStrategy:
                         default: prioritized
-                        description: OnDemandAllocationStrategy indicates how to allocate
-                          instance types to fulfill On-Demand capacity.
+                        description: OnDemandAllocationStrategy indicates how to
+                          allocate instance types to fulfill On-Demand capacity.
                         enum:
                         - prioritized
                         type: string
@@ -320,8 +321,8 @@ spec:
                   type: string
                 type: array
               refreshPreferences:
-                description: RefreshPreferences describes set of preferences associated
-                  with the instance refresh request.
+                description: RefreshPreferences describes set of preferences
+                  associated with the instance refresh request.
                 properties:
                   instanceWarmup:
                     description: |-
@@ -357,10 +358,12 @@ spec:
                         They are applied according to the rules defined by the AWS API:
                         https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                       items:
-                        description: Filter is a filter used to identify an AWS resource.
+                        description: Filter is a filter used to identify an AWS
+                          resource.
                         properties:
                           name:
-                            description: Name of the filter. Filter names are case-sensitive.
+                            description: Name of the filter. Filter names are
+                              case-sensitive.
                             type: string
                           values:
                             description: Values includes one or more filter values.
@@ -384,17 +387,19 @@ spec:
             - minSize
             type: object
           status:
-            description: AWSMachinePoolStatus defines the observed state of AWSMachinePool.
+            description: AWSMachinePoolStatus defines the observed state of
+              AWSMachinePool.
             properties:
               asgStatus:
                 description: ASGStatus is a status string returned by the autoscaling
                   API.
                 type: string
               conditions:
-                description: Conditions defines current service state of the AWSMachinePool.
+                description: Conditions defines current service state of the
+                  AWSMachinePool.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -426,7 +431,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -484,8 +490,8 @@ spec:
                 description: Instances contains the status for each instance in the
                   pool
                 items:
-                  description: AWSMachinePoolInstanceStatus defines the status of
-                    the AWSMachinePoolInstance.
+                  description: AWSMachinePoolInstanceStatus defines the status of the
+                    AWSMachinePoolInstance.
                   properties:
                     instanceID:
                       description: InstanceID is the identification of the Machine
@@ -507,7 +513,8 @@ spec:
                 description: Ready is true when the provider resource is ready.
                 type: boolean
               replicas:
-                description: Replicas is the most recently observed number of replicas
+                description: Replicas is the most recently observed number of
+                  replicas
                 format: int32
                 type: integer
             type: object
@@ -560,7 +567,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSMachinePoolSpec defines the desired state of AWSMachinePool.
+            description: AWSMachinePoolSpec defines the desired state of
+              AWSMachinePool.
             properties:
               additionalTags:
                 additionalProperties:
@@ -570,22 +578,22 @@ spec:
                   AWS provider.
                 type: object
               availabilityZoneSubnetType:
-                description: AvailabilityZoneSubnetType specifies which type of subnets
-                  to use when an availability zone is specified.
+                description: AvailabilityZoneSubnetType specifies which type of
+                  subnets to use when an availability zone is specified.
                 enum:
                 - public
                 - private
                 - all
                 type: string
               availabilityZones:
-                description: AvailabilityZones is an array of availability zones instances
-                  can run in
+                description: AvailabilityZones is an array of availability zones
+                  instances can run in
                 items:
                   type: string
                 type: array
               awsLaunchTemplate:
-                description: AWSLaunchTemplate specifies the launch template and version
-                  to use when an instance is launched.
+                description: AWSLaunchTemplate specifies the launch template and
+                  version to use when an instance is launched.
                 properties:
                   additionalSecurityGroups:
                     description: |-
@@ -612,8 +620,8 @@ spec:
                                   case-sensitive.
                                 type: string
                               values:
-                                description: Values includes one or more filter values.
-                                  Filter values are case-sensitive.
+                                description: Values includes one or more filter
+                                  values. Filter values are case-sensitive.
                                 items:
                                   type: string
                                 type: array
@@ -651,12 +659,12 @@ spec:
                   capacityReservationPreference:
                     allOf:
                     - enum:
-                      - ""
+                      - ''
                       - None
                       - CapacityReservationsOnly
                       - Open
                     - enum:
-                      - ""
+                      - ''
                       - None
                       - CapacityReservationsOnly
                       - Open
@@ -692,8 +700,8 @@ spec:
                       also: https://golang.org/pkg/text/template/
                     type: string
                   imageLookupOrg:
-                    description: ImageLookupOrg is the AWS Organization ID to use
-                      for image lookup if AMI is not set.
+                    description: ImageLookupOrg is the AWS Organization ID to use for
+                      image lookup if AMI is not set.
                     type: string
                   instanceMetadataOptions:
                     description: InstanceMetadataOptions defines the behavior for
@@ -758,8 +766,8 @@ spec:
                         type: string
                     type: object
                   instanceType:
-                    description: 'InstanceType is the type of instance to create.
-                      Example: m4.xlarge'
+                    description: 'InstanceType is the type of instance to create. Example:
+                      m4.xlarge'
                     type: string
                   marketType:
                     description: |-
@@ -778,7 +786,8 @@ spec:
                     description: The name of the launch template.
                     type: string
                   nonRootVolumes:
-                    description: Configuration options for the non root storage volumes.
+                    description: Configuration options for the non root storage
+                      volumes.
                     items:
                       description: Volume encapsulates the configuration options for
                         the storage device.
@@ -787,8 +796,8 @@ spec:
                           description: Device name
                           type: string
                         encrypted:
-                          description: Encrypted is whether the volume should be encrypted
-                            or not.
+                          description: Encrypted is whether the volume should be
+                            encrypted or not.
                           type: boolean
                         encryptionKey:
                           description: |-
@@ -809,8 +818,8 @@ spec:
                           minimum: 8
                           type: integer
                         throughput:
-                          description: Throughput to provision in MiB/s supported
-                            for the volume type. Not applicable to all types.
+                          description: Throughput to provision in MiB/s supported for
+                            the volume type. Not applicable to all types.
                           format: int64
                           type: integer
                         type:
@@ -822,17 +831,18 @@ spec:
                       type: object
                     type: array
                   privateDnsName:
-                    description: PrivateDNSName is the options for the instance hostname.
+                    description: PrivateDNSName is the options for the instance
+                      hostname.
                     properties:
                       enableResourceNameDnsAAAARecord:
-                        description: EnableResourceNameDNSAAAARecord indicates whether
-                          to respond to DNS queries for instance hostnames with DNS
-                          AAAA records.
+                        description: EnableResourceNameDNSAAAARecord indicates
+                          whether to respond to DNS queries for instance hostnames
+                          with DNS AAAA records.
                         type: boolean
                       enableResourceNameDnsARecord:
                         description: EnableResourceNameDNSARecord indicates whether
-                          to respond to DNS queries for instance hostnames with DNS
-                          A records.
+                          to respond to DNS queries for instance hostnames with DNS A
+                          records.
                         type: boolean
                       hostnameType:
                         description: The type of hostname to assign to an instance.
@@ -849,8 +859,8 @@ spec:
                         description: Device name
                         type: string
                       encrypted:
-                        description: Encrypted is whether the volume should be encrypted
-                          or not.
+                        description: Encrypted is whether the volume should be
+                          encrypted or not.
                         type: boolean
                       encryptionKey:
                         description: |-
@@ -883,8 +893,8 @@ spec:
                     - size
                     type: object
                   spotMarketOptions:
-                    description: SpotMarketOptions are options for configuring AWSMachinePool
-                      instances to be run using AWS Spot instances.
+                    description: SpotMarketOptions are options for configuring
+                      AWSMachinePool instances to be run using AWS Spot instances.
                     properties:
                       maxPrice:
                         description: MaxPrice defines the maximum price the user is
@@ -958,8 +968,8 @@ spec:
 
                           An IP address prefix and domain name can also include a literal port number (1.2.3.4:80).
                         items:
-                          description: IgnitionNoProxy defines the list of domains
-                            to not proxy for Ignition.
+                          description: IgnitionNoProxy defines the list of domains to
+                            not proxy for Ignition.
                           maxLength: 2048
                           type: string
                         maxItems: 64
@@ -1010,17 +1020,17 @@ spec:
                       Defaults to `2.3` if storageType is set to `ClusterObjectStore`.
                       It will be ignored if storageType is set to `UnencryptedUserData`, as the userdata defines its own version.
                     enum:
-                    - "2.3"
-                    - "3.0"
-                    - "3.1"
-                    - "3.2"
-                    - "3.3"
-                    - "3.4"
+                    - '2.3'
+                    - '3.0'
+                    - '3.1'
+                    - '3.2'
+                    - '3.3'
+                    - '3.4'
                     type: string
                 type: object
               lifecycleHooks:
-                description: AWSLifecycleHooks specifies lifecycle hooks for the autoscaling
-                  group.
+                description: AWSLifecycleHooks specifies lifecycle hooks for the
+                  autoscaling group.
                 items:
                   description: AWSLifecycleHook describes an AWS lifecycle hook
                   properties:
@@ -1089,8 +1099,8 @@ spec:
                     properties:
                       onDemandAllocationStrategy:
                         default: prioritized
-                        description: OnDemandAllocationStrategy indicates how to allocate
-                          instance types to fulfill On-Demand capacity.
+                        description: OnDemandAllocationStrategy indicates how to
+                          allocate instance types to fulfill On-Demand capacity.
                         enum:
                         - prioritized
                         - lowest-price
@@ -1138,8 +1148,8 @@ spec:
                   type: string
                 type: array
               refreshPreferences:
-                description: RefreshPreferences describes set of preferences associated
-                  with the instance refresh request.
+                description: RefreshPreferences describes set of preferences
+                  associated with the instance refresh request.
                 properties:
                   disable:
                     description: |-
@@ -1192,10 +1202,12 @@ spec:
                         They are applied according to the rules defined by the AWS API:
                         https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html
                       items:
-                        description: Filter is a filter used to identify an AWS resource.
+                        description: Filter is a filter used to identify an AWS
+                          resource.
                         properties:
                           name:
-                            description: Name of the filter. Filter names are case-sensitive.
+                            description: Name of the filter. Filter names are
+                              case-sensitive.
                             type: string
                           values:
                             description: Values includes one or more filter values.
@@ -1250,17 +1262,19 @@ spec:
             - minSize
             type: object
           status:
-            description: AWSMachinePoolStatus defines the observed state of AWSMachinePool.
+            description: AWSMachinePoolStatus defines the observed state of
+              AWSMachinePool.
             properties:
               asgStatus:
                 description: ASGStatus is a status string returned by the autoscaling
                   API.
                 type: string
               conditions:
-                description: Conditions defines current service state of the AWSMachinePool.
+                description: Conditions defines current service state of the
+                  AWSMachinePool.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -1292,7 +1306,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -1347,15 +1362,15 @@ spec:
                   controller's output.
                 type: string
               infrastructureMachineKind:
-                description: InfrastructureMachineKind is the kind of the infrastructure
-                  resources behind MachinePool Machines.
+                description: InfrastructureMachineKind is the kind of the
+                  infrastructure resources behind MachinePool Machines.
                 type: string
               instances:
                 description: Instances contains the status for each instance in the
                   pool
                 items:
-                  description: AWSMachinePoolInstanceStatus defines the status of
-                    the AWSMachinePoolInstance.
+                  description: AWSMachinePoolInstanceStatus defines the status of the
+                    AWSMachinePoolInstance.
                   properties:
                     instanceID:
                       description: InstanceID is the identification of the Machine
@@ -1377,7 +1392,8 @@ spec:
                 description: Ready is true when the provider resource is ready.
                 type: boolean
               replicas:
-                description: Replicas is the most recently observed number of replicas
+                description: Replicas is the most recently observed number of
+                  replicas
                 format: int32
                 type: integer
             type: object

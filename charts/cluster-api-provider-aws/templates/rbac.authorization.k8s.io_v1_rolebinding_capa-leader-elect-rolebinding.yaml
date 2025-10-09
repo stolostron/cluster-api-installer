@@ -1,3 +1,6 @@
+# Resource: rbac.authorization.k8s.io_v1_rolebinding_capa-system_capa-leader-elect-rolebinding
+---
+{{- if .Values.global.deployOnOCP }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -13,3 +16,5 @@ subjects:
 - kind: ServiceAccount
   name: capa-controller-manager
   namespace: capa-system
+
+{{- end }}

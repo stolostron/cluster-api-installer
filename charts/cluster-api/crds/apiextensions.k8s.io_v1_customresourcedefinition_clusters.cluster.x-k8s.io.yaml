@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.2
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusters.cluster.x-k8s.io
@@ -21,7 +21,8 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - description: Cluster status such as Pending/Provisioning/Provisioned/Deleting/Failed
+    - description: Cluster status such as
+        Pending/Provisioning/Provisioned/Deleting/Failed
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -93,7 +94,8 @@ spec:
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     type: string
                   port:
                     description: port is the port on which the API server is serving.
@@ -194,8 +196,8 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               paused:
-                description: paused can be used to prevent controllers from processing
-                  the Cluster and all its associated objects.
+                description: paused can be used to prevent controllers from
+                  processing the Cluster and all its associated objects.
                 type: boolean
             type: object
           status:
@@ -204,8 +206,8 @@ spec:
               conditions:
                 description: conditions defines current service state of the cluster.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -232,7 +234,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -246,8 +249,8 @@ spec:
                   type: object
                 type: array
               controlPlaneInitialized:
-                description: controlPlaneInitialized defines if the control plane
-                  has been initialized.
+                description: controlPlaneInitialized defines if the control plane has
+                  been initialized.
                 type: boolean
               controlPlaneReady:
                 description: controlPlaneReady defines if the control plane is ready.
@@ -265,12 +268,12 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
-                description: failureDomains is a slice of failure domain objects synced
-                  from the infrastructure provider.
+                description: failureDomains is a slice of failure domain objects
+                  synced from the infrastructure provider.
                 type: object
               failureMessage:
                 description: |-
@@ -288,8 +291,8 @@ spec:
                   provider.
                 type: boolean
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               phase:
@@ -308,7 +311,8 @@ spec:
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    - description: Cluster status such as Pending/Provisioning/Provisioned/Deleting/Failed
+    - description: Cluster status such as
+        Pending/Provisioning/Provisioned/Deleting/Failed
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -383,7 +387,8 @@ spec:
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     type: string
                   port:
                     description: port is the port on which the API server is serving.
@@ -484,8 +489,8 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               paused:
-                description: paused can be used to prevent controllers from processing
-                  the Cluster and all its associated objects.
+                description: paused can be used to prevent controllers from
+                  processing the Cluster and all its associated objects.
                 type: boolean
               topology:
                 description: |-
@@ -495,8 +500,8 @@ spec:
                   this feature is highly experimental, and parts of it might still be not implemented.
                 properties:
                   class:
-                    description: class is the name of the ClusterClass object to create
-                      the topology.
+                    description: class is the name of the ClusterClass object to
+                      create the topology.
                     type: string
                   controlPlane:
                     description: controlPlane describes the cluster control plane.
@@ -552,8 +557,8 @@ spec:
                       for the cluster.
                     properties:
                       machineDeployments:
-                        description: machineDeployments is a list of machine deployments
-                          in the cluster.
+                        description: machineDeployments is a list of machine
+                          deployments in the cluster.
                         items:
                           description: |-
                             MachineDeploymentTopology specifies the different parameters for a set of worker nodes in the topology.
@@ -621,8 +626,8 @@ spec:
               conditions:
                 description: conditions defines current service state of the cluster.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -649,7 +654,8 @@ spec:
                         The Severity field MUST be set only when Status=False.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -678,12 +684,12 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
-                description: failureDomains is a slice of failure domain objects synced
-                  from the infrastructure provider.
+                description: failureDomains is a slice of failure domain objects
+                  synced from the infrastructure provider.
                 type: object
               failureMessage:
                 description: |-
@@ -701,8 +707,8 @@ spec:
                   provider.
                 type: boolean
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               phase:
@@ -717,12 +723,13 @@ spec:
     subresources:
       status: {}
   - additionalPrinterColumns:
-    - description: ClusterClass of this Cluster, empty if the Cluster is not using
-        a ClusterClass
+    - description: ClusterClass of this Cluster, empty if the Cluster is not using a
+        ClusterClass
       jsonPath: .spec.topology.class
       name: ClusterClass
       type: string
-    - description: Cluster status such as Pending/Provisioning/Provisioned/Deleting/Failed
+    - description: Cluster status such as
+        Pending/Provisioning/Provisioned/Deleting/Failed
       jsonPath: .status.phase
       name: Phase
       type: string
@@ -778,7 +785,8 @@ spec:
                         Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as availability gates.
                       maxLength: 316
                       minLength: 1
-                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      pattern:
+                        ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                       type: string
                     polarity:
                       description: |-
@@ -800,7 +808,8 @@ spec:
                 - conditionType
                 x-kubernetes-list-type: map
               clusterNetwork:
-                description: clusterNetwork represents the cluster network configuration.
+                description: clusterNetwork represents the cluster network
+                  configuration.
                 properties:
                   apiServerPort:
                     description: |-
@@ -849,7 +858,8 @@ spec:
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     maxLength: 512
                     type: string
                   port:
@@ -951,8 +961,8 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               paused:
-                description: paused can be used to prevent controllers from processing
-                  the Cluster and all its associated objects.
+                description: paused can be used to prevent controllers from
+                  processing the Cluster and all its associated objects.
                 type: boolean
               topology:
                 description: |-
@@ -962,8 +972,8 @@ spec:
                   this feature is highly experimental, and parts of it might still be not implemented.
                 properties:
                   class:
-                    description: class is the name of the ClusterClass object to create
-                      the topology.
+                    description: class is the name of the ClusterClass object to
+                      create the topology.
                     maxLength: 253
                     minLength: 1
                     type: string
@@ -1184,7 +1194,8 @@ spec:
                                 Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                               maxLength: 316
                               minLength: 1
-                              pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                              pattern:
+                                ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                               type: string
                             polarity:
                               description: |-
@@ -1214,8 +1225,8 @@ spec:
                         format: int32
                         type: integer
                       variables:
-                        description: variables can be used to customize the ControlPlane
-                          through patches.
+                        description: variables can be used to customize the
+                          ControlPlane through patches.
                         properties:
                           overrides:
                             description: overrides can be used to override Cluster
@@ -1318,8 +1329,8 @@ spec:
                       for the cluster.
                     properties:
                       machineDeployments:
-                        description: machineDeployments is a list of machine deployments
-                          in the cluster.
+                        description: machineDeployments is a list of machine
+                          deployments in the cluster.
                         items:
                           description: |-
                             MachineDeploymentTopology specifies the different parameters for a set of worker nodes in the topology.
@@ -1442,8 +1453,8 @@ spec:
                                       status for at least the timeout value, a node is considered unhealthy.
                                     properties:
                                       status:
-                                        description: status of the condition, one
-                                          of True, False, Unknown.
+                                        description: status of the condition, one of
+                                          True, False, Unknown.
                                         minLength: 1
                                         type: string
                                       timeout:
@@ -1557,7 +1568,8 @@ spec:
                                       Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
                                     maxLength: 316
                                     minLength: 1
-                                    pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                                    pattern:
+                                      ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                                     type: string
                                   polarity:
                                     description: |-
@@ -1684,8 +1696,8 @@ spec:
                                 MachineDeployment through patches.
                               properties:
                                 overrides:
-                                  description: overrides can be used to override Cluster
-                                    level variables.
+                                  description: overrides can be used to override
+                                    Cluster level variables.
                                   items:
                                     description: |-
                                       ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a
@@ -1829,8 +1841,8 @@ spec:
                                 MachinePool through patches.
                               properties:
                                 overrides:
-                                  description: overrides can be used to override Cluster
-                                    level variables.
+                                  description: overrides can be used to override
+                                    Cluster level variables.
                                   items:
                                     description: |-
                                       ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a
@@ -1889,8 +1901,8 @@ spec:
               conditions:
                 description: conditions defines current service state of the cluster.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -1922,7 +1934,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -1959,12 +1972,12 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
-                description: failureDomains is a slice of failure domain objects synced
-                  from the infrastructure provider.
+                description: failureDomains is a slice of failure domain objects
+                  synced from the infrastructure provider.
                 type: object
               failureMessage:
                 description: |-
@@ -1988,8 +2001,8 @@ spec:
                   provider.
                 type: boolean
               observedGeneration:
-                description: observedGeneration is the latest generation observed
-                  by the controller.
+                description: observedGeneration is the latest generation observed by
+                  the controller.
                 format: int64
                 type: integer
               phase:
@@ -2003,8 +2016,8 @@ spec:
                 - Unknown
                 type: string
               v1beta2:
-                description: v1beta2 groups all the fields that will be added or modified
-                  in Cluster's status with the V1Beta2 version.
+                description: v1beta2 groups all the fields that will be added or
+                  modified in Cluster's status with the V1Beta2 version.
                 properties:
                   conditions:
                     description: |-
@@ -2051,14 +2064,16 @@ spec:
                           description: status of the condition, one of True, False,
                             Unknown.
                           enum:
-                          - "True"
-                          - "False"
+                          - 'True'
+                          - 'False'
                           - Unknown
                           type: string
                         type:
-                          description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          description: type of condition in CamelCase or in
+                            foo.example.com/CamelCase.
                           maxLength: 316
-                          pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                          pattern:
+                            ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                           type: string
                       required:
                       - lastTransitionTime
@@ -2073,13 +2088,14 @@ spec:
                     - type
                     x-kubernetes-list-type: map
                   controlPlane:
-                    description: controlPlane groups all the observations about Cluster's
-                      ControlPlane current state.
+                    description: controlPlane groups all the observations about
+                      Cluster's ControlPlane current state.
                     properties:
                       availableReplicas:
-                        description: availableReplicas is the total number of available
-                          control plane machines in this cluster. A machine is considered
-                          available when Machine's Available condition is true.
+                        description: availableReplicas is the total number of
+                          available control plane machines in this cluster. A machine
+                          is considered available when Machine's Available condition
+                          is true.
                         format: int32
                         type: integer
                       desiredReplicas:
@@ -2088,9 +2104,9 @@ spec:
                         format: int32
                         type: integer
                       readyReplicas:
-                        description: readyReplicas is the total number of ready control
-                          plane machines in this cluster. A machine is considered
-                          ready when Machine's Ready condition is true.
+                        description: readyReplicas is the total number of ready
+                          control plane machines in this cluster. A machine is
+                          considered ready when Machine's Ready condition is true.
                         format: int32
                         type: integer
                       replicas:
@@ -2101,8 +2117,9 @@ spec:
                         type: integer
                       upToDateReplicas:
                         description: upToDateReplicas is the number of up-to-date
-                          control plane machines in this cluster. A machine is considered
-                          up-to-date when Machine's UpToDate condition is true.
+                          control plane machines in this cluster. A machine is
+                          considered up-to-date when Machine's UpToDate condition is
+                          true.
                         format: int32
                         type: integer
                     type: object
@@ -2111,9 +2128,10 @@ spec:
                       Workers current state.
                     properties:
                       availableReplicas:
-                        description: availableReplicas is the total number of available
-                          worker machines in this cluster. A machine is considered
-                          available when Machine's Available condition is true.
+                        description: availableReplicas is the total number of
+                          available worker machines in this cluster. A machine is
+                          considered available when Machine's Available condition is
+                          true.
                         format: int32
                         type: integer
                       desiredReplicas:
@@ -2122,9 +2140,9 @@ spec:
                         format: int32
                         type: integer
                       readyReplicas:
-                        description: readyReplicas is the total number of ready worker
-                          machines in this cluster. A machine is considered ready
-                          when Machine's Ready condition is true.
+                        description: readyReplicas is the total number of ready
+                          worker machines in this cluster. A machine is considered
+                          ready when Machine's Ready condition is true.
                         format: int32
                         type: integer
                       replicas:

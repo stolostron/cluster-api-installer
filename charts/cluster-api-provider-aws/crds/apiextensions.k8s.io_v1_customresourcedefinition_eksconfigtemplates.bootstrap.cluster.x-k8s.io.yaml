@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -26,8 +26,8 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: EKSConfigTemplate is the Amazon EKS Bootstrap Configuration Template
-          API.
+        description: EKSConfigTemplate is the Amazon EKS Bootstrap Configuration
+          Template API.
         properties:
           apiVersion:
             description: |-
@@ -51,7 +51,8 @@ spec:
               EKSConfig Amazon EKS Bootstrap Configuration resources.
             properties:
               template:
-                description: EKSConfigTemplateResource defines the Template structure.
+                description: EKSConfigTemplateResource defines the Template
+                  structure.
                 properties:
                   spec:
                     description: EKSConfigSpec defines the desired state of Amazon
@@ -66,8 +67,8 @@ spec:
                           to use when bootstrapping EKS.
                         type: string
                       dnsClusterIP:
-                        description: ' DNSClusterIP overrides the IP address to use
-                          for DNS queries within the cluster.'
+                        description: ' DNSClusterIP overrides the IP address to use for
+                          DNS queries within the cluster.'
                         type: string
                       dockerConfigJson:
                         description: |-
@@ -85,12 +86,12 @@ spec:
                           container to use.
                         properties:
                           accountNumber:
-                            description: ' AccountNumber is the AWS account number
-                              to pull the pause container from.'
+                            description: ' AccountNumber is the AWS account number to pull
+                              the pause container from.'
                             type: string
                           version:
-                            description: Version is the tag of the pause container
-                              to use.
+                            description: Version is the tag of the pause container to
+                              use.
                             type: string
                         required:
                         - accountNumber
@@ -116,8 +117,8 @@ spec:
   - name: v1beta2
     schema:
       openAPIV3Schema:
-        description: EKSConfigTemplate is the Amazon EKS Bootstrap Configuration Template
-          API.
+        description: EKSConfigTemplate is the Amazon EKS Bootstrap Configuration
+          Template API.
         properties:
           apiVersion:
             description: |-
@@ -141,7 +142,8 @@ spec:
               EKSConfig Amazon EKS Bootstrap Configuration resources.
             properties:
               template:
-                description: EKSConfigTemplateResource defines the Template structure.
+                description: EKSConfigTemplateResource defines the Template
+                  structure.
                 properties:
                   spec:
                     description: EKSConfigSpec defines the desired state of Amazon
@@ -160,22 +162,22 @@ spec:
                           to use when bootstrapping EKS.
                         type: string
                       diskSetup:
-                        description: DiskSetup specifies options for the creation
-                          of partition tables and file systems on devices.
+                        description: DiskSetup specifies options for the creation of
+                          partition tables and file systems on devices.
                         properties:
                           filesystems:
-                            description: Filesystems specifies the list of file systems
-                              to setup.
+                            description: Filesystems specifies the list of file
+                              systems to setup.
                             items:
-                              description: Filesystem defines the file systems to
-                                be created.
+                              description: Filesystem defines the file systems to be
+                                created.
                               properties:
                                 device:
                                   description: Device specifies the device name
                                   type: string
                                 extraOpts:
-                                  description: ExtraOpts defined extra options to
-                                    add to the command for creating the file system.
+                                  description: ExtraOpts defined extra options to add
+                                    to the command for creating the file system.
                                   items:
                                     type: string
                                   type: array
@@ -193,10 +195,9 @@ spec:
                                     If true, any pre-existing file system will be destroyed. Use with Caution.
                                   type: boolean
                                 partition:
-                                  description: 'Partition specifies the partition
-                                    to use. The valid options are: "auto|any", "auto",
-                                    "any", "none", and <NUM>, where NUM is the actual
-                                    partition number.'
+                                  description: 'Partition specifies the partition to use.
+                                    The valid options are: "auto|any", "auto", "any", "none",
+                                    and <NUM>, where NUM is the actual partition number.'
                                   type: string
                               required:
                               - device
@@ -205,8 +206,8 @@ spec:
                               type: object
                             type: array
                           partitions:
-                            description: Partitions specifies the list of the partitions
-                              to setup.
+                            description: Partitions specifies the list of the
+                              partitions to setup.
                             items:
                               description: Partition defines how to create and layout
                                 a partition.
@@ -238,8 +239,8 @@ spec:
                             type: array
                         type: object
                       dnsClusterIP:
-                        description: ' DNSClusterIP overrides the IP address to use
-                          for DNS queries within the cluster.'
+                        description: ' DNSClusterIP overrides the IP address to use for
+                          DNS queries within the cluster.'
                         type: string
                       dockerConfigJson:
                         description: |-
@@ -247,11 +248,11 @@ spec:
                           This is expected to be a json string.
                         type: string
                       files:
-                        description: Files specifies extra files to be passed to user_data
-                          upon creation.
+                        description: Files specifies extra files to be passed to
+                          user_data upon creation.
                         items:
-                          description: File defines the input for generating write_files
-                            in cloud-init.
+                          description: File defines the input for generating
+                            write_files in cloud-init.
                           properties:
                             append:
                               description: Append specifies whether to append Content
@@ -261,8 +262,8 @@ spec:
                               description: Content is the actual content of the file.
                               type: string
                             contentFrom:
-                              description: ContentFrom is a referenced source of content
-                                to populate the file.
+                              description: ContentFrom is a referenced source of
+                                content to populate the file.
                               properties:
                                 secret:
                                   description: Secret represents a secret that should
@@ -273,8 +274,8 @@ spec:
                                         data map for this value.
                                       type: string
                                     name:
-                                      description: Name of the secret in the KubeadmBootstrapConfig's
-                                        namespace to use.
+                                      description: Name of the secret in the
+                                        KubeadmBootstrapConfig's namespace to use.
                                       type: string
                                   required:
                                   - key
@@ -327,7 +328,8 @@ spec:
                         description: NTP specifies NTP configuration
                         properties:
                           enabled:
-                            description: Enabled specifies whether NTP should be enabled
+                            description: Enabled specifies whether NTP should be
+                              enabled
                             type: boolean
                           servers:
                             description: Servers specifies which NTP servers to use
@@ -340,12 +342,12 @@ spec:
                           container to use.
                         properties:
                           accountNumber:
-                            description: ' AccountNumber is the AWS account number
-                              to pull the pause container from.'
+                            description: ' AccountNumber is the AWS account number to pull
+                              the pause container from.'
                             type: string
                           version:
-                            description: Version is the tag of the pause container
-                              to use.
+                            description: Version is the tag of the pause container to
+                              use.
                             type: string
                         required:
                         - accountNumber
@@ -358,8 +360,8 @@ spec:
                           type: string
                         type: array
                       preBootstrapCommands:
-                        description: PreBootstrapCommands specifies extra commands
-                          to run before bootstrapping nodes to the cluster
+                        description: PreBootstrapCommands specifies extra commands to
+                          run before bootstrapping nodes to the cluster
                         items:
                           type: string
                         type: array
@@ -375,16 +377,16 @@ spec:
                       users:
                         description: Users specifies extra users to add
                         items:
-                          description: User defines the input for a generated user
-                            in cloud-init.
+                          description: User defines the input for a generated user in
+                            cloud-init.
                           properties:
                             gecos:
                               description: Gecos specifies the gecos to use for the
                                 user
                               type: string
                             groups:
-                              description: Groups specifies the additional groups
-                                for the user
+                              description: Groups specifies the additional groups for
+                                the user
                               type: string
                             homeDir:
                               description: HomeDir specifies the home directory to
@@ -402,12 +404,12 @@ spec:
                               description: Name specifies the username
                               type: string
                             passwd:
-                              description: Passwd specifies a hashed password for
-                                the user
+                              description: Passwd specifies a hashed password for the
+                                user
                               type: string
                             passwdFrom:
-                              description: PasswdFrom is a referenced source of passwd
-                                to populate the passwd.
+                              description: PasswdFrom is a referenced source of
+                                passwd to populate the passwd.
                               properties:
                                 secret:
                                   description: Secret represents a secret that should
@@ -418,8 +420,8 @@ spec:
                                         data map for this value.
                                       type: string
                                     name:
-                                      description: Name of the secret in the KubeadmBootstrapConfig's
-                                        namespace to use.
+                                      description: Name of the secret in the
+                                        KubeadmBootstrapConfig's namespace to use.
                                       type: string
                                   required:
                                   - key

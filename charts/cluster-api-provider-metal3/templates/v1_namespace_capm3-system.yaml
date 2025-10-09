@@ -1,3 +1,5 @@
+# Resource: v1_namespace_capm3-system
+---
 apiVersion: v1
 kind: Namespace
 metadata:

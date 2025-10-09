@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    service.beta.openshift.io/inject-cabundle: "true"
+    service.beta.openshift.io/inject-cabundle: 'true'
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -60,14 +60,16 @@ spec:
           metadata:
             type: object
           spec:
-            description: AWSManagedClusterSpec defines the desired state of AWSManagedCluster
+            description: AWSManagedClusterSpec defines the desired state of
+              AWSManagedCluster
             properties:
               controlPlaneEndpoint:
                 description: ControlPlaneEndpoint represents the endpoint used to
                   communicate with the control plane.
                 properties:
                   host:
-                    description: host is the hostname on which the API server is serving.
+                    description: host is the hostname on which the API server is
+                      serving.
                     maxLength: 512
                     type: string
                   port:
@@ -80,13 +82,15 @@ spec:
                 type: object
             type: object
           status:
-            description: AWSManagedClusterStatus defines the observed state of AWSManagedCluster
+            description: AWSManagedClusterStatus defines the observed state of
+              AWSManagedCluster
             properties:
               conditions:
-                description: Conditions defines current service state of the AWSManagedCluster.
+                description: Conditions defines current service state of the
+                  AWSManagedCluster.
                 items:
-                  description: Condition defines an observation of a Cluster API resource
-                    operational state.
+                  description: Condition defines an observation of a Cluster API
+                    resource operational state.
                   properties:
                     lastTransitionTime:
                       description: |-
@@ -118,7 +122,8 @@ spec:
                       maxLength: 32
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False,
+                        Unknown.
                       type: string
                     type:
                       description: |-
@@ -147,16 +152,16 @@ spec:
                         infrastructure provider might use or require.
                       type: object
                     controlPlane:
-                      description: controlPlane determines if this failure domain
-                        is suitable for use by control plane machines.
+                      description: controlPlane determines if this failure domain is
+                        suitable for use by control plane machines.
                       type: boolean
                   type: object
-                description: FailureDomains specifies a list fo available availability
-                  zones that can be used
+                description: FailureDomains specifies a list fo available
+                  availability zones that can be used
                 type: object
               ready:
-                description: Ready is when the AWSManagedControlPlane has a API server
-                  URL.
+                description: Ready is when the AWSManagedControlPlane has a API
+                  server URL.
                 type: boolean
             type: object
         type: object

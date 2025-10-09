@@ -1,3 +1,5 @@
+# Resource: apps_v1_deployment_capoa-controlplane-system_capoa-controlplane-controller-manager
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

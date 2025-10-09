@@ -7,3 +7,5 @@ webhook:
   image:
     tag: 2.10.0-1
     url: registry.redhat.io/multicluster-engine/mce-capi-webhook-config-rhel9
+global:
+  deployOnOCP: true

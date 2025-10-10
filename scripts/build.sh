@@ -1,5 +1,9 @@
 #!/bin/bash
-set -ex
+set -e
+
+# Determine project root and set as global variable
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+PROJECT_ROOT=$(dirname "$SCRIPT_DIR")
 
 # Validate required environment variables
 if [ -z "$WKDIR" ]; then
@@ -32,9 +36,14 @@ _copy_config() {
     local src_dir=$1
     local dst_dir=$2
     
-    # Copy kustomization.yaml file
-    if [ -f "${src_dir}/kustomization.yaml" ]; then
-        cp -v "${src_dir}/kustomization.yaml" "${dst_dir}/"
+    # Copy all YAML files
+    if ls "${src_dir}"/*.yaml 1> /dev/null 2>&1; then
+        cp -v "${src_dir}"/*.yaml "${dst_dir}/"
+    fi
+    
+    # Copy hack.sh file if it exists
+    if [ -f "${src_dir}/hack.sh" ]; then
+        cp -v "${src_dir}/hack.sh" "${dst_dir}/"
     fi
     
     # Copy base directory if it exists
@@ -46,14 +55,15 @@ _copy_config() {
 # Function to copy configuration files to the working directory
 copy_config() {
     local project=$1
+    local config_type=$2
     
-    echo "Copying configuration for project: $project"
+    echo "Copying $config_type configuration for project: $project"
     
     if [ -z "$KUSTOMIZE_CONFIG_DIRS" ]; then
-        _copy_config "../${CONFIGDIR}/${project}" "${WKDIR}/${project}/${CONFIGDIR}"
+        _copy_config "$PROJECT_ROOT/${config_type}/${project}" "${WKDIR}/${project}/${CONFIGDIR}"
     else
         for subdir in ${KUSTOMIZE_CONFIG_DIRS}; do
-            _copy_config "../${CONFIGDIR}/${project}/${subdir}" "${WKDIR}/${project}/${subdir}/${CONFIGDIR}"
+            _copy_config "$PROJECT_ROOT/${config_type}/${project}/${subdir}" "${WKDIR}/${project}/${subdir}/${CONFIGDIR}"
         done
     fi
 }
@@ -76,42 +86,74 @@ _kustomize_build() {
 # Function to build kustomize resources
 kustomize_build() {
     local project=$1
+    local output_suffix=$2
     
-    echo "Building kustomize resources for project: $project"
+    echo "Building kustomize resources for project: $project ($output_suffix)"
     cd $WKDIR/$project
     
-    # Prepare temporary directory
-    rm -rf $CONFIGDIR/$TMPDIR
-    mkdir -p $CONFIGDIR/$TMPDIR
+    # Execute hack.sh if present
+    if [ -f "${CONFIGDIR}/hack.sh" ]; then
+        echo "Executing hack.sh for project: $project"
+        chmod +x "${CONFIGDIR}/hack.sh"
+        "${CONFIGDIR}/hack.sh"
+    fi
+    
+    # Prepare temporary directory using absolute paths
+    local tmp_dir="${WKDIR}/${PROJECT}/config/tmp${output_suffix}"
+    rm -rf "${tmp_dir}"
+    mkdir -p "${tmp_dir}"
+
     cat /dev/null > "${SRC_RESOURCES}"
     if [ -z "${KUSTOMIZE_CONFIG_DIRS}" ]; then
-        _kustomize_build "config" "${SRC_RESOURCES}" "${CONFIGDIR}/${TMPDIR}"
+        _kustomize_build "config" "${SRC_RESOURCES}" "$tmp_dir"
     else
         # Initialize empty file for appending
         for subdir in ${KUSTOMIZE_CONFIG_DIRS}; do
-            _kustomize_build "${subdir}/config" "${SRC_RESOURCES}" "${CONFIGDIR}/${TMPDIR}"
+            _kustomize_build "${subdir}/config" "${SRC_RESOURCES}" "$tmp_dir"
         done
     fi
 }
 
-# Function to cleanup generated files
-cleanup() {
-    local project=$1
-    
-    echo "Cleaning up for project: $project"
-    cd $WKDIR/$project
-    
-    # Remove certificate files
-    rm -rf $CONFIGDIR/$TMPDIR/cert*
-    
-    # Project-specific cleanup
-    if [ "$project" == "cluster-api" ] ; then
-        rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_ip*.yaml
-    fi
+
+
+_backup_built_dir() {
+    local config_type=$1
+    local tmp_output_dir=$2
+    output_suffix=${config_type#config}
+
+    target_dir=$tmp_output_dir/config/tmp${output_suffix}
+    mkdir -p $target_dir
+    cp -r $WKDIR/$PROJECT/config/tmp${output_suffix} $target_dir
 }
 
-# Main execution logic
-main() {
+_restore_built_dir() {
+    local config_type=$2
+    local tmp_output_dir=$1
+    output_suffix=${config_type#config}
+    cp -r $tmp_output_dir/config/tmp${output_suffix} $WKDIR/$PROJECT/config/tmp${output_suffix}
+}
+
+# Main build function that accepts config type (config or config-k8s)
+build_for_config() {
+    local config_type=$1
+    
+    if [ -z "$config_type" ]; then
+        echo "config_type must be provided: config or config-k8s"
+        exit -1
+    fi
+    
+    # Skip silently if config directory doesn't exist for this project
+    if [ ! -d "$PROJECT_ROOT/${config_type}/${PROJECT}" ]; then
+        return
+    fi
+    
+    # Change to project root
+    cd "$PROJECT_ROOT"
+    echo "Changed to project root: $(pwd)"
+    
+    # Determine output filename suffix by removing "config" from config_type
+    local output_suffix="${config_type#config}"
+    
     # Clone or skip clone if already exists
     if [ "$SKIP_CLONE" != true -o ! -d $WKDIR/$PROJECT ] ; then
         mkdir -p $WKDIR
@@ -120,25 +162,34 @@ main() {
         git clone --depth=1 --branch="${BRANCH}" "${ORGREPO}/${PROJECT}" "${WKDIR}/${PROJECT}"
     fi
 
-    # Setup environment
-    mkdir -p ../src
-    export SRC_RESOURCES=$(realpath ../src/$PROJECT.yaml)
-    export KUSTOMIZE_PLUGIN_HOME=$(realpath ../kustomize-plugins)
-    [ -f ../$CONFIGDIR/$PROJECT/env ] && . ../$CONFIGDIR/$PROJECT/env
+    # Setup environment with config-type specific output file using absolute paths
+    mkdir -p "$PROJECT_ROOT/src"
+    export SRC_RESOURCES="$PROJECT_ROOT/src/$PROJECT${output_suffix}.yaml"
+    export KUSTOMIZE_PLUGIN_HOME="$PROJECT_ROOT/kustomize-plugins"
+    [ -f "$PROJECT_ROOT/${config_type}/$PROJECT/env" ] && . "$PROJECT_ROOT/${config_type}/$PROJECT/env"
 
-    # Copy configuration files
-    copy_config "$PROJECT"
+    # Copy configuration files from the specified config type directory
+    copy_config "$PROJECT" "$config_type"
 
     # Fetch latest changes and switch to branch
     cd $WKDIR/$PROJECT
     git fetch --depth=1 origin "${BRANCH}" && git checkout "${BRANCH}"
 
     # Build kustomize resources
-    kustomize_build "$PROJECT"
-
-    # Cleanup generated files
-    cleanup "$PROJECT"
+    kustomize_build "$PROJECT" "${output_suffix}"
 }
 
-# Execute main function
-main
+tmp_output_dir=$(mktemp -d -p ${WKDIR})
+
+# Execute build function with config type (default to "config" for backward compatibility)
+build_for_config "config"
+# backing up as build_for_config will clear tmp dir
+_backup_built_dir "config" "${tmp_output_dir}"
+if [ -d $PROJECT_ROOT/config-k8s/$PROJECT ]; then
+     build_for_config "config-k8s"
+fi
+
+_restore_built_dir "${tmp_output_dir}" "config"
+
+# Clean up temporary directory
+rm -rf $tmp_output_dir

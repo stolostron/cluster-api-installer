@@ -1,0 +1,9 @@
+manager:
+  cmd: /bin/cluster-api-controller-manager
+  image:
+    tag: v4.20
+    url: registry.redhat.io/openshift4/ose-cluster-api-rhel9
+webhook:
+  image:
+    tag: 2.10.0-1
+    url: registry.redhat.io/multicluster-engine/mce-capi-webhook-config-rhel9

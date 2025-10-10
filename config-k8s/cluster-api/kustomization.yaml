@@ -18,6 +18,14 @@ patches:
     patch: |-
       - op: remove
         path: /spec/conversion
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      annotationSelector: cert-manager.io/inject-ca-from
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: "{{ .Release.Namespace }}/capi-serving-cert"
   # Remove unnecessary resources
   - path: delete-ipaddressclaims.yaml
     target:
@@ -49,3 +57,102 @@ patches:
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
+  - target:
+      version: admissionregistration.k8s.io/v1
+      kind: MutatingWebhookConfiguration
+      name: capi-mutating-webhook-configuration
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: "{{ .Release.Namespace }}/capi-serving-cert"
+      - op: replace
+        path: /webhooks/0/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/1/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/2/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/3/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/4/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/5/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/6/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/7/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/8/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/9/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+  - target:
+      version: admissionregistration.k8s.io/v1
+      kind: ValidatingWebhookConfiguration
+      name: capi-validating-webhook-configuration
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: "{{ .Release.Namespace }}/capi-serving-cert"
+      - op: replace
+        path: /webhooks/0/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/1/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/2/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/3/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/4/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/5/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/6/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/7/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/8/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/9/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/10/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/11/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /webhooks/12/clientConfig/service/namespace
+        value: "{{ .Release.Namespace }}"
+  - target:
+      version: cert-manager.io/v1
+      kind: Certificate
+      name: capi-serving-cert
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: "{{ .Release.Namespace }}"
+      - op: replace
+        path: /spec/dnsNames/0
+        value: "capi-webhook-service.{{ .Release.Namespace }}.svc"
+      - op: replace
+        path: /spec/dnsNames/1
+        value: "capi-webhook-service.{{ .Release.Namespace }}.svc.cluster.local"

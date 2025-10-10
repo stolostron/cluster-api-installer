@@ -13,3 +13,48 @@ patches:
     - op: replace
       path: /spec/template/spec/containers/0/image
       value: '{{ .Values.bootstrap.image.url  }}:{{ .Values.bootstrap.image.tag  }}'
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_NAME
+        value: assisted-installer-ca
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_NAMESPACE
+        value: '{{ .Release.Namespace }}'
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_RESOURCE
+        value: "secret"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASSISTED_CA_BUNDLE_KEY
+        value: "ca.crt"
+- target:
+    version: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    name: capoa-bootstrap-validating-webhook-configuration
+  patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: "{{ .Release.Namespace }}/capoa-bootstrap-cert"
+    - op: replace
+      path: /webhooks/0/clientConfig/service/namespace
+      value: "{{ .Release.Namespace }}"
+- target:
+    version: cert-manager.io/v1
+    kind: Certificate
+    name: capoa-bootstrap-cert
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: "{{ .Release.Namespace }}"
+    - op: replace
+      path: /spec/commonName
+      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"
+    - op: replace
+      path: /spec/dnsNames/0
+      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"

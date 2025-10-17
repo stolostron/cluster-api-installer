@@ -4,9 +4,9 @@ metadata:
   name: capoa-bootstrap-cert
   namespace: capoa-bootstrap-system
 spec:
-  commonName: capoa-bootstrap-webhook-service.capoa-bootstrap-system.svc
+  commonName: capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc
   dnsNames:
-  - capoa-bootstrap-webhook-service.capoa-bootstrap-system.svc
+  - capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc
   duration: 8760h
   issuerRef:
     kind: Issuer

@@ -58,7 +58,8 @@ patches:
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
   - target:
-      version: admissionregistration.k8s.io/v1
+      group: admissionregistration.k8s.io
+      version: v1
       kind: MutatingWebhookConfiguration
       name: capi-mutating-webhook-configuration
     patch: |-
@@ -92,11 +93,9 @@ patches:
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
         value: "{{ .Release.Namespace }}"
-      - op: replace
-        path: /webhooks/9/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
   - target:
-      version: admissionregistration.k8s.io/v1
+      group: admissionregistration.k8s.io
+      version: v1
       kind: ValidatingWebhookConfiguration
       name: capi-validating-webhook-configuration
     patch: |-
@@ -143,13 +142,11 @@ patches:
         path: /webhooks/12/clientConfig/service/namespace
         value: "{{ .Release.Namespace }}"
   - target:
-      version: cert-manager.io/v1
+      group: cert-manager.io
+      version: v1
       kind: Certificate
       name: capi-serving-cert
     patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /spec/dnsNames/0
         value: "capi-webhook-service.{{ .Release.Namespace }}.svc"

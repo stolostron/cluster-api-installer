@@ -10,6 +10,13 @@ transformers:
 
 ## Patch the default CAPA CRDs & CRs with OCP dwonstream CAPA requirements. 
 patches:
+  # Remove unnecessary resources
+  - path: delete-certificate.yaml
+    target:
+      kind: Certificate
+  - path: delete-issuer.yaml
+    target:
+      kind: Issuer
   # Remove the webhook conversion part from CRDs to match Hypershift CRDs
   - target:
       version: v1

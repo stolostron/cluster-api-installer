@@ -5,13 +5,6 @@ resources:
 - default/
 
 patches:
-# Remove cert-manager Certificate and Issuer
-- path: delete-certificate.yaml
-  target:
-    kind: Certificate
-- path: delete-issuer.yaml
-  target:
-    kind: Issuer
 - target:
     version: v1
     kind: Deployment
@@ -24,38 +17,43 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: ASSISTED_CA_BUNDLE_NAME
-        value: default-ingress-cert
+        value: assisted-installer-ca
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
         name: ASSISTED_CA_BUNDLE_NAMESPACE
-        value: openshift-config-managed
+        value: '{{ .Release.Namespace }}'
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
         name: ASSISTED_CA_BUNDLE_RESOURCE
-        value: "configmap"
+        value: "secret"
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
         name: ASSISTED_CA_BUNDLE_KEY
-        value: "ca-bundle.crt"
+        value: "ca.crt"
 - target:
+    group: admissionregistration.k8s.io
     version: v1
     kind: ValidatingWebhookConfiguration
-    annotationSelector: "cert-manager.io/inject-ca-from"
+    name: capoa-bootstrap-validating-webhook-configuration
   patch: |-
-    - op: remove
+    - op: replace
       path: /metadata/annotations/cert-manager.io~1inject-ca-from
-    - op: add
-      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-      value: true
+      value: "{{ .Release.Namespace }}/capoa-bootstrap-cert"
+    - op: replace
+      path: /webhooks/0/clientConfig/service/namespace
+      value: "{{ .Release.Namespace }}"
 - target:
+    group: cert-manager.io
     version: v1
-    kind: Service
-    name: webhook-service
-    namespace: capoa-bootstrap-system
+    kind: Certificate
+    name: capoa-bootstrap-cert
   patch: |-
-    - op: add
-      path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-      value: "capoa-bootstrap-webhook-cert-secret"
+    - op: replace
+      path: /spec/commonName
+      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"
+    - op: replace
+      path: /spec/dnsNames/0
+      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"

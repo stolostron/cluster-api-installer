@@ -10,6 +10,7 @@ transformers:
 - base/transformer.yaml
 
 ## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements. 
+
 patches:
   # Remove the webhook conversion part from CRDs to match Hypershift CRDs
   - target:
@@ -19,6 +20,22 @@ patches:
     patch: |-
       - op: remove
         path: /spec/conversion
+  # Remove unnecessary resources
+  - path: delete-ipaddressclaims.yaml
+    target:
+       kind: CustomResourceDefinition
+       name: ipaddressclaims.ipam.cluster.x-k8s.io
+ # Remove unnecessary resources
+  - path: delete-ipaddresses.yaml
+    target:
+       kind: CustomResourceDefinition
+       name: ipaddresses.ipam.cluster.x-k8s.io
+  - path: delete-certificate.yaml
+    target:
+      kind: Certificate
+  - path: delete-issuer.yaml
+    target:
+      kind: Issuer
   # Remove cert-manager annotation and add OCP cert service annotation
   - target:
       annotationSelector: cert-manager.io/inject-ca-from

@@ -7,8 +7,8 @@ metadata:
   namespace: capi-system
 spec:
   dnsNames:
-  - capi-webhook-service.capi-system.svc
-  - capi-webhook-service.capi-system.svc.cluster.local
+  - capi-webhook-service.{{ .Release.Namespace }}.svc
+  - capi-webhook-service.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: capi-selfsigned-issuer

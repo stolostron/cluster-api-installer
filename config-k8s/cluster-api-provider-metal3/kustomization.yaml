@@ -1,0 +1,207 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- default/
+
+## Patch the default resources with OCP downstream requirements.
+patches:
+  - target:
+      version: v1
+      kind: Certificate
+      name: capm3-serving-cert
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: 'multicluster-engine'
+      - op: replace
+        path: /spec/commonName
+        value: "capm3-webhook-service.multicluster-engine.svc"
+      - op: replace
+        path: /spec/dnsNames/0
+        value: "capm3-webhook-service.multicluster-engine.svc"
+  - target:
+      version: v1
+      kind: Issuer
+      name: capm3-selfsigned-issuer
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: 'multicluster-engine'
+  # Replace Deployment with default values & helm chart value
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      annotationSelector: cert-manager.io/inject-ca-from
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: "multicluster-engine/capm3-serving-cert"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3clusters.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3dataclaims.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3datas.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3datatemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3machines.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3machinetemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3remediations.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3remediationtemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: v1
+      kind: Deployment
+      name: capm3-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/args/1
+        value: --enableBMHNameBasedPreallocation=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: --diagnostics-address=:8443
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: --insecure-diagnostics=false
+      - op: replace
+        path: /spec/template/spec/containers/0/args/4
+        value: --tls-min-version=VersionTLS13
+  - target:
+      version: admissionregistration.k8s.io/v1
+      kind: MutatingWebhookConfiguration
+      name: capm3-mutating-webhook-configuration
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: "multicluster-engine/capm3-serving-cert"
+      - op: replace
+        path: /webhooks/0/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/1/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/2/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/3/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/4/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/5/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/6/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/7/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/8/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: admissionregistration.k8s.io/v1
+      kind: ValidatingWebhookConfiguration
+      name: capm3-validating-webhook-configuration
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: "multicluster-engine/capm3-serving-cert"
+      - op: replace
+        path: /webhooks/0/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/1/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/2/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/3/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/4/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/5/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/6/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/7/clientConfig/service/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /webhooks/8/clientConfig/service/namespace
+        value: "multicluster-engine"
+  - target:
+      version: cert-manager.io/v1
+      kind: Certificate
+      name: capm3-serving-cert
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: "multicluster-engine"
+      - op: replace
+        path: /spec/dnsNames/0
+        value: "capm3-webhook-service.multicluster-engine.svc"
+      - op: replace
+        path: /spec/dnsNames/1
+        value: "capm3-webhook-service.multicluster-engine.svc.cluster.local"

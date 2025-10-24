@@ -1,34 +1,61 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  baseBranches: ["main", "/^backplane-2\\.[0-9]$/"],
-  "tekton": {
-        "includePaths": [".tekton/**"],
-        "schedule": ["at any time"]
-  },
-  packageRules: [
-    {
-      matchManagers: ["Dockerfile.tilt", "Dockerfile"],
-      enabled: true,
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "baseBranchPatterns": [
+        "main",
+        "/^backplane-2\\.[0-99]$/"
+    ],
+    "tekton": {
+        "includePaths": [
+            ".tekton/**"
+        ],
+        "schedule": [
+            "at any time"
+        ]
     },
-    {
-      matchBaseBranches: ["main", "/^backplane-2\\.[0-9]$/"],
-      matchManagers: ["tekton"],
-      enabled: true,
-      addLabels: ["ok-to-test"],
-    },
-    {
-      matchManagers: ["gomod"],
-      enabled: false,
-      groupName: "go dependencies",
-      groupSlug: "go-deps",
-    },
-    {
-      matchManagers: ["gomod"],
-      matchDepTypes: ["indirect"],
-      enabled: false,
-    },
-  ],
-  rebaseWhen: "behind-base-branch",
-  recreateWhen: "never",
-  schedule: ["every monday"],
+    "packageRules": [
+        {
+            "matchManagers": [
+                "Dockerfile"
+            ],
+            "enabled": true
+        },
+        {
+            "matchBaseBranches": [
+                "main",
+                "/^backplane-2\\.[0-99]$/"
+            ],
+            "matchManagers": [
+                "tekton"
+            ],
+            "enabled": true,
+            "addLabels": [
+                "ok-to-test"
+            ]
+        },
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "enabled": false,
+            "groupName": "go dependencies",
+            "groupSlug": "go-deps"
+        },
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "matchDepTypes": [
+                "indirect"
+            ],
+            "enabled": false
+        }
+    ],
+    "rebaseWhen": "behind-base-branch",
+    "recreateWhen": "never",
+    "addLabels": [
+        "ok-to-test"
+    ],
+    "schedule": [
+        "on monday"
+    ]
 }

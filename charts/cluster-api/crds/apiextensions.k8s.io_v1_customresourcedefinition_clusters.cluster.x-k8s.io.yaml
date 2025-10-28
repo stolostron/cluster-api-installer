@@ -985,7 +985,7 @@ spec:
                       Value must follow the DNS1123Subdomain syntax.
                     maxLength: 253
                     minLength: 1
-                    pattern: ^[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9](?:[-a-z0-9]*[a-z0-9])?)*$
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                     type: string
                   controlPlane:
                     description: controlPlane describes the cluster control plane.

@@ -1,10 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: '{{ .Release.Namespace }}'
+
 resources:
 - default/
 
 patches:
+- target:
+    kind: Namespace
+  patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: capoa-bootstrap-system
 - target:
     version: v1
     kind: Deployment
@@ -22,7 +32,7 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: ASSISTED_CA_BUNDLE_NAMESPACE
-        value: 'multicluster-engine'
+        value: '{{ .Release.Namespace }}'
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
@@ -40,29 +50,26 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/annotations/cert-manager.io~1inject-ca-from
-      value: "multicluster-engine/capoa-bootstrap-cert"
+      value: "{{ .Release.Namespace }}/capoa-bootstrap-cert"
     - op: replace
       path: /webhooks/0/clientConfig/service/namespace
-      value: "multicluster-engine"
+      value: "{{ .Release.Namespace }}"
 - target:
     version: v1
     kind: Certificate
     name: capoa-bootstrap-cert
   patch: |-
     - op: replace
-      path: /metadata/namespace
-      value: 'multicluster-engine'
-    - op: replace
       path: /spec/commonName
-      value: "capoa-bootstrap-webhook-service.multicluster-engine.svc"
+      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"
     - op: replace
       path: /spec/dnsNames/0
-      value: "capoa-bootstrap-webhook-service.multicluster-engine.svc"
+      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"
 - target:
     version: v1
-    kind: Issuer
-    name: capoa-bootstrap-selfsigned-issuer
+    kind: ClusterRoleBinding
+    name: capoa-bootstrap-manager-rolebinding
   patch: |-
     - op: replace
-      path: /metadata/namespace
-      value: 'multicluster-engine'
+      path: /subjects/0/namespace
+      value: '{{ .Release.Namespace }}'

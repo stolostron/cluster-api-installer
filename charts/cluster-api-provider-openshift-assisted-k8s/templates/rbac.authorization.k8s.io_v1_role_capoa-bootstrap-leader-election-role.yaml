@@ -1,8 +1,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: capoa-controlplane-leader-election-role
-  namespace: capoa-controlplane-system
+  name: capoa-bootstrap-leader-election-role
+  namespace: '{{ .Release.Namespace }}'
 rules:
 - apiGroups:
   - ""

@@ -10,7 +10,7 @@ resources:
 ## Patch the default resources with OCP downstream requirements.
 patches:
    # Remove cert-manager Certificate and Issuer
-  - parget:
+  - target:
       kind: Certificate
     patch: |-
       $patch: delete
@@ -19,8 +19,7 @@ patches:
       metadata:
         name: capm3-serving-cert
         namespace: capm3-system
-  - path: delete-issuer.yaml
-    target:
+  - target:
       kind: Issuer
     patch: |-
       $patch: delete

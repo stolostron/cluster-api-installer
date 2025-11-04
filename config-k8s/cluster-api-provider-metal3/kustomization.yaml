@@ -1,33 +1,35 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: '{{ .Release.Namespace }}'
+
 resources:
 - default/
 
 ## Patch the default resources with OCP downstream requirements.
 patches:
   - target:
+      kind: Namespace
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: capm3-system
+  - target:
       version: v1
       kind: Certificate
       name: capm3-serving-cert
     patch: |-
       - op: replace
-        path: /metadata/namespace
-        value: 'multicluster-engine'
-      - op: replace
         path: /spec/commonName
-        value: "capm3-webhook-service.multicluster-engine.svc"
+        value: "capm3-webhook-service.{{ .Release.Namespace }}.svc"
       - op: replace
         path: /spec/dnsNames/0
-        value: "capm3-webhook-service.multicluster-engine.svc"
-  - target:
-      version: v1
-      kind: Issuer
-      name: capm3-selfsigned-issuer
-    patch: |-
+        value: "capm3-webhook-service.{{ .Release.Namespace }}.svc"
       - op: replace
-        path: /metadata/namespace
-        value: 'multicluster-engine'
+        path: /spec/dnsNames/1
+        value: "capm3-webhook-service.{{ .Release.Namespace }}.svc.cluster.local"
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1
@@ -121,87 +123,79 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/args/4
         value: --tls-min-version=VersionTLS13
+      - op: replace
+        path: /spec/template/spec/securityContext/runAsUser
+        value: 65532
+      - op: replace
+        path: /spec/template/spec/securityContext/runAsGroup
+        value: 65532
   - target:
-      version: admissionregistration.k8s.io/v1
+      version: v1
       kind: MutatingWebhookConfiguration
       name: capm3-mutating-webhook-configuration
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "multicluster-engine/capm3-serving-cert"
+        value: "{{ .Release.Namespace }}/capm3-serving-cert"
       - op: replace
         path: /webhooks/0/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/2/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/3/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/4/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/5/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/6/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
   - target:
-      version: admissionregistration.k8s.io/v1
+      version: v1
       kind: ValidatingWebhookConfiguration
       name: capm3-validating-webhook-configuration
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "multicluster-engine/capm3-serving-cert"
+        value: "{{ .Release.Namespace }}/capm3-serving-cert"
       - op: replace
         path: /webhooks/0/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/2/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/3/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/4/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/5/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/6/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
-        value: "multicluster-engine"
-  - target:
-      version: cert-manager.io/v1
-      kind: Certificate
-      name: capm3-serving-cert
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /spec/dnsNames/0
-        value: "capm3-webhook-service.multicluster-engine.svc"
-      - op: replace
-        path: /spec/dnsNames/1
-        value: "capm3-webhook-service.multicluster-engine.svc.cluster.local"
+        value: "{{ .Release.Namespace }}"

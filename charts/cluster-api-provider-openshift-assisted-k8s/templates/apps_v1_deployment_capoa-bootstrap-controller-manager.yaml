@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-bootstrap-system
+  namespace: '{{ .Release.Namespace }}'
 spec:
   replicas: 1
   selector:
@@ -24,13 +24,13 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: ASSISTED_CA_BUNDLE_NAME
-          value: default-ingress-cert
+          value: assisted-installer-ca
         - name: ASSISTED_CA_BUNDLE_NAMESPACE
-          value: openshift-config-managed
+          value: '{{ .Release.Namespace }}'
         - name: ASSISTED_CA_BUNDLE_RESOURCE
-          value: configmap
+          value: secret
         - name: ASSISTED_CA_BUNDLE_KEY
-          value: ca-bundle.crt
+          value: ca.crt
         image: '{{ .Values.bootstrap.image.url  }}:{{ .Values.bootstrap.image.tag  }}'
         imagePullPolicy: Always
         livenessProbe:

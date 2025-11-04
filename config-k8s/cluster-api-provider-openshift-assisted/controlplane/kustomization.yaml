@@ -1,10 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: '{{ .Release.Namespace }}'
+
 resources:
 - default/
 
 patches:
+- target:
+    kind: Namespace
+  patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: capoa-controlplane-system
+- target:
+    version: v1
+    kind: ClusterRoleBinding
+    name: capoa-controlplane-manager-rolebinding
+  patch: |-
+    - op: replace
+      path: /subjects/0/namespace
+      value: '{{ .Release.Namespace }}'
 - target:
     version: v1
     kind: Deployment

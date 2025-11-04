@@ -6,7 +6,7 @@ metadata:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
   name: capm3-controller-manager
-  namespace: capm3-system
+  namespace: '{{ .Release.Namespace }}'
 spec:
   selector:
     matchLabels:
@@ -72,7 +72,9 @@ spec:
           name: cert
           readOnly: true
       securityContext:
+        runAsGroup: 65532
         runAsNonRoot: true
+        runAsUser: 65532
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: capm3-manager

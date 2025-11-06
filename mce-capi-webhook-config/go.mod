@@ -70,7 +70,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.23.0 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
-	github.com/prometheus/common v0.67.1 // indirect
+	github.com/prometheus/common v0.67.2 // indirect
 	github.com/prometheus/procfs v0.17.0 // indirect
 	github.com/spf13/cobra v1.10.1 // indirect
 	github.com/stoewer/go-strcase v1.3.1 // indirect

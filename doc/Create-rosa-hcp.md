@@ -31,13 +31,19 @@ After installing ACM, enable the **Cluster API (CAPI)** and **Cluster API Provid
 	 engine   Available   11d   2.10.0            2.10.0
 	```
 
-2. Edit the MultiClusterEngine engine.
+2. Edit the MultiClusterEngine engine to enable cluster-api and cluster-api-provider-aws components.\ **Note:** The hypershift components must be disabled before enabling cluster-api and cluster-api-provider-aws components.
 
 	`oc edit multiclusterengine engine`
 
 	Enable the following components:
 
 	```yaml
+	    - configOverrides: {}
+	      enabled: false
+	      name: hypershift
+	    - configOverrides: {}
+	      enabled: false
+	      name: hypershift-local-hosting
 	    - configOverrides: {}
 	      enabled: true
 	      name: cluster-api
@@ -337,7 +343,7 @@ CAPA controller requires Redhat OCM credentials to provision ROSA HCP.
 	  rosaClusterName: rosa-hcp-1
 	  domainPrefix: rosa-hcp
 	  rosaRoleConfigRef:
-		name: role-config
+	    name: role-config
 	  version: "4.20.0"
 	  ## The region should match the aws region used to create the ROSANetwork
 	  region: "us-west-2"
@@ -378,6 +384,18 @@ CAPA controller requires Redhat OCM credentials to provision ROSA HCP.
 	ns-rosa-hcp   workers-1   true    1
 	ns-rosa-hcp   workers-2   true    1
 	```
+## Delete ROSA-HCP cluster
+
+Deleting the ROSAControlPlane initiates the full deprovisioning of the ROSA-HCP cluster, which typically takes 30–50 minutes to complete. The associated ROSAMachinePool resources will be automatically deleted as part of this cascade process.
+
+Use the following command to delete the ROSAControlPlane Custom Resource (CR) along with the associated Cluster CR:
+
+```shell
+oc delete -n ns-rosa-hcp cluster/rosa-hcp-1 rosacontrolplane/rosa-cp-1
+```
+
+Once the ROSAControlPlane deletion is complete, you may proceed with deleting the ROSARoleConfig and ROSANetwork resources.
+
 
 ## Support
 
@@ -385,17 +403,17 @@ When creating an issue for ROSA HCP cluster, include logs for the capa-controlle
 The logs can be saved to text file using the commands below:
 
 ```shell
-$ oc get pod -n multicluster-engine
+  oc get pod -n multicluster-engine
 NAME                                      READY   STATUS    RESTARTS   AGE
 capa-controller-manager-77f5b946b-sddcg   1/1     Running   1          3d3h
 
-$ oc logs -n multicluster-engine capa-controller-manager-77f5b946b-sddcg > capa-controller-manager-logs.txt
+  oc logs -n multicluster-engine capa-controller-manager-77f5b946b-sddcg > capa-controller-manager-logs.txt
 
-$ oc get pod -n multicluster-engine
+  oc get pod -n multicluster-engine
 NAME                                       READY   STATUS    RESTARTS   AGE
 capi-controller-manager-78dc897784-f8gpn   1/1     Running   18         26d
 
-$ oc logs -n multicluster-engine capi-controller-manager-78dc897784-f8gpn > capi-controller-manager-logs.txt
+  oc logs -n multicluster-engine capi-controller-manager-78dc897784-f8gpn > capi-controller-manager-logs.txt
 ```
 
 Include all the resources used to create the ROSA HCP cluster:

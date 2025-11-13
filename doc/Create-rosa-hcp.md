@@ -144,6 +144,7 @@ Copy the output of the previous command and add it to the capa-manager-bootstrap
 	  name: capa-manager-bootstrap-credentials
 	  namespace: multicluster-engine
 	```
+   **Note:** For using AWS IAM roles with service account to authenticate capa-controller-manager follow the [enable_IAM_roles_capa](https://github.com/stolostron/cluster-api-installer/blob/backplane-2.10/doc/Enable_iam_roles_capa.md) doc.
 
 3. Restart the capa-controller-manager deployment.
 

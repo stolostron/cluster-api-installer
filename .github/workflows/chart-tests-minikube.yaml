@@ -1,0 +1,336 @@
+name: CAPI Helm Chart Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'charts/**'
+      - 'tests/**'
+      - '.github/workflows/chart-tests-minikube.yaml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'charts/**'
+      - 'tests/**'
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - installation
+          - upgrade
+          - functionality
+      provider_filter:
+        description: 'Specific provider to test (empty for all)'
+        required: false
+        default: ''
+      kubernetes_version:
+        description: 'Kubernetes version'
+        required: false
+        default: 'v1.28.0'
+
+env:
+  GO_VERSION: '1.21'
+  KUBERNETES_VERSION: ${{ inputs.kubernetes_version || 'v1.28.0' }}
+  MINIKUBE_VERSION: '1.32.0'
+
+jobs:
+  chart-validation:
+    name: Chart Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+
+      - name: Validate chart structure
+        run: |
+          for chart in charts/*/; do
+            if [ -f "${chart}Chart.yaml" ]; then
+              echo "Validating chart: $(basename $chart)"
+              helm lint "$chart"
+            fi
+          done
+
+      - name: Template charts
+        run: |
+          for chart in charts/*/; do
+            if [ -f "${chart}Chart.yaml" ]; then
+              echo "Templating chart: $(basename $chart)"
+              helm template test "$chart" --dry-run
+            fi
+          done
+
+  installation-tests:
+    name: Installation Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        driver: [docker]
+        chart: [cluster-api, cluster-api-provider-aws, cluster-api-provider-metal3, cluster-api-provider-openshift-assisted]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Setup Minikube
+        uses: medyagh/setup-minikube@v0.0.14
+        with:
+          minikube-version: ${{ env.MINIKUBE_VERSION }}
+          kubernetes-version: ${{ env.KUBERNETES_VERSION }}
+          driver: ${{ matrix.driver }}
+          memory: 4096
+          cpus: 2
+
+      - name: Verify Minikube
+        run: |
+          minikube status
+          kubectl cluster-info
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+
+      - name: Build test binary
+        run: |
+          cd tests
+          go mod tidy
+          go build -o bin/test-runner ./cmd/test-runner
+
+      - name: Run installation tests
+        env:
+          CHART_FILTER: ${{ matrix.chart }}
+          TEST_SUITE: installation
+        run: |
+          cd tests
+          ./bin/test-runner \
+            --kubeconfig=$HOME/.kube/config \
+            --charts-path=../charts \
+            --test-suite=installation \
+            --chart-filter="${{ matrix.chart }}" \
+            --timeout=15m
+
+      - name: Collect test artifacts
+        if: always()
+        run: |
+          kubectl get pods -A
+          kubectl get events -A --sort-by='.lastTimestamp'
+          mkdir -p test-artifacts
+          kubectl logs -n capi-system -l control-plane=controller-manager --tail=1000 > test-artifacts/capi-controller.log 2>/dev/null || true
+          kubectl logs -n capa-system -l control-plane=controller-manager --tail=1000 > test-artifacts/capa-controller.log 2>/dev/null || true
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-artifacts-${{ matrix.chart }}-${{ matrix.driver }}
+          path: test-artifacts/
+
+  upgrade-tests:
+    name: Upgrade Tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' || inputs.test_suite == 'all' || inputs.test_suite == 'upgrade' }}
+    strategy:
+      matrix:
+        chart: [cluster-api, cluster-api-provider-aws]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need history for upgrade testing
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Setup Minikube
+        uses: medyagh/setup-minikube@v0.0.14
+        with:
+          minikube-version: ${{ env.MINIKUBE_VERSION }}
+          kubernetes-version: ${{ env.KUBERNETES_VERSION }}
+          driver: docker
+          memory: 4096
+          cpus: 2
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+
+      - name: Build test binary
+        run: |
+          cd tests
+          go mod tidy
+          go build -o bin/test-runner ./cmd/test-runner
+
+      - name: Run upgrade tests
+        env:
+          CHART_FILTER: ${{ matrix.chart }}
+          TEST_SUITE: upgrade
+        run: |
+          cd tests
+          ./bin/test-runner \
+            --kubeconfig=$HOME/.kube/config \
+            --charts-path=../charts \
+            --test-suite=upgrade \
+            --chart-filter="${{ matrix.chart }}" \
+            --timeout=20m
+
+  functionality-tests:
+    name: Functionality Tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' || inputs.test_suite == 'all' || inputs.test_suite == 'functionality' }}
+    strategy:
+      matrix:
+        provider: [aws]  # Start with AWS, expand later
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Setup Minikube
+        uses: medyagh/setup-minikube@v0.0.14
+        with:
+          minikube-version: ${{ env.MINIKUBE_VERSION }}
+          kubernetes-version: ${{ env.KUBERNETES_VERSION }}
+          driver: docker
+          memory: 6144  # More memory for functionality tests
+          cpus: 2
+
+      - name: Enable Minikube addons
+        run: |
+          minikube addons enable ingress
+          minikube addons enable metallb
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+
+      - name: Build test binary
+        run: |
+          cd tests
+          go mod tidy
+          go build -o bin/test-runner ./cmd/test-runner
+
+      - name: Run functionality tests
+        env:
+          PROVIDER_FILTER: ${{ matrix.provider }}
+          TEST_SUITE: functionality
+        run: |
+          cd tests
+          ./bin/test-runner \
+            --kubeconfig=$HOME/.kube/config \
+            --charts-path=../charts \
+            --test-suite=functionality \
+            --provider-filter="${{ matrix.provider }}" \
+            --timeout=30m
+
+  openshift-compatibility:
+    name: OpenShift Compatibility Tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Setup Minikube with OpenShift-like config
+        uses: medyagh/setup-minikube@v0.0.14
+        with:
+          minikube-version: ${{ env.MINIKUBE_VERSION }}
+          kubernetes-version: ${{ env.KUBERNETES_VERSION }}
+          driver: docker
+          memory: 4096
+          cpus: 2
+
+      - name: Configure OpenShift-like environment
+        run: |
+          # Enable RBAC and other OpenShift-like features
+          kubectl create clusterrolebinding cluster-admin-binding \
+            --clusterrole=cluster-admin \
+            --serviceaccount=kube-system:default
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+
+      - name: Test OpenShift-specific chart values
+        run: |
+          for chart in charts/*/; do
+            if [ -f "${chart}Chart.yaml" ] && [ -f "${chart}values-openshift.yaml" ]; then
+              echo "Testing OpenShift values for: $(basename $chart)"
+              helm template test "$chart" -f "${chart}values-openshift.yaml" --dry-run
+            fi
+          done
+
+  summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [chart-validation, installation-tests, upgrade-tests, functionality-tests]
+    if: always()
+    steps:
+      - name: Test Summary
+        run: |
+          echo "## CAPI Helm Chart Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.chart-validation.result }}" = "success" ]; then
+            echo "✅ Chart Validation: PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Chart Validation: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.installation-tests.result }}" = "success" ]; then
+            echo "✅ Installation Tests: PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Installation Tests: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.upgrade-tests.result }}" = "success" ] || [ "${{ needs.upgrade-tests.result }}" = "skipped" ]; then
+            echo "✅ Upgrade Tests: PASSED/SKIPPED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Upgrade Tests: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.functionality-tests.result }}" = "success" ] || [ "${{ needs.functionality-tests.result }}" = "skipped" ]; then
+            echo "✅ Functionality Tests: PASSED/SKIPPED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Functionality Tests: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi

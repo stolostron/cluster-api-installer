@@ -56,14 +56,15 @@ _copy_config() {
 copy_config() {
     local project=$1
     local config_type=$2
+    local project_dir=$3
     
     echo "Copying $config_type configuration for project: $project"
     
     if [ -z "$KUSTOMIZE_CONFIG_DIRS" ]; then
-        _copy_config "$PROJECT_ROOT/${config_type}/${project}" "${WKDIR}/${project}/${CONFIGDIR}"
+        _copy_config "$PROJECT_ROOT/${config_type}/${project}" "${project_dir}/${CONFIGDIR}"
     else
         for subdir in ${KUSTOMIZE_CONFIG_DIRS}; do
-            _copy_config "$PROJECT_ROOT/${config_type}/${project}/${subdir}" "${WKDIR}/${project}/${subdir}/${CONFIGDIR}"
+            _copy_config "$PROJECT_ROOT/${config_type}/${project}/${subdir}" "${project_dir}/${subdir}/${CONFIGDIR}"
         done
     fi
 }
@@ -81,17 +82,18 @@ _kustomize_config_build() {
 
     # Build with alpha plugins enabled  
     ${KUSTOMIZE} build --enable-alpha-plugins "$config_dir" -o "$output_dir"
-    mkdir -p $(dirname /tmp/kdebug/${output_dir})
-    cp -r ${output_dir} /tmp/kdebug/${output_dir}
+    if [ -n "$K_DEBUG" ] ; then
+        mkdir -p $(dirname /tmp/kdebug/${output_dir})
+        cp -r ${output_dir} /tmp/kdebug/${output_dir}
+    fi
 }
 
 # Function to build kustomize resources
 kustomize_build() {
-    local project=$1
-    local output_suffix=$2
+    local project_dir=$1
     
-    echo "Building kustomize resources for project: $project ($output_suffix)"
-    cd $WKDIR/$project
+    echo "Building kustomize resources for project: $project_dir"
+    cd $project_dir
     
     # Execute hack.sh if present
     if [ -f "${CONFIGDIR}/hack.sh" ]; then
@@ -101,7 +103,7 @@ kustomize_build() {
     fi
 
     # Prepare temporary directory using absolute paths
-    local tmp_dir="${WKDIR}/${PROJECT}/config/tmp${output_suffix}"
+    local tmp_dir="${project_dir}/config/tmp"
     rm -rf "${tmp_dir}"
     mkdir -p "${tmp_dir}"
 
@@ -118,38 +120,19 @@ kustomize_build() {
 
 
 
-_backup_built_dir() {
-    local config_type=$1
-    local tmp_output_dir=$2
-    output_suffix=${config_type#config}
 
-    target_dir=$tmp_output_dir/config/tmp${output_suffix}
-    mkdir -p $(dirname $target_dir)
-    src_dir="$WKDIR/$PROJECT/config/tmp${output_suffix}"
-    cp -r $src_dir $target_dir
-}
-
-_restore_built_dir() {
-    local config_type=$2
-    local tmp_output_dir=$1
-    output_suffix=${config_type#config}
-    backed_up_dir="$tmp_output_dir/config/tmp${output_suffix}"
-    original_dir="$WKDIR/$PROJECT/config/"
-    cp -r ${backed_up_dir} ${original_dir}
-}
-
-# Main build function that accepts config type (config or config-k8s)
+# Main build function that accepts config type (config or config-k8s or config-kind)
 build_for_config() {
     local config_type=$1
     
     if [ -z "$config_type" ]; then
-        echo "config_type must be provided: config or config-k8s"
+        echo "config_type must be provided: config or config-k8s or config-kind"
         exit -1
     fi
     
     # Skip silently if config directory doesn't exist for this project
     if [ ! -d "$PROJECT_ROOT/${config_type}/${PROJECT}" ]; then
-        return
+        return 0
     fi
     
     # Change to project root
@@ -158,13 +141,15 @@ build_for_config() {
     
     # Determine output filename suffix by removing "config" from config_type
     local output_suffix="${config_type#config}"
+
+    local project_dir="$WKDIR/$PROJECT$output_suffix"
     
     # Clone or skip clone if already exists
-    if [ "$SKIP_CLONE" != true -o ! -d $WKDIR/$PROJECT ] ; then
+    if [ "$SKIP_CLONE" != true -o ! -d $project_dir ] ; then
         mkdir -p $WKDIR
-        rm -rf $WKDIR/$PROJECT
-        mkdir $WKDIR/$PROJECT
-        git clone --depth=1 --branch="${BRANCH}" "${ORGREPO}/${PROJECT}" "${WKDIR}/${PROJECT}"
+        rm -rf "$project_dir"
+        mkdir "$project_dir"
+        git clone --depth=1 --branch="${BRANCH}" "${ORGREPO}/${PROJECT}" "${project_dir}"
     fi
 
     # Setup environment with config-type specific output file using absolute paths
@@ -174,28 +159,22 @@ build_for_config() {
     [ -f "$PROJECT_ROOT/${config_type}/$PROJECT/env" ] && . "$PROJECT_ROOT/${config_type}/$PROJECT/env"
 
     # Copy configuration files from the specified config type directory
-    copy_config "$PROJECT" "$config_type"
+    copy_config "$PROJECT" "$config_type" "$project_dir" 
 
     # Fetch latest changes and switch to branch
-    cd $WKDIR/$PROJECT
+    cd $project_dir
     git fetch --depth=1 origin "${BRANCH}" && git checkout "${BRANCH}"
 
     # Build kustomize resources
-    kustomize_build "$PROJECT" "${output_suffix}"
+    kustomize_build "$project_dir"
 }
 
 mkdir -p "${WKDIR}"
-tmp_output_dir=$(mktemp -d -p ${WKDIR})
 
 # Execute build function with config type (default to "config" for backward compatibility)
 build_for_config "config"
-# backing up as build_for_config will clear tmp dir
-_backup_built_dir "config" "${tmp_output_dir}"
-if [ -d $PROJECT_ROOT/config-k8s/$PROJECT ]; then
-     build_for_config "config-k8s"
-fi
-
-_restore_built_dir "${tmp_output_dir}" "config"
-
-# Clean up temporary directory
-rm -rf $tmp_output_dir
+for suffix in k8s kind; do
+  if [ -d $PROJECT_ROOT/config-$suffix/$PROJECT ]; then
+       build_for_config "config-$suffix"
+  fi
+done

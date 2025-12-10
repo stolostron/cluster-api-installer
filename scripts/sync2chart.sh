@@ -22,6 +22,7 @@ _rename_invalid_filenames() {
 
 _create_chart_structure() {
     local chartdir="$1"
+    echo "creating chart structure for $chartdir"
     mkdir -p "$chartdir/templates" "$chartdir/crds"
     rm -rf "$chartdir/templates/*.yaml"
     rm -rf "$chartdir/templates/.*.yaml"
@@ -34,6 +35,7 @@ _move_chart_files() {
     local builtdir="$1"
     local chartdir="$2"
     
+    echo "syncing chart files for $builtdir -> $chartdir"
     # Sanitize filenames in source directory first
     _rename_invalid_filenames "$builtdir"
     
@@ -51,22 +53,13 @@ _move_chart_files() {
 sync_chart_files() {
     local builtdir="$1"
     local chartdir="$2"
-    local k8s_chartdir="${chartdir}-k8s"
-    local k8s_builtdir="${builtdir}-k8s"
+    local suffix="$3"
+    local _chartdir="${chartdir}$suffix"
+    local _builtdir="${builtdir%/config/tmp}$suffix/config/tmp"
 
-    echo "sync new output to $chartdir"
-
-    _create_chart_structure "$chartdir"
-    if [ -d "$k8s_builtdir" ]; then
-        echo "creating chart structure for $k8s_chartdir"
-        _create_chart_structure "$k8s_chartdir"
-    fi
-
-    _move_chart_files "$builtdir" "$chartdir"
-    if [ -d "$k8s_builtdir" ]; then
-        echo "syncing chart files for $k8s_chartdir"
-        _move_chart_files "$k8s_builtdir" "$k8s_chartdir"
-    fi
+    [ -d "$_builtdir" ] || return 0
+    _create_chart_structure "$_chartdir"
+    _move_chart_files "$_builtdir" "$_chartdir"
 }
 
 _update_chart_yaml() {
@@ -94,25 +87,25 @@ update_chart_versions() {
     local chart_version="$2"
     local chart_app_version="$3"
     local chart_values_image_tag="$4"
-    local k8s_chartdir="${chartdir}-k8s"
-    
-    _update_chart_yaml "$chartdir" "$chart_version" "$chart_app_version" "$chart_values_image_tag"
-    echo "updated chart versions in $chartdir"
-    [ -d "$k8s_chartdir" ] && _update_chart_yaml "$k8s_chartdir" "$chart_version" "$chart_app_version" "$chart_values_image_tag"
-    echo "updated chart versions in $k8s_chartdir"
+    local suffix="$5"
+
+   local _chartdir="${chartdir}$suffix"
+   [ -d "$_chartdir" ] || return 0
+   _update_chart_yaml "$_chartdir" "$chart_version" "$chart_app_version" "$chart_values_image_tag"
+   echo "updated chart versions in $_chartdir"
 }
 
 # Function to generate helm template output
 generate_helm_template() {
     local chartdir="$1"
     local output_file="$2"
-    local k8s_chartdir="${chartdir}-k8s"
-    local k8s_output_file="${output_file%.yml}-k8s.yml"
+    local suffix="$3"
 
-    _save_helm_template "$chartdir" "$output_file"
-    echo "generated helm template output to $output_file"
-    [ -d "$k8s_chartdir" ] && _save_helm_template "$k8s_chartdir" "$k8s_output_file"
-    echo "generated helm template output to $k8s_output_file"
+    local _chartdir="${chartdir}$suffix"
+    local _output_file="${output_file%.yml}$suffix.yml"
+    [ -d "$_chartdir" ] || return 0
+    _save_helm_template "$_chartdir" "$_output_file"
+    echo "generated helm template output to $_output_file"
 }
 
 _save_helm_template() {
@@ -154,10 +147,11 @@ CHARTDIR="$PROJECT_ROOT/charts/$PROJECT"
 NEWCHART="$(realpath "$BUILTDIR")/new-chart.yml"
 
 if [ "$SYNC2CHARTS" ] ;then
-    # Sync regular chart
-    sync_chart_files "$BUILTDIR" "$CHARTDIR"
-    update_chart_versions "$CHARTDIR" "$CHART_VERSION" "$CHART_APP_VERSION" "$CHART_VALUES_IMAGE_TAG"
-    generate_helm_template "$CHARTDIR" "$NEWCHART"
+    for suffix in "" "-k8s" "-kind" ; do
+        sync_chart_files "$BUILTDIR" "$CHARTDIR" "$suffix" 
+        update_chart_versions "$CHARTDIR" "$CHART_VERSION" "$CHART_APP_VERSION" "$CHART_VALUES_IMAGE_TAG" "$suffix"
+        generate_helm_template "$CHARTDIR" "$NEWCHART" "$suffix"
+    done
 
 
     if [ -n "$GITHUB_OUTPUT" ] ; then

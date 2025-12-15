@@ -12,14 +12,6 @@ transformers:
 ## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements. 
 
 patches:
-  # Remove the webhook conversion part from CRDs to match Hypershift CRDs
-  - target:
-      version: v1
-      kind: CustomResourceDefinition
-      annotationSelector: cert-manager.io/inject-ca-from
-    patch: |-
-      - op: remove
-        path: /spec/conversion
   # Remove unnecessary resources
   - target:
        kind: CustomResourceDefinition

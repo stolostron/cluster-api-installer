@@ -1,24 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capoa-controlplane-controller-manager
+  name: capoa-bootstrap-controller-manager
   namespace: '{{ .Release.Namespace }}'
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: capoa-controlplane-controller-manager
+      control-plane: capoa-bootstrap-controller-manager
   template:
     metadata:
       labels:
-        control-plane: capoa-controlplane-controller-manager
+        control-plane: capoa-bootstrap-controller-manager
     spec:
       containers:
       - args:
         - --leader-elect
         command:
         - /manager
-        image: '{{ .Values.controlplane.image.url  }}:{{ .Values.controlplane.image.tag  }}'
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ASSISTED_CA_BUNDLE_NAME
+          value: assisted-installer-ca
+        - name: ASSISTED_CA_BUNDLE_NAMESPACE
+          value: '{{ .Release.Namespace }}'
+        - name: ASSISTED_CA_BUNDLE_RESOURCE
+          value: secret
+        - name: ASSISTED_CA_BUNDLE_KEY
+          value: ca.crt
+        image: '{{ .Values.bootstrap.image.url  }}:{{ .Values.bootstrap.image.tag  }}'
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -45,7 +58,14 @@ spec:
           capabilities:
             drop:
             - ALL
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs/
+          name: certs
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: capoa-controlplane-controller-manager
+      serviceAccountName: capoa-bootstrap-controller-manager
       terminationGracePeriodSeconds: 10
+      volumes:
+      - name: certs
+        secret:
+          secretName: capoa-bootstrap-webhook-cert-secret

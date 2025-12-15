@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: '{{ .Release.Namespace }}'
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
 - ../config/default/
@@ -11,27 +12,27 @@ transformers:
 ## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements.
 patches:
   - target:
+      kind: Namespace
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: capi-system
+  - target:
       version: v1
       kind: Certificate
       name: capi-serving-cert
     patch: |-
       - op: replace
-        path: /metadata/namespace
-        value: 'multicluster-engine'
-      - op: replace
         path: /spec/commonName
-        value: "capi-webhook-service.multicluster-engine.svc"
+        value: "capi-webhook-service.{{ .Release.Namespace }}.svc"
       - op: replace
         path: /spec/dnsNames/0
-        value: "capi-webhook-service.multicluster-engine.svc"
-  - target:
-      version: v1
-      kind: Issuer
-      name: capi-selfsigned-issuer
-    patch: |-
+        value: "capi-webhook-service.{{ .Release.Namespace }}.svc"
       - op: replace
-        path: /metadata/namespace
-        value: 'multicluster-engine'
+        path: /spec/dnsNames/1
+        value: "capi-webhook-service.{{ .Release.Namespace }}.svc.cluster.local"
   # Remove the webhook conversion part from CRDs to match Hypershift CRDs
   - target:
       version: v1
@@ -75,116 +76,105 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
-      - op: add
-        path: /spec/template/spec/containers/0/args/0
-        value: '--watch-filter=multicluster-engine'
       - op: replace
         path: /spec/template/spec/containers/0/command
         value:
         - '{{ .Values.manager.cmd  }}'
       - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: '--feature-gates=MachinePool=true,ClusterResourceSet=true,ClusterTopology=false,RuntimeSDK=false,MachineSetPreflightChecks=true'
+      - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: replace
+        path: /spec/template/spec/securityContext/runAsUser
+        value: 65532
+      - op: replace
+        path: /spec/template/spec/securityContext/runAsGroup
+        value: 65532
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
   - target:
-      version: admissionregistration.k8s.io/v1
+      version: v1
       kind: MutatingWebhookConfiguration
       name: capi-mutating-webhook-configuration
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "multicluster-engine/capi-serving-cert"
+        value: "{{ .Release.Namespace }}/capi-serving-cert"
       - op: replace
         path: /webhooks/0/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/2/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/3/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/4/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/5/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/6/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/9/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
   - target:
-      version: admissionregistration.k8s.io/v1
+      version: v1
       kind: ValidatingWebhookConfiguration
       name: capi-validating-webhook-configuration
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "multicluster-engine/capi-serving-cert"
+        value: "{{ .Release.Namespace }}/capi-serving-cert"
       - op: replace
         path: /webhooks/0/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/2/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/3/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/4/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/5/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/6/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/9/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/10/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/11/clientConfig/service/namespace
-        value: "multicluster-engine"
+        value: "{{ .Release.Namespace }}"
       - op: replace
         path: /webhooks/12/clientConfig/service/namespace
-        value: "multicluster-engine"
-  - target:
-      version: cert-manager.io/v1
-      kind: Certificate
-      name: capi-serving-cert
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /spec/dnsNames/0
-        value: "capi-webhook-service.multicluster-engine.svc"
-      - op: replace
-        path: /spec/dnsNames/1
-        value: "capi-webhook-service.multicluster-engine.svc.cluster.local"
+        value: "{{ .Release.Namespace }}"

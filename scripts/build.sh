@@ -78,7 +78,7 @@ _kustomize_config_build() {
     
     # Build default configuration
     ${KUSTOMIZE} build "${config_dir}/default" >> "$output_file"
-    
+
     # Build with alpha plugins enabled  
     ${KUSTOMIZE} build --enable-alpha-plugins "$config_dir" -o "$output_dir"
     mkdir -p $(dirname /tmp/kdebug/${output_dir})
@@ -124,15 +124,18 @@ _backup_built_dir() {
     output_suffix=${config_type#config}
 
     target_dir=$tmp_output_dir/config/tmp${output_suffix}
-    mkdir -p $target_dir
-    cp -r $WKDIR/$PROJECT/config/tmp${output_suffix} $target_dir
+    mkdir -p $(dirname $target_dir)
+    src_dir="$WKDIR/$PROJECT/config/tmp${output_suffix}"
+    cp -r $src_dir $target_dir
 }
 
 _restore_built_dir() {
     local config_type=$2
     local tmp_output_dir=$1
     output_suffix=${config_type#config}
-    cp -r $tmp_output_dir/config/tmp${output_suffix} $WKDIR/$PROJECT/config/tmp${output_suffix}
+    backed_up_dir="$tmp_output_dir/config/tmp${output_suffix}"
+    original_dir="$WKDIR/$PROJECT/config/"
+    cp -r ${backed_up_dir} ${original_dir}
 }
 
 # Main build function that accepts config type (config or config-k8s)

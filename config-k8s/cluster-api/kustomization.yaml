@@ -128,9 +128,6 @@ patches:
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
         value: "{{ .Release.Namespace }}"
-      - op: replace
-        path: /webhooks/8/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
   - target:
       version: v1
       kind: ValidatingWebhookConfiguration

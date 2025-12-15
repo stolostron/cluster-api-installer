@@ -1,8 +1,8 @@
-OCP_VERSION ?= 4.20
-MCE_VERSION ?= 2.10.0-1
+OCP_VERSION ?= 4.21
+MCE_VERSION ?= 2.11.0-1
 SYNC2CHARTS ?= true
 
-DEFAULT_BRANCH ?= release-4.20
+DEFAULT_BRANCH ?= release-4.21
 CAPA_BRANCH ?= backplane-2.10
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron

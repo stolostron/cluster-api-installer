@@ -33,6 +33,9 @@ CLUSTERCTL_PLATFORM := linux-amd64
 
 CONTAINER_ENGINE ?= docker
 
+build-%-chart: $(YQ) $(KUSTOMIZE) $(CLUSTERCTL) $(HELM)
+	(export YQ=$(YQ) CLUSTERCTL=$(CLUSTERCTL) KUSTOMIZE=$(KUSTOMIZE) HELM=$(HELM); $(MAKE) -C ./charts $@)
+
 build-helm-charts: $(YQ) $(KUSTOMIZE) $(CLUSTERCTL) $(HELM)
 	(export YQ=$(YQ) CLUSTERCTL=$(CLUSTERCTL) KUSTOMIZE=$(KUSTOMIZE) HELM=$(HELM); $(MAKE) -C ./charts build)
 

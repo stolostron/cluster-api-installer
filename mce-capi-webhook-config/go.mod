@@ -15,8 +15,8 @@ require (
 	k8s.io/component-base v0.34.1
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912
-	sigs.k8s.io/cluster-api v1.9.4
-	sigs.k8s.io/controller-runtime v0.19.4
+	sigs.k8s.io/cluster-api v1.11.3
+	sigs.k8s.io/controller-runtime v0.21.0
 )
 
 require (
@@ -52,8 +52,8 @@ require (
 	github.com/go-openapi/swag/typeutils v0.25.1 // indirect
 	github.com/go-openapi/swag/yamlutils v0.25.1 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/gobuffalo/flect v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/google/btree v1.1.3 // indirect
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect

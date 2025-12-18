@@ -13,6 +13,7 @@ LOCALBIN ?= $(shell pwd)/bin
 $(LOCALBIN):
 	mkdir -p $(LOCALBIN)
 ENVTEST ?= $(LOCALBIN)/setup-envtest
+GOTOOLCHAIN := $(shell grep '^toolchain ' go.mod|sed -e 's/^toolchain //')
 
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
@@ -32,7 +33,7 @@ $(ENVTEST): $(LOCALBIN)
 .PHONY: test
 test: envtest ## Run tests.
 	OPERATOR_VERSION=9.9.9 KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) -p path)" \
-	ENV_TEST="true" go test $(shell go list ./... | grep -E -v "test") -coverprofile cover.out
+	ENV_TEST="true" GOTOOLCHAIN="$(GOTOOLCHAIN)+auto"  go test $(shell go list ./... | grep -E -v "test") -coverprofile cover.out
 
 # Build manager binary
 mce-capi-webhook-config: main.go webhook/webhook.go go.mod go.sum

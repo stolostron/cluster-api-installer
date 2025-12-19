@@ -1,10 +1,10 @@
 ---
-name: FFWD from master branch
+name: FFWD from main branch
 
 on:
   push:
     branches:
-      - master
+      - main
 
 
 permissions:
@@ -26,10 +26,10 @@ jobs:
       - name: Fetch all branches
         run: git fetch --all
 
-      - name: Fast-forward master commits into  ${{ env.TARGET_BRANCH }}
+      - name: Fast-forward main commits into  ${{ env.TARGET_BRANCH }}
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git checkout "${TARGET_BRANCH}"
-          git merge --ff-only origin/master
+          git merge --ff-only origin/main
           git push origin "${TARGET_BRANCH}"

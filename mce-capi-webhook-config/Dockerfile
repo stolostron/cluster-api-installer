@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM registry.access.redhat.com/ubi9/go-toolset:9.7-1765311584 AS builder
+FROM registry.access.redhat.com/ubi9/go-toolset:9.7-1762230058 AS builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -15,10 +15,12 @@ COPY main.go main.go
 COPY webhook/ webhook/
 
 # Build
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 GO111MODULE=on GOEXPERIMENT=strictfipsruntime go build -a -o /tmp/mce-capi-webhook-config main.go
+RUN CGO_ENABLED=1 GO111MODULE=on GOEXPERIMENT=strictfipsruntime go build -a -o /tmp/mce-capi-webhook-config main.go
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+
 LABEL com.redhat.component="" \
+      url="mce-capi-webhook-config/Dockerfile" \
       description="Auto-labeling CAPI resources based on openshift and hypershift namespaces" \
       io.k8s.description="Auto-labeling CAPI resources based on namespaces" \
       io.k8s.display-name="MultiCluster Engine CAPI Webhook Config" \

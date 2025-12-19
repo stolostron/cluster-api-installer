@@ -9,8 +9,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -239,8 +239,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -587,8 +587,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -2816,31 +2816,6 @@ spec:
                       "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
                       "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
                     type: string
-                  cpuOptions:
-                    description: |-
-                      CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                    minProperties: 1
-                    properties:
-                      confidentialCompute:
-                        description: |-
-                          ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                          and, if so, which confidential computing technology to use.
-                          Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                          When set to Disabled, confidential computing will be disabled for the instance.
-                          When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                          In this case, ensure the following conditions are met:
-                          1) The selected instance type supports AMD SEV-SNP.
-                          2) The selected AWS region supports AMD SEV-SNP.
-                          3) The selected AMI supports AMD SEV-SNP.
-                          More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                          which is subject to change without notice. The current default is Disabled.
-                        enum:
-                        - Disabled
-                        - AMDEncryptedVirtualizationNestedPaging
-                        type: string
-                    type: object
                   ebsOptimized:
                     description: Indicates whether the instance is optimized for Amazon
                       EBS I/O.
@@ -3759,7 +3734,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -3997,8 +3972,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -5778,7 +5753,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -6213,7 +6188,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -7602,8 +7577,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -8308,31 +8283,6 @@ spec:
                     - ssm-parameter-store
                     type: string
                 type: object
-              cpuOptions:
-                description: |-
-                  CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                  When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                minProperties: 1
-                properties:
-                  confidentialCompute:
-                    description: |-
-                      ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                      and, if so, which confidential computing technology to use.
-                      Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                      When set to Disabled, confidential computing will be disabled for the instance.
-                      When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                      In this case, ensure the following conditions are met:
-                      1) The selected instance type supports AMD SEV-SNP.
-                      2) The selected AWS region supports AMD SEV-SNP.
-                      3) The selected AMI supports AMD SEV-SNP.
-                      More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                      which is subject to change without notice. The current default is Disabled.
-                    enum:
-                    - Disabled
-                    - AMDEncryptedVirtualizationNestedPaging
-                    type: string
-                type: object
               elasticIpPool:
                 description: ElasticIPPool is the configuration to allocate Public
                   IPv4 address (Elastic IP/EIP) from user-defined pool.
@@ -8944,8 +8894,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -9569,31 +9519,6 @@ spec:
                             - ssm-parameter-store
                             type: string
                         type: object
-                      cpuOptions:
-                        description: |-
-                          CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                        minProperties: 1
-                        properties:
-                          confidentialCompute:
-                            description: |-
-                              ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                              and, if so, which confidential computing technology to use.
-                              Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                              When set to Disabled, confidential computing will be disabled for the instance.
-                              When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                              In this case, ensure the following conditions are met:
-                              1) The selected instance type supports AMD SEV-SNP.
-                              2) The selected AWS region supports AMD SEV-SNP.
-                              3) The selected AMI supports AMD SEV-SNP.
-                              More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                              When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                              which is subject to change without notice. The current default is Disabled.
-                            enum:
-                            - Disabled
-                            - AMDEncryptedVirtualizationNestedPaging
-                            type: string
-                        type: object
                       elasticIpPool:
                         description: ElasticIPPool is the configuration to allocate
                           Public IPv4 address (Elastic IP/EIP) from user-defined pool.
@@ -10101,8 +10026,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -10268,8 +10193,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -10357,8 +10282,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -10467,11 +10392,6 @@ spec:
                       description: Name is the name of the addon
                       minLength: 2
                       type: string
-                    preserveOnDelete:
-                      description: |-
-                        PreserveOnDelete indicates that the addon resources should be
-                        preserved in the cluster on delete.
-                      type: boolean
                     serviceAccountRoleARN:
                       description: ServiceAccountRoleArn is the ARN of an IAM role
                         to bind to the addons service account
@@ -11608,31 +11528,6 @@ spec:
                       "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
                       "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
                     type: string
-                  cpuOptions:
-                    description: |-
-                      CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                    minProperties: 1
-                    properties:
-                      confidentialCompute:
-                        description: |-
-                          ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                          and, if so, which confidential computing technology to use.
-                          Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                          When set to Disabled, confidential computing will be disabled for the instance.
-                          When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                          In this case, ensure the following conditions are met:
-                          1) The selected instance type supports AMD SEV-SNP.
-                          2) The selected AWS region supports AMD SEV-SNP.
-                          3) The selected AMI supports AMD SEV-SNP.
-                          More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                          which is subject to change without notice. The current default is Disabled.
-                        enum:
-                        - Disabled
-                        - AMDEncryptedVirtualizationNestedPaging
-                        type: string
-                    type: object
                   ebsOptimized:
                     description: Indicates whether the instance is optimized for Amazon
                       EBS I/O.
@@ -12641,28 +12536,6 @@ spec:
             description: AWSManagedControlPlaneSpec defines the desired state of an
               Amazon EKS Cluster.
             properties:
-              accessConfig:
-                description: AccessConfig specifies the access configuration information
-                  for the cluster
-                properties:
-                  authenticationMode:
-                    default: config_map
-                    description: |-
-                      AuthenticationMode specifies the desired authentication mode for the cluster
-                      Defaults to config_map
-                    enum:
-                    - config_map
-                    - api
-                    - api_and_config_map
-                    type: string
-                  bootstrapClusterCreatorAdminPermissions:
-                    default: true
-                    description: |-
-                      BootstrapClusterCreatorAdminPermissions grants cluster admin permissions
-                      to the IAM identity creating the cluster. Only applied during creation,
-                      ignored when updating existing clusters. Defaults to true.
-                    type: boolean
-                type: object
               additionalTags:
                 additionalProperties:
                   type: string
@@ -12693,11 +12566,6 @@ spec:
                       description: Name is the name of the addon
                       minLength: 2
                       type: string
-                    preserveOnDelete:
-                      description: |-
-                        PreserveOnDelete indicates that the addon resources should be
-                        preserved in the cluster on delete.
-                      type: boolean
                     serviceAccountRoleARN:
                       description: ServiceAccountRoleArn is the ARN of an IAM role
                         to bind to the addons service account
@@ -13874,31 +13742,6 @@ spec:
                       "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
                       "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
                     type: string
-                  cpuOptions:
-                    description: |-
-                      CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
-                      When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
-                    minProperties: 1
-                    properties:
-                      confidentialCompute:
-                        description: |-
-                          ConfidentialCompute specifies whether confidential computing should be enabled for the instance,
-                          and, if so, which confidential computing technology to use.
-                          Valid values are: Disabled, AMDEncryptedVirtualizationNestedPaging
-                          When set to Disabled, confidential computing will be disabled for the instance.
-                          When set to AMDEncryptedVirtualizationNestedPaging, AMD SEV-SNP will be used as the confidential computing technology for the instance.
-                          In this case, ensure the following conditions are met:
-                          1) The selected instance type supports AMD SEV-SNP.
-                          2) The selected AWS region supports AMD SEV-SNP.
-                          3) The selected AMI supports AMD SEV-SNP.
-                          More details can be checked at https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html
-                          When omitted, this means no opinion and the AWS platform is left to choose a reasonable default,
-                          which is subject to change without notice. The current default is Disabled.
-                        enum:
-                        - Disabled
-                        - AMDEncryptedVirtualizationNestedPaging
-                        type: string
-                    type: object
                   ebsOptimized:
                     description: Indicates whether the instance is optimized for Amazon
                       EBS I/O.
@@ -14868,8 +14711,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -14935,28 +14778,6 @@ spec:
                     description: AWSManagedControlPlaneSpec defines the desired state
                       of an Amazon EKS Cluster.
                     properties:
-                      accessConfig:
-                        description: AccessConfig specifies the access configuration
-                          information for the cluster
-                        properties:
-                          authenticationMode:
-                            default: config_map
-                            description: |-
-                              AuthenticationMode specifies the desired authentication mode for the cluster
-                              Defaults to config_map
-                            enum:
-                            - config_map
-                            - api
-                            - api_and_config_map
-                            type: string
-                          bootstrapClusterCreatorAdminPermissions:
-                            default: true
-                            description: |-
-                              BootstrapClusterCreatorAdminPermissions grants cluster admin permissions
-                              to the IAM identity creating the cluster. Only applied during creation,
-                              ignored when updating existing clusters. Defaults to true.
-                            type: boolean
-                        type: object
                       additionalTags:
                         additionalProperties:
                           type: string
@@ -14987,11 +14808,6 @@ spec:
                               description: Name is the name of the addon
                               minLength: 2
                               type: string
-                            preserveOnDelete:
-                              description: |-
-                                PreserveOnDelete indicates that the addon resources should be
-                                preserved in the cluster on delete.
-                              type: boolean
                             serviceAccountRoleARN:
                               description: ServiceAccountRoleArn is the ARN of an
                                 IAM role to bind to the addons service account
@@ -16085,7 +15901,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -17327,8 +17143,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -17935,8 +17751,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -18405,7 +18221,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -18570,7 +18386,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -18635,6 +18451,25 @@ spec:
                   AuditLogRoleARN defines the role that is used to forward audit logs to AWS CloudWatch.
                   If not set, audit log forwarding is disabled.
                 type: string
+              autoNode:
+                description: autoNode set the autoNode mode and roleARN.
+                properties:
+                  mode:
+                    default: Disabled
+                    description: mode specifies the mode for the AutoNode. Setting
+                      Enable/Disable mode will allows/disallow karpenter AutoNode
+                      scaling.
+                    enum:
+                    - Enabled
+                    - Disabled
+                    type: string
+                  roleARN:
+                    description: |-
+                      roleARN sets the autoNode role ARN, which includes the IAM policy and cluster-specific role that grant the necessary permissions to the Karpenter controller.
+                      The role must be attached with the same OIDC-ID that is used with the ROSA-HCP cluster.
+                    maxLength: 2048
+                    type: string
+                type: object
               availabilityZones:
                 description: |-
                   AvailabilityZones describe AWS AvailabilityZones of the worker nodes.
@@ -19353,6 +19188,22 @@ spec:
                 x-kubernetes-validations:
                 - message: rosaClusterName is immutable
                   rule: self == oldSelf
+              rosaNetworkRef:
+                description: |-
+                  ROSANetworkRef references ROSANetwork custom resource that contains the networking infrastructure
+                  for the ROSA HCP cluster.
+                properties:
+                  name:
+                    default: ""
+                    description: |-
+                      Name of the referent.
+                      This field is effectively required, but due to backwards compatibility is
+                      allowed to be empty. Instances of this type with an empty value here are
+                      almost certainly wrong.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
               rosaRoleConfigRef:
                 description: |-
                   RosaRoleConfigRef is a reference to a RosaRoleConfig resource that contains account roles, operator roles and OIDC configuration.
@@ -19404,11 +19255,9 @@ spec:
                   Required if RosaRoleConfigRef is not specified.
                 type: string
             required:
-            - availabilityZones
             - channelGroup
             - region
             - rosaClusterName
-            - subnets
             - version
             - versionGate
             type: object
@@ -19526,7 +19375,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -19855,8 +19704,245 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
-    controller-gen.kubebuilder.io/version: v0.19.0
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-aws
+    cluster.x-k8s.io/v1alpha3: v1alpha3
+    cluster.x-k8s.io/v1alpha4: v1alpha4
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2
+  name: rosanetworks.infrastructure.cluster.x-k8s.io
+spec:
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    categories:
+    - cluster-api
+    kind: ROSANetwork
+    listKind: ROSANetworkList
+    plural: rosanetworks
+    shortNames:
+    - rosanet
+    singular: rosanetwork
+  scope: Namespaced
+  versions:
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: ROSANetwork is the schema for the rosanetworks API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ROSANetworkSpec defines the desired state of ROSANetwork
+            properties:
+              availabilityZoneCount:
+                description: |-
+                  The number of availability zones to be used for creation of the network infrastructure.
+                  You can specify anything between one and four, depending on the chosen AWS region.
+                  Either AvailabilityZoneCount OR AvailabilityZones must be set.
+                minimum: 1
+                type: integer
+                x-kubernetes-validations:
+                - message: availabilityZoneCount is immutable
+                  rule: self == oldSelf
+              availabilityZones:
+                description: |-
+                  The list of availability zones to be used for creation of the network infrastructure.
+                  You can specify anything between one and four valid availability zones from a given region.
+                  Either AvailabilityZones OR AvailabilityZoneCount must be set.
+                items:
+                  type: string
+                type: array
+                x-kubernetes-validations:
+                - message: availabilityZones is immutable
+                  rule: self == oldSelf
+              cidrBlock:
+                description: CIDR block to be used for the VPC
+                format: cidr
+                type: string
+              identityRef:
+                description: |-
+                  IdentityRef is a reference to an identity to be used when reconciling rosa network.
+                  If no identity is specified, the default identity for this controller will be used.
+                properties:
+                  kind:
+                    description: Kind of the identity.
+                    enum:
+                    - AWSClusterControllerIdentity
+                    - AWSClusterRoleIdentity
+                    - AWSClusterStaticIdentity
+                    type: string
+                  name:
+                    description: Name of the identity.
+                    minLength: 1
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              region:
+                description: The AWS region in which the components of ROSA network
+                  infrastruture are to be crated
+                type: string
+                x-kubernetes-validations:
+                - message: region is immutable
+                  rule: self == oldSelf
+              stackName:
+                description: The name of the cloudformation stack under which the
+                  network infrastructure would be created
+                type: string
+                x-kubernetes-validations:
+                - message: stackName is immutable
+                  rule: self == oldSelf
+              stackTags:
+                additionalProperties:
+                  type: string
+                description: |-
+                  StackTags is an optional set of tags to add to the created cloudformation stack.
+                  The stack tags will then be automatically applied to the supported AWS resources (VPC, subnets, ...).
+                type: object
+            required:
+            - cidrBlock
+            - region
+            - stackName
+            type: object
+          status:
+            description: ROSANetworkStatus defines the observed state of ROSANetwork
+            properties:
+              conditions:
+                description: Conditions specifies the conditions for ROSANetwork
+                items:
+                  description: Condition defines an observation of a Cluster API resource
+                    operational state.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed. If that is not known, then using the time when
+                        the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This field may be empty.
+                      maxLength: 10240
+                      minLength: 1
+                      type: string
+                    reason:
+                      description: |-
+                        reason is the reason for the condition's last transition in CamelCase.
+                        The specific API may choose whether or not this field is considered a guaranteed API.
+                        This field may be empty.
+                      maxLength: 256
+                      minLength: 1
+                      type: string
+                    severity:
+                      description: |-
+                        severity provides an explicit classification of Reason code, so the users or machines can immediately
+                        understand the current situation and act accordingly.
+                        The Severity field MUST be set only when Status=False.
+                      maxLength: 32
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+                        can be useful (see .node.status.conditions), the ability to deconflict is important.
+                      maxLength: 256
+                      minLength: 1
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - status
+                  - type
+                  type: object
+                type: array
+              resources:
+                description: Resources created in the cloudformation stack
+                items:
+                  description: CFResource groups information pertaining to a resource
+                    created as a part of a cloudformation stack
+                  properties:
+                    logicalId:
+                      description: LogicalResourceID of the created resource.
+                      type: string
+                    physicalId:
+                      description: PhysicalResourceID of the created resource.
+                      type: string
+                    reason:
+                      description: Message pertaining to the status of the resource
+                      type: string
+                    resource:
+                      description: 'Type of the created resource: AWS::EC2::VPC, AWS::EC2::Subnet,
+                        ...'
+                      type: string
+                    status:
+                      description: 'Status of the resource: CREATE_IN_PROGRESS, CREATE_COMPLETE,
+                        ...'
+                      type: string
+                  required:
+                  - logicalId
+                  - physicalId
+                  - reason
+                  - resource
+                  - status
+                  type: object
+                type: array
+              subnets:
+                description: Array of created private, public subnets and availability
+                  zones, grouped by availability zones
+                items:
+                  description: ROSANetworkSubnet groups public and private subnet
+                    and the availability zone in which the two subnets got created
+                  properties:
+                    availabilityZone:
+                      description: Availability zone of the subnet pair, for example
+                        us-west-2a
+                      type: string
+                    privateSubnet:
+                      description: ID of the private subnet, for example subnet-07a20d6c41af2b725
+                      type: string
+                    publicSubnet:
+                      description: ID of the public subnet, for example subnet-0f7e49a3ce68ff338
+                      type: string
+                  required:
+                  - availabilityZone
+                  - privateSubnet
+                  - publicSubnet
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    controller-gen.kubebuilder.io/version: v0.17.3
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
     cluster.x-k8s.io/v1alpha3: v1alpha3
@@ -20552,6 +20638,7 @@ rules:
   - awsclusters/status
   - awsfargateprofiles/status
   - rosaclusters/status
+  - rosanetworks/status
   - rosaroleconfigs/status
   verbs:
   - get
@@ -20575,6 +20662,7 @@ rules:
   resources:
   - awsmachines
   - rosamachinepools
+  - rosanetworks
   - rosaroleconfigs
   verbs:
   - create
@@ -20588,6 +20676,7 @@ rules:
   - infrastructure.cluster.x-k8s.io
   resources:
   - rosamachinepools/finalizers
+  - rosanetworks/finalizers
   - rosaroleconfigs/finalizers
   verbs:
   - update
@@ -20808,7 +20897,7 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
   name: capa-mutating-webhook-configuration
@@ -21039,6 +21128,28 @@ webhooks:
     service:
       name: capa-webhook-service
       namespace: capa-system
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1beta2-rosanetwork
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: default.rosanetwork.infrastructure.cluster.x-k8s.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta2
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - rosanetworks
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capa-webhook-service
+      namespace: capa-system
       path: /mutate-infrastructure-cluster-x-k8s-io-v1beta2-rosaroleconfig
   failurePolicy: Fail
   matchPolicy: Equivalent
@@ -21169,7 +21280,7 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: capa-system/capa-serving-cert
+    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
   labels:
     cluster.x-k8s.io/provider: infrastructure-aws
   name: capa-validating-webhook-configuration
@@ -21415,6 +21526,28 @@ webhooks:
     - UPDATE
     resources:
     - rosamachinepools
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capa-webhook-service
+      namespace: capa-system
+      path: /validate-infrastructure-cluster-x-k8s-io-v1beta2-rosanetwork
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: validation.rosanetwork.infrastructure.cluster.x-k8s.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta2
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - rosanetworks
   sideEffects: None
 - admissionReviewVersions:
   - v1

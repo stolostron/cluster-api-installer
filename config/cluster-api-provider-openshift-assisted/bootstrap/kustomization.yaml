@@ -5,6 +5,25 @@ resources:
 - default/
 
 patches:
+# Remove cert-manager Certificate and Issuer
+- target:
+    kind: Certificate
+  patch: |-
+    $patch: delete
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: capoa-bootstrap-cert
+- target:
+    kind: Issuer
+  patch: |-
+    $patch: delete
+    apiVersion: cert-manager.io/v1
+    kind: Issuer
+    metadata:
+      name: capoa-bootstrap-selfsigned-issuer
+      namespace: capoa-bootstrap-system
+      $patch: delete
 - target:
     version: v1
     kind: Deployment

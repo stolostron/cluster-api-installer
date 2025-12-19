@@ -9,7 +9,12 @@ on:
     secrets:
       personal_access_token:
         required: true
-
+      JIRA_API_TOKEN:
+        required: true
+env:
+  JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}
+  JIRA_PROJECT: ${{ vars.JIRA_PROJECT }}
+  JIRA_EPIC_LINK: ${{ vars.JIRA_EPIC_LINK }}
 
 jobs:
   # This workflow contains a single job called "greet"
@@ -19,6 +24,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: show-env
+      id: show-env
+      run: |
+        echo "env.JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}"
+        echo "env.JIRA_PROJECT: ${{ env.JIRA_PROJECT }}"
+        echo "env.JIRA_EPIC_LINK: ${{ env.JIRA_EPIC_LINK }}"
     - name: test-target-branch-capi
       id: check-branch-exists-capi
       uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists
@@ -32,7 +43,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
       with:
-       ref: ${{ inputs.dst-branch }}
+        ref: ${{ inputs.dst-branch }}
     - name: Sync
       id: sync
       run: make build-helm-charts
@@ -48,9 +59,9 @@ jobs:
         signoff: false
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capi') }}
         delete-branch: true
-        title: '[CAPI] Update report'
+        title: '[CAPI@${{inputs.dst-branch}}] Update report'
         body: |
-          CAPI Update report
+          CAPI@${{inputs.dst-branch}} Update report
           - Updated with *today's* date
         labels: |
           capi
@@ -71,9 +82,9 @@ jobs:
         signoff: false
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
         delete-branch: true
-        title: '[CAPA] Update report'
+        title: '[CAPA@${{inputs.dst-branch}}] Update report'
         body: |
-          CAPA Update report
+          CAPA@${{inputs.dst-branch}} Update report
           - Updated with *today's* date
         labels: |
           capa
@@ -82,4 +93,85 @@ jobs:
         assignees: marek-veber
         reviewers: marek-veber
         draft: true
-
+    - name: Create Jira task CAPA
+      id: jira-capa
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "project":
+                  {
+                     "key": "${{ env.JIRA_PROJECT }}"
+                  },
+                  "summary": "[cluster-api-installer/CAPA@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-capa.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPA@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-url }}",
+                  "issuetype": {
+                     "name": "Task"
+                  }
+              }
+            }
+        method: POST
+    - name: Update epic in Jira task CAPA
+      id: jira-epic-capa
+      if: ${{ steps.jira-capa.outputs.status == '201' && fromJson(steps.jira-capa.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capa.outputs.response).id}}"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "${{ env.JIRA_EPIC_LINK }}"
+              }
+            }
+        method: PUT
+    - name: Show Jira task CAPA API Responses
+      run: |
+        echo "Response Status (create, update-epic): ${{ steps.jira-capa.outputs.status }}, ${{ steps.jira-epic-capa.outputs.status }}"
+        echo "Response create Data: ${{ steps.jira-capa.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-capa.outputs.response }}"
+    - name: Create Jira task CAPI
+      id: jira-capi
+      if: ${{ steps.sync.outputs.updated_cluster-api == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "project":
+                  {
+                     "key": "${{ env.JIRA_PROJECT }}"
+                  },
+                  "summary": "[cluster-api-installer/CAPI@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-capi.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPI@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-capi.outputs.pull-request-url }}",
+                  "issuetype": {
+                     "name": "Task"
+                  }
+              }
+            }
+        method: POST
+    - name: Update epic in Jira task CAPI
+      id: jira-epic-capi
+      if: ${{ steps.jira-capi.outputs.status == '201' && fromJson(steps.jira-capi.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capi.outputs.response).id}}"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "${{ env.JIRA_EPIC_LINK }}"
+              }
+            }
+        method: PUT
+    - name: Show Jira task CAPI API Responses
+      run: |
+        echo "Response Status (create, update-epic): ${{ steps.jira-capi.outputs.status }}, ${{ steps.jira-epic-capi.outputs.status }}"
+        echo "Response create Data: ${{ steps.jira-capi.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-capi.outputs.response }}"

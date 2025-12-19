@@ -117,6 +117,9 @@ patches:
     patch: |-
       - op: remove
         path: /data
+      - op: add
+        path: /metadata/labels/cluster.open-cluster-management.io~1backup
+        value: ""
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1

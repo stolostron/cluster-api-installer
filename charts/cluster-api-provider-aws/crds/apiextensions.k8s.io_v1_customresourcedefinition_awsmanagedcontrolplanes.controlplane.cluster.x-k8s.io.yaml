@@ -101,11 +101,6 @@ spec:
                       description: Name is the name of the addon
                       minLength: 2
                       type: string
-                    preserveOnDelete:
-                      description: |-
-                        PreserveOnDelete indicates that the addon resources should be
-                        preserved in the cluster on delete.
-                      type: boolean
                     serviceAccountRoleARN:
                       description: ServiceAccountRoleArn is the ARN of an IAM role
                         to bind to the addons service account
@@ -2250,28 +2245,6 @@ spec:
             description: AWSManagedControlPlaneSpec defines the desired state of an
               Amazon EKS Cluster.
             properties:
-              accessConfig:
-                description: AccessConfig specifies the access configuration information
-                  for the cluster
-                properties:
-                  authenticationMode:
-                    default: config_map
-                    description: |-
-                      AuthenticationMode specifies the desired authentication mode for the cluster
-                      Defaults to config_map
-                    enum:
-                    - config_map
-                    - api
-                    - api_and_config_map
-                    type: string
-                  bootstrapClusterCreatorAdminPermissions:
-                    default: true
-                    description: |-
-                      BootstrapClusterCreatorAdminPermissions grants cluster admin permissions
-                      to the IAM identity creating the cluster. Only applied during creation,
-                      ignored when updating existing clusters. Defaults to true.
-                    type: boolean
-                type: object
               additionalTags:
                 additionalProperties:
                   type: string
@@ -2302,11 +2275,6 @@ spec:
                       description: Name is the name of the addon
                       minLength: 2
                       type: string
-                    preserveOnDelete:
-                      description: |-
-                        PreserveOnDelete indicates that the addon resources should be
-                        preserved in the cluster on delete.
-                      type: boolean
                     serviceAccountRoleARN:
                       description: ServiceAccountRoleArn is the ARN of an IAM role
                         to bind to the addons service account

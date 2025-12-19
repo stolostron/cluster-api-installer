@@ -167,7 +167,7 @@ if [ "$SYNC2CHARTS" ] ;then
     echo "updated_$PROJECT=$IS_UPDATED"
     if [ -n "$GITHUB_OUTPUT" ] ; then
         # when started under github workflow
-        if [ $(git diff --name-only "$CHARTDIR"|wc -l) -gt 0 ] ; then
+        if [ "$IS_UPDATED" = true ] ; then
             echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"
             echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT updated_$PROJECT ... NEWCHART=$NEWCHART"
         fi

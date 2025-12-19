@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dst-branch: [main, release-2.8, release-2.9, release-2.10]
+        dst-branch: [release-2.10, release-2.11]
 
     permissions:
       contents: write

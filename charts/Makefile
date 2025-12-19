@@ -30,7 +30,7 @@ build-cluster-api-chart:
 	WKDIR="$(WKDIR)" \
 	ORGREPO="$(DEFAULT_ORGREPO)" \
 	PROJECT="cluster-api" \
-	BRANCH="$(CAPI_BRANCH)" \
+	BRANCH="$(DEFAULT_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \

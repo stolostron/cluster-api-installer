@@ -1,0 +1,9 @@
+aso:
+  crdPattern: "resources.azure.com/*;containerservice.azure.com/*;keyvault.azure.com/*;managedidentity.azure.com/*;eventhub.azure.com/*;network.azure.com/*;authorization.azure.com/*"
+  image:
+    tag: v2.13.0-hcpclusters
+    url: quay.io/mveber/azureserviceoperator
+manager:
+  image:
+    tag: dev-aso.3.7
+    url: quay.io/mveber/cluster-api-azure-controller-amd64

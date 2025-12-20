@@ -29,16 +29,6 @@ patches:
       metadata:
         name: capa-selfsigned-issuer
         namespace: capa-system
-  # Remove the webhook conversion part from CRDs to match Hypershift CRDs
-  - target:
-      version: v1
-      kind: CustomResourceDefinition
-      annotationSelector: "cert-manager.io/inject-ca-from"
-    patch: |-
-      - op: add
-        path: /spec/conversion
-      - op: remove
-        path: /spec/conversion
   # # Removing the caBundle field (TODO: remove this patch in next release as caBundle is removed upstream)
   # - target:
   #     version: v1

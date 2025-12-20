@@ -33,14 +33,6 @@ patches:
       - op: replace
         path: /spec/dnsNames/1
         value: "capi-webhook-service.{{ .Release.Namespace }}.svc.cluster.local"
-  # Remove the webhook conversion part from CRDs to match Hypershift CRDs
-  - target:
-      version: v1
-      kind: CustomResourceDefinition
-      annotationSelector: cert-manager.io/inject-ca-from
-    patch: |-
-      - op: remove
-        path: /spec/conversion
   - target:
       version: v1
       kind: CustomResourceDefinition

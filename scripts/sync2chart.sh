@@ -22,6 +22,7 @@ _rename_invalid_filenames() {
 
 _create_chart_structure() {
     local chartdir="$1"
+    echo "creating chart structure for $chartdir"
     mkdir -p "$chartdir/templates" "$chartdir/crds"
     rm -rf "$chartdir/templates/*.yaml"
     rm -rf "$chartdir/templates/.*.yaml"
@@ -34,6 +35,7 @@ _move_chart_files() {
     local builtdir="$1"
     local chartdir="$2"
     
+    echo "syncing chart files for $builtdir -> $chartdir"
     # Sanitize filenames in source directory first
     _rename_invalid_filenames "$builtdir"
     
@@ -52,19 +54,15 @@ sync_chart_files() {
     local builtdir="$1"
     local chartdir="$2"
     local k8s_chartdir="${chartdir}-k8s"
-    local k8s_builtdir="${builtdir}-k8s"
-
-    echo "sync new output to $chartdir"
+    local k8s_builtdir="${builtdir%/config/tmp}-k8s/config/tmp"
 
     _create_chart_structure "$chartdir"
     if [ -d "$k8s_builtdir" ]; then
-        echo "creating chart structure for $k8s_chartdir"
         _create_chart_structure "$k8s_chartdir"
     fi
 
     _move_chart_files "$builtdir" "$chartdir"
     if [ -d "$k8s_builtdir" ]; then
-        echo "syncing chart files for $k8s_chartdir"
         _move_chart_files "$k8s_builtdir" "$k8s_chartdir"
     fi
 }

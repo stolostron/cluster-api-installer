@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: '{{ .Release.Namespace }}'
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
 - ../config/default/
@@ -41,6 +40,20 @@ patches:
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
         value: "multicluster-engine/capi-serving-cert"
+  - target:
+      namespace: capi-system
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: '{{ .Release.Namespace }}'
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: (clusterclasses|clusterresourcesetbindings.addons|clusterresourcesets.addons|clusters|extensionconfigs.runtime|machinedeployments|machinedrainrules|machinehealthchecks|machinepools|machines|machinesets).cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/conversion/webhook/clientConfig/service/namespace
+        value: "multicluster-engine"
   # Remove unnecessary resources
   - target:
        kind: CustomResourceDefinition

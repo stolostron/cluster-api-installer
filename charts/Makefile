@@ -3,7 +3,7 @@ MCE_VERSION ?= 2.11.0-1
 SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.21
-CAPA_BRANCH ?= backplane-2.10
+CAPA_BRANCH ?= backplane-2.11
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ

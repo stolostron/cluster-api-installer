@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: '{{ .Release.Namespace }}'
-
 resources:
 - default/
 
@@ -39,6 +37,12 @@ patches:
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
         value: "multicluster-engine/capm3-serving-cert"
+  - target:
+      namespace: capm3-system
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: '{{ .Release.Namespace }}'
   - target:
       version: v1
       kind: CustomResourceDefinition

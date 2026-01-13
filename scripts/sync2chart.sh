@@ -24,11 +24,11 @@ _create_chart_structure() {
     local chartdir="$1"
     echo "creating chart structure for $chartdir"
     mkdir -p "$chartdir/templates" "$chartdir/crds"
-    rm -rf "$chartdir/templates/*.yaml"
-    rm -rf "$chartdir/templates/.*.yaml"
+    rm -rf "$chartdir/templates"/*.yaml
+    rm -rf "$chartdir/templates"/.*.yaml
 
-    rm -rf "$chartdir/crds/*.yaml"
-    rm -rf "$chartdir/crds/.*.yaml"
+    rm -rf "$chartdir/crds"/*.yaml
+    rm -rf "$chartdir/crds"/.*.yaml
 }
 
 _move_chart_files() {

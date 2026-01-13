@@ -4,6 +4,7 @@ SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.21
 CAPA_BRANCH ?= backplane-2.11
+CAPZ_BRANCH ?= backplane-2.11
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ
@@ -58,6 +59,24 @@ build-cluster-api-provider-aws-chart:
 	PROJECT="cluster-api-provider-aws" \
 	../scripts/sync2chart.sh
 
+.PHONY: build-cluster-api-provider-azure-chart
+build-cluster-api-provider-azure-chart:
+	@echo "Building cluster-api-provider-azure chart"
+	WKDIR="$(WKDIR)" \
+	ORGREPO="$(STOLOSTRON_ORGREPO)" \
+	PROJECT="cluster-api-provider-azure" \
+	BRANCH="$(CAPZ_BRANCH)" \
+	../scripts/build.sh
+	BUILTDIR="$(WKDIR)/cluster-api-provider-azure/config/tmp" \
+	CHART_VERSION="$(MCE_VERSION)" \
+	CHART_APP_VERSION="$(MCE_VERSION)" \
+	CHART_VALUES_IMAGE_TAG="$(MCE_VERSION)" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="" \
+	SYNC2CHARTS="$(SYNC2CHARTS)" \
+	PROJECT="cluster-api-provider-azure" \
+	../scripts/sync2chart.sh
+
+
 .PHONY: build-cluster-api-provider-openshift-assisted-chart
 build-cluster-api-provider-openshift-assisted-chart:
 	$(eval TAG=$(call get-tag-from-branch, $(OPENSHIFT_ASSISTED_BRANCH)))
@@ -97,15 +116,12 @@ build-cluster-api-provider-metal3-chart:
 	../scripts/sync2chart.sh
 
 .PHONY: build
-build: build-cluster-api-chart build-cluster-api-provider-aws-chart build-cluster-api-azure-chart build-cluster-api-provider-metal3-chart build-cluster-api-provider-openshift-assisted-chart
+build: build-cluster-api-chart build-cluster-api-provider-aws-chart build-cluster-api-provider-azure-chart build-cluster-api-provider-metal3-chart build-cluster-api-provider-openshift-assisted-chart
 
 .PHONY: test-chart-crc
 test-chart-crc:
 	# run the deploy script with crc 
 	(cd ..; export PROJECT_ONLY=$(PROJECT) ; ./scripts/deploy-charts-crc.sh )
-
-.PHONY: build-cluster-api-azure-chart
-build-cluster-api-azure-chart: 
 
 .PHONY: release-chart
 release-chart:

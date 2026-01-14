@@ -1,6 +1,6 @@
 bootstrap:
   image:
-    tag: 2.10
+    tag: 2.11
     url: quay.io/edge-infrastructure/cluster-api-bootstrap-provider-openshift-assisted
     webhook:
       certificate:
@@ -8,5 +8,5 @@ bootstrap:
         name: mycert
 controlplane:
   image:
-    tag: 2.10
+    tag: 2.11
     url: quay.io/edge-infrastructure/cluster-api-controlplane-provider-openshift-assisted

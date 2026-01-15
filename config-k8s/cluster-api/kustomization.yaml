@@ -3,7 +3,7 @@ kind: Kustomization
 
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
-- ../config/default/
+- default/
 
 transformers:
 - base/transformer.yaml

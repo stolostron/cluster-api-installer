@@ -104,13 +104,6 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
-      - op: replace
-        path: /spec/template/spec/containers/0/imagePullPolicy
-        value: Always
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsUser
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsGroup
   - target:
       version: v1
       kind: Deployment
@@ -119,10 +112,49 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.aso.image.url  }}:{{ .Values.aso.image.tag  }}'
+
+# Fix conflict between CAPI and CAPZ while using the same namespace
+#      control-plane: controller-manager -> azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: Deployment
+      name: azureserviceoperator-controller-manager
       - op: replace
-        path: /spec/template/spec/containers/0/imagePullPolicy
-        value: Always
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsUser
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsGroup
+        path: /spec/template/metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /spec/selector/matchLabels/control-plane
+        value: azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: PodDisruptionBudget
+      name: azureserviceoperator-pdb
+    patch: |-
+      - op: replace
+        path: /metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /spec/selector/matchLabels/control-plane
+        value: azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: Service
+      name: azureserviceoperator-controller-manager-metrics-service
+    patch: |-
+      - op: replace
+        path: /metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /spec/selector/control-plane
+        value: azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: Service
+      name: azureserviceoperator-webhook-service
+    patch: |-
+      - op: replace
+        path: /spec/selector/control-plane
+        value: azureserviceoperator-controller-manager

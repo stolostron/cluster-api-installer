@@ -1,5 +1,6 @@
 #!/bin/bash
 
+HOST_PORT=${HOST_PORT:-localhost:8443}
 
 # az cli
 SUBSCRIPTIONID=$(az account show --query id --output tsv)
@@ -16,6 +17,7 @@ SUBNET=$(jq            -r .SUBNET            infra-names.js)
 REGION=$(jq            -r .REGION            infra-names.js)
 USER=$(jq              -r .USER              infra-names.js)
 NSG=$(jq               -r .NSG               infra-names.js)
+OCP_VERSION=$(jq       -r .OCP_VERSION       infra-names.js)
 OPERATORS_UAMIS_SUFFIX=$(jq -r .OPERATORS_UAMIS_SUFFIX infra-names.js)
 
 arm_system_data_header() {                                                                                                                                                                                                                   
@@ -48,7 +50,7 @@ arm_x_ms_identity_url_header() {
 }
 
 test_api_available() {
-(arm_system_data_header; correlation_headers; arm_x_ms_identity_url_header) | curl -sSi -X PUT "localhost:8443/subscriptions/${SUBSCRIPTIONID}/resourceGroups/some-non-existing-rg/providers/Microsoft.RedHatOpenshift/hcpOpenShiftClusters?api-version=2024-06-10-preview" \
+(arm_system_data_header; correlation_headers; arm_x_ms_identity_url_header) | curl -sSi -X PUT "${HOST_PORT}/subscriptions/${SUBSCRIPTIONID}/resourceGroups/some-non-existing-rg/providers/Microsoft.RedHatOpenshift/hcpOpenShiftClusters?api-version=2024-06-10-preview" \
     --header @- > /dev/null 2>&1
    echo $?
 }
@@ -62,7 +64,7 @@ if [ "$(test_api_available)" != "0" ] ; then
     KUBECONFIG_AKS=$(cd "$ARO_HCP_DIR"; DEPLOY_ENV=dev make infra.svc.aks.kubeconfigfile)
     KUBECONFIG="$KUBECONFIG_AKS" oc port-forward -n aro-hcp svc/aro-hcp-frontend 8443:8443 &
 
-    echo -n Checking API in localhost:8443
+    echo -n Checking API in ${HOST_PORT}
     sleep 2
     N=10
     while [ "$(test_api_available)" != "0" ] ; do
@@ -94,11 +96,13 @@ DP_DISK_CSI_DRIVER_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCE
 DP_IMAGE_REGISTRY_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCEGROUPNAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$USER-$CS_CLUSTER_NAME-dp-image-registry-$OPERATORS_UAMIS_SUFFIX"
 DP_FILE_CSI_DRIVER_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCEGROUPNAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$USER-$CS_CLUSTER_NAME-dp-file-csi-driver-$OPERATORS_UAMIS_SUFFIX"
 SERVICE_MANAGED_IDENTITY_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCEGROUPNAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$USER-$CS_CLUSTER_NAME-service-managed-identity-$OPERATORS_UAMIS_SUFFIX"
-cat <<EOF > cluster-azure.json
+cat <<EOF | json_pp > cluster-azure-new.json
 {
   "properties": {
+    "location": "${REGION}",
+    "name": "${S_CLUSTER_NAME}",
     "version": {
-      "id": "openshift-v4.18.1",
+      "id": "${OCP_VERSION}",
       "channelGroup": "stable"
     },
     "dns": {},
@@ -160,8 +164,8 @@ cat <<EOF > cluster-azure.json
 EOF
 
 
-echo PUT "localhost:8443/subscriptions/${SUBSCRIPTIONID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.RedHatOpenshift/hcpOpenShiftClusters/${CS_CLUSTER_NAME}?api-version=2024-06-10-preview" 
-(arm_system_data_header; correlation_headers; arm_x_ms_identity_url_header) | curl -sSi -X PUT "localhost:8443/subscriptions/${SUBSCRIPTIONID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.RedHatOpenshift/hcpOpenShiftClusters/${CS_CLUSTER_NAME}?api-version=2024-06-10-preview" \
+echo PUT "${HOST_PORT}/subscriptions/${SUBSCRIPTIONID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.RedHatOpenshift/hcpOpenShiftClusters/${CS_CLUSTER_NAME}?api-version=2024-06-10-preview" 
+(arm_system_data_header; correlation_headers; arm_x_ms_identity_url_header) | curl -sSi -X PUT "${HOST_PORT}/subscriptions/${SUBSCRIPTIONID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.RedHatOpenshift/hcpOpenShiftClusters/${CS_CLUSTER_NAME}?api-version=2024-06-10-preview" \
     --header @- \
     --json @cluster-azure.json
 

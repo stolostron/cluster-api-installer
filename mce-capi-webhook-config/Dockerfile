@@ -30,6 +30,10 @@ LABEL com.redhat.component="" \
 
 WORKDIR /
 COPY --from=builder /tmp/mce-capi-webhook-config /
+RUN microdnf install -y shadow-utils && \
+      groupadd -r nonroot -g 65532 && \
+      useradd -r -u 65532 -g nonroot nonroot && \
+      microdnf clean all
 USER nonroot:nonroot
 
 ENTRYPOINT ["/mce-capi-webhook-config"]

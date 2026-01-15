@@ -12,10 +12,15 @@ if [ "$USE_KIND" = true -o "$USE_K8S" = true ] ; then
     [ "$USE_K8S" = true ] && CHART_SUFFIX="-k8s"
     KIND_CLUSTER_NAME=${KIND_CLUSTER_NAME:-aso2}
     KUBE_CONTEXT="--context=kind-$KIND_CLUSTER_NAME"
-    [ "$DO_INIT_KIND" = true ] && ${SCRIPT_DIR}/setup-kind-cluster.sh
+    echo "setting: KUBE_CONTEXT=$KUBE_CONTEXT"
+    if [ "$DO_INIT_KIND" = true ] ; then
+        echo "checking if the cluster exists: KIND_CLUSTER_NAME=$KIND_CLUSTER_NAME"
+        ${SCRIPT_DIR}/setup-kind-cluster.sh
+    fi
 else
     OCP_CONTEXT=${OCP_CONTEXT:-crc-admin}
     KUBE_CONTEXT="--context=$OCP_CONTEXT"
+    echo "setting: KUBE_CONTEXT=$KUBE_CONTEXT"
 fi
 
 function set_namespace_and_t {
@@ -45,7 +50,7 @@ if [ "$DO_DEPLOY" = true ] ; then
         CHART="charts/$PROJECT$CHART_SUFFIX"
         [ -f $CHART/Chart.yaml ] || continue
         set_namespace_and_t
-        echo ========= deploy: $CHART
+        echo ========= deploy: $CHART "using context: $KUBE_CONTEXT"
         echo "        PROJECT: $PROJECT"
         echo "      NAMESPACE: $NAMESPACE"
         if [ "$NAMESPACE" = "multicluster-engine" ] ; then

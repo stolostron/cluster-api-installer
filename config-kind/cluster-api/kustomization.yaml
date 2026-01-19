@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
+resources:
+- default/
+
+transformers:
+- base/transformer.yaml
+
+## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements.
+patches:
+  # Replace Deployment with default values & helm chart value
+  - target:
+      kind: Deployment
+      name: capi-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/command
+        value:
+        - '{{ .Values.manager.cmd  }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent

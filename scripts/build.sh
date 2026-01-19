@@ -121,18 +121,18 @@ kustomize_build() {
 
 
 
-# Main build function that accepts config type (config or config-k8s)
+# Main build function that accepts config type (config or config-k8s or config-kind)
 build_for_config() {
     local config_type=$1
     
     if [ -z "$config_type" ]; then
-        echo "config_type must be provided: config or config-k8s"
+        echo "config_type must be provided: config or config-k8s or config-kind"
         exit -1
     fi
     
     # Skip silently if config directory doesn't exist for this project
     if [ ! -d "$PROJECT_ROOT/${config_type}/${PROJECT}" ]; then
-        return
+        return 0
     fi
     
     # Change to project root
@@ -173,6 +173,8 @@ mkdir -p "${WKDIR}"
 
 # Execute build function with config type (default to "config" for backward compatibility)
 build_for_config "config"
-if [ -d $PROJECT_ROOT/config-k8s/$PROJECT ]; then
-     build_for_config "config-k8s"
-fi
+for suffix in k8s kind; do
+  if [ -d $PROJECT_ROOT/config-$suffix/$PROJECT ]; then
+       build_for_config "config-$suffix"
+  fi
+done

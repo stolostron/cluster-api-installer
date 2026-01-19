@@ -119,6 +119,7 @@ patches:
       version: v1
       kind: Deployment
       name: azureserviceoperator-controller-manager
+    patch: |-
       - op: replace
         path: /spec/template/metadata/labels/control-plane
         value: azureserviceoperator-controller-manager

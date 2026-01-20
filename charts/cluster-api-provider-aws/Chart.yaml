@@ -1,6 +1,0 @@
-apiVersion: v2
-name: cluster-api-provider-aws
-description: Cluster API provider for AWS
-type: application
-version: "2.11.0-1"
-appVersion: "2.11.0-1"

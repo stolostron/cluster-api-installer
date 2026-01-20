@@ -1,9 +1,0 @@
-aso:
-  crdPattern: "resources.azure.com/*;containerservice.azure.com/*;keyvault.azure.com/*;managedidentity.azure.com/*;eventhub.azure.com/*;network.azure.com/*;authorization.azure.com/*"
-  image:
-    tag: 2.11.0-1
-    url: registry.redhat.io/multicluster-engine/azure-service-operator-rhel9
-manager:
-  image:
-    tag: 2.11.0-1
-    url: registry.redhat.io/multicluster-engine/cluster-api-provider-azure-rhel9

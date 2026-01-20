@@ -1,1 +1,0 @@
-# cluster-api-provider-azure helm chart

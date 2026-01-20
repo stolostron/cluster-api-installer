@@ -5,7 +5,7 @@ metadata:
     cluster.x-k8s.io/provider: infrastructure-metal3
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
-  name: capm3-controller-manager
+  name: mce-capm3-controller-manager
   namespace: capm3-system
 spec:
   selector:
@@ -36,7 +36,7 @@ spec:
               fieldPath: metadata.namespace
         envFrom:
         - configMapRef:
-            name: capm3-capm3fasttrack-configmap
+            name: mce-capm3-capm3fasttrack-configmap
         image: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -73,7 +73,7 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
-      serviceAccountName: capm3-manager
+      serviceAccountName: mce-capm3-manager
       terminationGracePeriodSeconds: 10
       tolerations:
       - effect: NoSchedule

@@ -5,14 +5,14 @@ metadata:
     service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: infrastructure-metal3
-  name: capm3-validating-webhook-configuration
+  name: mce-capm3-validating-webhook-configuration
 webhooks:
 - admissionReviewVersions:
   - v1
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3cluster
   failurePolicy: Fail
@@ -34,7 +34,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3clustertemplate
   failurePolicy: Fail
@@ -56,7 +56,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3data
   failurePolicy: Fail
@@ -78,7 +78,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3dataclaim
   failurePolicy: Fail
@@ -100,7 +100,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3datatemplate
   failurePolicy: Fail
@@ -122,7 +122,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3machine
   failurePolicy: Fail
@@ -144,7 +144,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3machinetemplate
   failurePolicy: Fail
@@ -166,7 +166,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3remediation
   failurePolicy: Fail
@@ -188,7 +188,7 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: capm3-webhook-service
+      name: mce-capm3-webhook-service
       namespace: capm3-system
       path: /validate-infrastructure-cluster-x-k8s-io-v1beta1-metal3remediationtemplate
   failurePolicy: Fail

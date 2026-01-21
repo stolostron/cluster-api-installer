@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/name: azure-service-operator
     app.kubernetes.io/version: v2.13.0-hcpclusters.1
-    control-plane: controller-manager
+    control-plane: azureserviceoperator-controller-manager
   name: azureserviceoperator-controller-manager
   namespace: capz-system
 spec:
@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      control-plane: controller-manager
+      control-plane: azureserviceoperator-controller-manager
   strategy:
     type: Recreate
   template:
@@ -22,7 +22,7 @@ spec:
       labels:
         app.kubernetes.io/name: azure-service-operator
         app.kubernetes.io/version: v2.13.0-hcpclusters.1
-        control-plane: controller-manager
+        control-plane: azureserviceoperator-controller-manager
     spec:
       containers:
       - args:

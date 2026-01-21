@@ -8,7 +8,7 @@ resources:
 transformers:
 - base/transformer.yaml
 
-## Patch the default CAPZ CRDs & CRs with OCP dwonstream CAPZ requirements. 
+## Patch the default CAPZ CRDs & CRs with OCP dwonstream CAPZ requirements.
 patches:
   # Remove unnecessary resources
   - target:
@@ -69,6 +69,17 @@ patches:
       - op: add
         path: /metadata/labels/cluster.open-cluster-management.io~1backup
         value: ""
+  - target:
+      version: v1
+      kind: Secret
+      name: aso-controller-settings
+    patch: |-
+      - op: add
+        path: /stringData/AZURE_CLIENT_SECRET
+        value: ""
+      - op: add
+        path: /stringData/USE_WORKLOAD_IDENTITY_AUTH
+        value: ""
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1
@@ -122,3 +133,50 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: webhook-server-cert
+
+# Fix conflict between CAPI and CAPZ while using the same namespace
+#      control-plane: controller-manager -> azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: Deployment
+      name: azureserviceoperator-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /spec/selector/matchLabels/control-plane
+        value: azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: PodDisruptionBudget
+      name: azureserviceoperator-pdb
+    patch: |-
+      - op: replace
+        path: /metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /spec/selector/matchLabels/control-plane
+        value: azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: Service
+      name: azureserviceoperator-controller-manager-metrics-service
+    patch: |-
+      - op: replace
+        path: /metadata/labels/control-plane
+        value: azureserviceoperator-controller-manager
+      - op: replace
+        path: /spec/selector/control-plane
+        value: azureserviceoperator-controller-manager
+  - target:
+      version: v1
+      kind: Service
+      name: azureserviceoperator-webhook-service
+    patch: |-
+      - op: replace
+        path: /spec/selector/control-plane
+        value: azureserviceoperator-controller-manager

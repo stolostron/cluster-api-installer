@@ -9,8 +9,7 @@ resources:
 transformers:
 - base/transformer.yaml
 
-## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements. 
-
+## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements.
 patches:
   # Remove unnecessary resources
   - target:

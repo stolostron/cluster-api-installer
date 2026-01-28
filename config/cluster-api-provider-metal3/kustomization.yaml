@@ -68,6 +68,13 @@ patches:
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: mce-capm3-webhook-service-cert
   - target:
+      kind: Deployment
+      name: capm3-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes/0/secret/secretName
+        value: mce-capm3-webhook-service-cert
+  - target:
       version: v1
       kind: Service
       name: ipam-webhook-service

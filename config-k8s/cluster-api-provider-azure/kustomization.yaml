@@ -123,6 +123,9 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.aso.image.url  }}:{{ .Values.aso.image.tag  }}'
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --crd-management=none
 
 # Fix conflict between CAPI and CAPZ while using the same namespace
 #      control-plane: controller-manager -> azureserviceoperator-controller-manager

@@ -35,6 +35,7 @@ spec:
         - --crd-pattern={{ .Values.aso.crdPattern }}
         - --webhook-port=9443
         - --webhook-cert-dir=/tmp/k8s-webhook-server/serving-certs
+        - --crd-management=none
         env:
         - name: GOMEMLIMIT
           value: 400MiB

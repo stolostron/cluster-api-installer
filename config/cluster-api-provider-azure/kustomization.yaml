@@ -111,6 +111,9 @@ patches:
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --crd-management=none
   # Add OCP cert service annotation
   - target:
       kind: Service

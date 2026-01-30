@@ -5,6 +5,36 @@ resources:
 - default/
 
 patches:
+# Remove cert-manager Certificate and Issuer (OCP uses service serving certs)
+- target:
+    kind: Certificate
+  patch: |-
+    $patch: delete
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: capoa-controlplane-cert
+- target:
+    kind: Issuer
+  patch: |-
+    $patch: delete
+    apiVersion: cert-manager.io/v1
+    kind: Issuer
+    metadata:
+      name: capoa-controlplane-selfsigned-issuer
+      namespace: capoa-controlplane-system
+      $patch: delete
+# Replace cert-manager annotation with OCP annotation on CRDs with conversion webhooks
+- target:
+    version: v1
+    kind: CustomResourceDefinition
+    annotationSelector: "cert-manager.io/inject-ca-from"
+  patch: |-
+    - op: remove
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+      value: true
 - target:
     version: v1
     kind: Deployment
@@ -13,3 +43,13 @@ patches:
     - op: replace
       path: /spec/template/spec/containers/0/image
       value: '{{ .Values.controlplane.image.url  }}:{{ .Values.controlplane.image.tag  }}'
+- target:
+    version: v1
+    kind: Service
+    name: webhook-service
+    namespace: capoa-controlplane-system
+  patch: |-
+    - op: add
+      path: /metadata/annotations
+      value:
+        service.beta.openshift.io/serving-cert-secret-name: "capoa-controlplane-webhook-cert-secret"

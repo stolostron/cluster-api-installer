@@ -52,6 +52,17 @@ patches:
       value:
         name: ASSISTED_CA_BUNDLE_KEY
         value: "ca-bundle.crt"
+# Replace cert-manager annotation with OCP annotation on CRDs with conversion webhooks
+- target:
+    version: v1
+    kind: CustomResourceDefinition
+    annotationSelector: "cert-manager.io/inject-ca-from"
+  patch: |-
+    - op: remove
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+    - op: add
+      path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+      value: true
 - target:
     version: v1
     kind: ValidatingWebhookConfiguration

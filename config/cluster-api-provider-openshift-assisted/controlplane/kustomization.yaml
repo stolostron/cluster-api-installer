@@ -1,10 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: 'multicluster-engine'
+
 resources:
 - default/
 
 patches:
+- target:
+    kind: Namespace
+  patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: capoa-controlplane-system
 # Remove cert-manager Certificate and Issuer (OCP uses service serving certs)
 - target:
     kind: Certificate

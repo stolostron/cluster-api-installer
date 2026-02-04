@@ -1,10 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: 'multicluster-engine'
+
 resources:
 - default/
 
 patches:
+- target:
+    kind: Namespace
+  patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: capoa-bootstrap-system
 # Remove cert-manager Certificate and Issuer
 - target:
     kind: Certificate

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capoa-bootstrap-controller-manager
-  namespace: capoa-bootstrap-system
+  namespace: multicluster-engine
 spec:
   replicas: 1
   selector:

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capoa-controlplane-controller-manager
-  namespace: '{{ .Release.Namespace }}'
+  namespace: multicluster-engine
 spec:
   replicas: 1
   selector:

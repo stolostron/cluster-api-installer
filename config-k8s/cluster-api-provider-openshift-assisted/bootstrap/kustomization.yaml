@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: '{{ .Release.Namespace }}'
+namespace: 'multicluster-engine'
 
 resources:
 - default/
@@ -32,7 +32,7 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: ASSISTED_CA_BUNDLE_NAMESPACE
-        value: '{{ .Release.Namespace }}'
+        value: 'multicluster-engine'
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
@@ -45,31 +45,28 @@ patches:
         value: "ca.crt"
 - target:
     version: v1
-    kind: ValidatingWebhookConfiguration
-    name: capoa-bootstrap-validating-webhook-configuration
-  patch: |-
-    - op: replace
-      path: /metadata/annotations/cert-manager.io~1inject-ca-from
-      value: "{{ .Release.Namespace }}/capoa-bootstrap-cert"
-    - op: replace
-      path: /webhooks/0/clientConfig/service/namespace
-      value: "{{ .Release.Namespace }}"
-- target:
-    version: v1
     kind: Certificate
     name: capoa-bootstrap-cert
   patch: |-
     - op: replace
       path: /spec/commonName
-      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"
+      value: "capoa-bootstrap-webhook-service.multicluster-engine.svc"
     - op: replace
       path: /spec/dnsNames/0
-      value: "capoa-bootstrap-webhook-service.{{ .Release.Namespace }}.svc"
+      value: "capoa-bootstrap-webhook-service.multicluster-engine.svc"
 - target:
     version: v1
-    kind: ClusterRoleBinding
-    name: capoa-bootstrap-manager-rolebinding
+    kind: CustomResourceDefinition
+    annotationSelector: "cert-manager.io/inject-ca-from"
   patch: |-
     - op: replace
-      path: /subjects/0/namespace
-      value: '{{ .Release.Namespace }}'
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: multicluster-engine/capoa-bootstrap-cert
+- target:
+    version: v1
+    kind: ValidatingWebhookConfiguration
+  patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: "multicluster-engine/capoa-bootstrap-cert"
+

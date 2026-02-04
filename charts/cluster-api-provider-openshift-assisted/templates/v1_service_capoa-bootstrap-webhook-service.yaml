@@ -4,7 +4,7 @@ metadata:
   annotations:
     service.beta.openshift.io/serving-cert-secret-name: capoa-bootstrap-webhook-cert-secret
   name: capoa-bootstrap-webhook-service
-  namespace: capoa-bootstrap-system
+  namespace: multicluster-engine
 spec:
   ports:
   - port: 443

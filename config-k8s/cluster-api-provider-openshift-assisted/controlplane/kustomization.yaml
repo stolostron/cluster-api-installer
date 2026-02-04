@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: '{{ .Release.Namespace }}'
+namespace: 'multicluster-engine'
 
 resources:
 - default/
@@ -22,7 +22,7 @@ patches:
   patch: |-
     - op: replace
       path: /subjects/0/namespace
-      value: '{{ .Release.Namespace }}'
+      value: 'multicluster-engine'
 - target:
     version: v1
     kind: Deployment
@@ -31,3 +31,42 @@ patches:
     - op: replace
       path: /spec/template/spec/containers/0/image
       value: '{{ .Values.controlplane.image.url  }}:{{ .Values.controlplane.image.tag  }}'
+- target:
+    version: v1
+    kind: ValidatingWebhookConfiguration
+    name: capoa-controlplane-validating-webhook-configuration
+  patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: "multicluster-engine/capoa-controlplane-cert"
+    - op: replace
+      path: /webhooks/0/clientConfig/service/namespace
+      value: "multicluster-engine"
+- target:
+    version: v1
+    kind: Certificate
+    name: capoa-controlplane-cert
+  patch: |-
+    - op: replace
+      path: /spec/commonName
+      value: "capoa-controlplane-webhook-service.multicluster-engine.svc"
+    - op: replace
+      path: /spec/dnsNames/0
+      value: "capoa-controlplane-webhook-service.multicluster-engine.svc"
+- target:
+    version: v1
+    kind: ClusterRoleBinding
+    name: capoa-controlplane-manager-rolebinding
+  patch: |-
+    - op: replace
+      path: /subjects/0/namespace
+      value: 'multicluster-engine'
+# Replace cert-manager annotation with OCP annotation on CRDs with conversion webhooks
+- target:
+    version: v1
+    kind: CustomResourceDefinition
+    annotationSelector: "cert-manager.io/inject-ca-from"
+  patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: multicluster-engine/capoa-controlplane-cert

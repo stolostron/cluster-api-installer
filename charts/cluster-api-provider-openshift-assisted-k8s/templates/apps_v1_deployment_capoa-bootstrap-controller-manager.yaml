@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capoa-bootstrap-controller-manager
-  namespace: '{{ .Release.Namespace }}'
+  namespace: multicluster-engine
 spec:
   replicas: 1
   selector:
@@ -26,7 +26,7 @@ spec:
         - name: ASSISTED_CA_BUNDLE_NAME
           value: assisted-installer-ca
         - name: ASSISTED_CA_BUNDLE_NAMESPACE
-          value: '{{ .Release.Namespace }}'
+          value: multicluster-engine
         - name: ASSISTED_CA_BUNDLE_RESOURCE
           value: secret
         - name: ASSISTED_CA_BUNDLE_KEY

@@ -2,134 +2,206 @@
 apiVersion: controlplane.cluster.x-k8s.io/v1beta2
 kind: AROControlPlane
 metadata:
- name: ${CS_CLUSTER_NAME}-control-plane
+ name: ${CS_CLUSTER_NAME}
  namespace: ${NAMESPACE}
 spec:
- aroClusterName: ${CS_CLUSTER_NAME}
  platform:
-   location: ${REGION}
    resourceGroup: ${RESOURCEGROUPNAME}
-   subnet: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.Network/virtualNetworks/${VNET}/subnets/${SUBNET}"
    keyVault: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.KeyVault/vaults/${KV}"
-   outboundType: LoadBalancer
-   networkSecurityGroupId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.Network/networkSecurityGroups/${NSG}"
-   managedIdentities:
-     controlPlaneOperators:
-       cloudControllerManager: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-controller-manager-${OPERATORS_UAMIS_SUFFIX}"
-       cloudNetworkConfigManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-network-config-${OPERATORS_UAMIS_SUFFIX}"
-       clusterApiAzureManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
-       controlPlaneOperatorsManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-control-plane-${OPERATORS_UAMIS_SUFFIX}"
-       diskCsiDriverManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
-       fileCsiDriverManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
-       imageRegistryManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
-       ingressManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-ingress-${OPERATORS_UAMIS_SUFFIX}"
-       kmsManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-kms-${OPERATORS_UAMIS_SUFFIX}"
-     dataPlaneOperators:
-       diskCsiDriverManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
-       fileCsiDriverManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
-       imageRegistryManagedIdentities: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
-     serviceManagedIdentity: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
- visibility: Public
- network:
-   machineCIDR: "10.0.0.0/16"
-   podCIDR: "10.128.0.0/14"
-   serviceCIDR: "172.30.0.0/16"
-   hostPrefix: 23
-   networkType: OVNKubernetes
- domainPrefix: ${CS_CLUSTER_NAME}
- version: "${OCP_VERSION}"
- channelGroup: stable
- versionGate: WaitForAcknowledge
  subscriptionID: "${AZURE_SUBSCRIPTION_ID}"
  identityRef:
     kind: AzureClusterIdentity
     name: ${AZURE_CLUSTER_IDENTITY_NAME}
     namespace: ${AZURE_CLUSTER_IDENTITY_NAMESPACE}
- additionalTags:
-   environment: production
-   owner: sre-team
-${EA_DISABLE} # External Authentication Configuration
-${EA_DISABLE} # IMPORTANT: Replace the values below with your actual OIDC provider details
-${EA_DISABLE} enableExternalAuthProviders: true
-${EA_DISABLE} externalAuthProviders:
-${EA_DISABLE}   - name: ${EA_OIDC_PROVIDER_NAME}
-${EA_DISABLE}     issuer:
-${EA_DISABLE}       # The URL of your OIDC provider (must use https://)
-${EA_DISABLE}       issuerURL: "https://login.microsoftonline.com/${EA_AZURE_TENANT_ID}/v2.0"
-${EA_DISABLE}       # Audience values that must be present in the JWT token
-${EA_DISABLE}       audiences:
-${EA_DISABLE}         - "${EA_AZURE_CLIENT_ID}"
-${EA_DISABLE}       # Optional: Reference to a ConfigMap containing the CA certificate bundle
-${EA_DISABLE}       # The ConfigMap should be in the same namespace and have a key "ca-bundle.crt"
-${EA_DISABLE}       # issuerCertificateAuthority:
-${EA_DISABLE}       #   name: oidc-ca-bundle
-${EA_DISABLE}     # Optional: OIDC client configurations for OpenShift platform components
-${EA_DISABLE}     # These are used by platform components to authenticate with the OIDC provider
-${EA_DISABLE}     oidcClients:
-${EA_DISABLE}       - componentName: "console"
-${EA_DISABLE}         componentNamespace: "openshift-console"
-${EA_DISABLE}         clientID: "${EA_AZURE_CLIENT_ID}"
-${EA_DISABLE}         clientSecret:
-${EA_DISABLE}           # Reference to a Secret containing the client secret in the "clientSecret" key
-${EA_DISABLE}           name: "${EA_OIDC_CLIENT_SECRET_NAME}"
-${EA_DISABLE}         extraScopes:
-${EA_DISABLE}           - "openid"
-${EA_DISABLE}           - "profile"
-${EA_DISABLE}     # Optional: Define how JWT claims map to OpenShift user identities
-${EA_DISABLE}     claimMappings:
-${EA_DISABLE}       username:
-${EA_DISABLE}         # The JWT claim to use for the username
-${EA_DISABLE}         claim: "${EA_OIDC_USERNAME_CLAIM}"
-${EA_DISABLE}         # How to handle username prefixing:
-${EA_DISABLE}         # - "NoPrefix": Use claim value as-is
-${EA_DISABLE}         # - "Prefix": Add a custom prefix (requires setting 'prefix' field)
-${EA_DISABLE}         # - "" (empty): Default behavior (prefix with issuer URL for non-email claims)
-${EA_DISABLE}         prefixPolicy: "NoPrefix"
-${EA_DISABLE}         # Only required if prefixPolicy is "Prefix"
-${EA_DISABLE}         # prefix: "myoidc:"
-${EA_DISABLE}       groups:
-${EA_DISABLE}         # The JWT claim containing group memberships (must be a string array)
-${EA_DISABLE}         claim: "${EA_OIDC_GROUPS_CLAIM}"
-${EA_DISABLE}     # Optional: Validation rules to enforce on JWT tokens
-${EA_DISABLE}     # Tokens that don't match all rules will be rejected
-${EA_DISABLE}     # Example: Require specific issuer
-${EA_DISABLE}     # claimValidationRules:
-${EA_DISABLE}     #   - type: "RequiredClaim"
-${EA_DISABLE}     #     requiredClaim:
-${EA_DISABLE}     #       claim: "iss"
-${EA_DISABLE}     #       requiredValue: "https://your-oidc-provider.example.com"
+ resources:
+   - apiVersion: redhatopenshift.azure.com/v1api20240610preview
+     kind: HcpOpenShiftCluster
+     metadata:
+       name: ${CS_CLUSTER_NAME}
+       namespace: ${NAMESPACE}
+     spec:
+       azureName: ${CS_CLUSTER_NAME}
+       location: ${REGION}
+       owner:
+         name: ${RESOURCEGROUPNAME}
+       operatorSpec:
+         secrets:
+          adminCredentials:
+            name: ${CS_CLUSTER_NAME}-kubeconfig
+            key: value
+       identity: 
+         type: UserAssigned
+         userAssignedIdentities:
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-controller-manager-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-network-config-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-control-plane-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-ingress-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-kms-${OPERATORS_UAMIS_SUFFIX}"
+             - reference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
+       properties:
+         platform:
+           networkSecurityGroupReference:
+             group: network.azure.com
+             kind: NetworkSecurityGroup
+             name: ${NSG}
+           operatorsAuthentication:
+             userAssignedIdentities:
+               controlPlaneOperatorsReferences:
+                 cloud-controller-manager:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-controller-manager-${OPERATORS_UAMIS_SUFFIX}"
+                 cloud-network-config:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-network-config-${OPERATORS_UAMIS_SUFFIX}"
+                 cluster-api-azure:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
+                 control-plane:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-control-plane-${OPERATORS_UAMIS_SUFFIX}"
+                 disk-csi-driver:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+                 file-csi-driver:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+                 image-registry:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+                 ingress:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-ingress-${OPERATORS_UAMIS_SUFFIX}"
+                 kms:
+                   armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-kms-${OPERATORS_UAMIS_SUFFIX}"
+               dataPlaneOperatorsReferences:
+                disk-csi-driver:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+                file-csi-driver:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+                image-registry:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+               serviceManagedIdentityReference:
+                 armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
+           subnetReference:
+             group: network.azure.com
+             kind: VirtualNetworksSubnet
+             name: "${VNET}-${SUBNET}"
+           managedResourceGroup: "capz_node_${CS_CLUSTER_NAME}_${RESOURCEGROUPNAME}_rg"
+           outboundType: LoadBalancer
+         clusterImageRegistry:
+           state: Enabled
+         etcd:
+           dataEncryption:
+             keyManagementMode: CustomerManaged
+             customerManaged:
+               encryptionType: KMS
+               kms:
+                 activeKey:
+                   vaultName: "${KV}"
+                   name: "etcd-data-kms-encryption-key"
+         network:
+           hostPrefix: 23
+           networkType: OVNKubernetes
+           machineCidr: "10.0.0.0/16"
+           podCidr: "10.128.0.0/14"
+           serviceCidr: "172.30.0.0/16"
+         version:
+           channelGroup: stable
+           id: "${OCP_VERSION}"
+         api:
+           visibility: Public
+       tags:
+         environment: production
+         owner: sre-team
+${EA_DISABLE}   # External Authentication Configuration
+${EA_DISABLE}   # IMPORTANT: Replace the values below with your actual OIDC provider details
+${EA_DISABLE}   - apiVersion: redhatopenshift.azure.com/v1api20240610preview
+${EA_DISABLE}     kind: HcpOpenShiftClustersExternalAuth
+${EA_DISABLE}     metadata:
+${EA_DISABLE}       name: ${EA_OIDC_PROVIDER_NAME}
+${EA_DISABLE}       namespace: ${NAMESPACE}
+${EA_DISABLE}     spec:
+${EA_DISABLE}       azureName: ${EA_OIDC_PROVIDER_NAME}
+${EA_DISABLE}       owner:
+${EA_DISABLE}         name: ${CS_CLUSTER_NAME}
+${EA_DISABLE}       properties:
+${EA_DISABLE}         issuer:
+${EA_DISABLE}           url: "https://login.microsoftonline.com/${EA_AZURE_TENANT_ID}/v2.0"
+${EA_DISABLE}           audiences:
+${EA_DISABLE}             - "${EA_AZURE_CLIENT_ID}"
+${EA_DISABLE}         claim:
+${EA_DISABLE}           mappings:
+${EA_DISABLE}             username:
+${EA_DISABLE}               claim: "${EA_OIDC_USERNAME_CLAIM}"
+${EA_DISABLE}               prefixPolicy: "NoPrefix"
+${EA_DISABLE}             groups:
+${EA_DISABLE}               claim: "${EA_OIDC_GROUPS_CLAIM}"
+${EA_DISABLE}         clients:
+${EA_DISABLE}           - clientId: "${EA_AZURE_CLIENT_ID}"
+${EA_DISABLE}             component:
+${EA_DISABLE}               name: "console"
+${EA_DISABLE}               authClientNamespace: "openshift-console"
+${EA_DISABLE}             type: "Confidential"
+${EA_DISABLE}             extraScopes:
+${EA_DISABLE}               - "openid"
+${EA_DISABLE}               - "profile"
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: AROMachinePool
 metadata:
- name: ${CS_CLUSTER_NAME}-mp-0
+ name: ${CS_CLUSTER_NAME}-mp1
  namespace: ${NAMESPACE}
 spec:
-  nodePoolName: ${NODEPOOL_PREFIX}-mp-0
-  version: "${OCP_VERSION_MP}"
-  platform:
-    subnet: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.Network/virtualNetworks/${VNET}/subnets/${SUBNET}"
-    vmSize: "Standard_D4s_v3"
-    diskSizeGiB: 128
-    diskStorageAccountType: "Premium_LRS"
-  labels:
-     region: ${REGION}
-  # taints:
-  #   - key: "example.com/special"
-  #     value: "true"
-  #     effect: "NoSchedule"
-  additionalTags:
-    environment: production
-    cost-center: engineering
-  autoRepair: true
-  autoscaling:
-    minReplicas: 2
-    maxReplicas: 4
+  resources:
+    - apiVersion: redhatopenshift.azure.com/v1api20240610preview
+      kind: HcpOpenShiftClustersNodePool
+      metadata:
+        name: ${CS_CLUSTER_NAME}-mp1
+        namespace: ${NAMESPACE}
+      spec:
+        azureName: ${CS_CLUSTER_NAME}-mp1
+        location: ${REGION}
+        owner:
+          name: ${CS_CLUSTER_NAME}
+        properties:
+          # replicas: 2
+          autoRepair: true
+          autoScaling:
+            min: 2
+            max: 10
+          labels:
+            - key: region
+              value: ${REGION}
+          # taints:
+          #   - key: "example.com/special"
+          #     value: "true"
+          #     effect: "NoSchedule"
+          platform:
+            osDisk:
+              diskStorageAccountType: "Standard_LRS"
+              sizeGiB: 128
+            subnetReference:
+              group: network.azure.com
+              kind: VirtualNetworksSubnet
+              name: "${VNET}-${SUBNET}"
+            vmSize: "Standard_D4s_v3"
+          version:
+            channelGroup: stable
+            id: "${OCP_VERSION_MP}"
+        tags:
+          environment: production
+          cost-center: engineering
 ---
 apiVersion: cluster.x-k8s.io/v1beta2
 kind: MachinePool
 metadata:
-  name: ${CS_CLUSTER_NAME}-mp-0
+  name: ${CS_CLUSTER_NAME}-mp1
   namespace: ${NAMESPACE}
   labels:
     cluster.x-k8s.io/cluster-name: ${CS_CLUSTER_NAME}
@@ -144,7 +216,7 @@ spec:
       infrastructureRef:
         apiGroup: infrastructure.cluster.x-k8s.io
         kind: AROMachinePool
-        name: ${CS_CLUSTER_NAME}-mp-0
+        name: ${CS_CLUSTER_NAME}-mp1
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: AROCluster
@@ -154,6 +226,15 @@ metadata:
  labels:
    cluster.x-k8s.io/cluster-name: ${CS_CLUSTER_NAME}
 spec:
+  resources:
+  - apiVersion: resources.azure.com/v1api20200601
+    kind: ResourceGroup
+    metadata:
+      annotations:
+        serviceoperator.azure.com/credential-from: aso-credential
+      name: ${CS_CLUSTER_NAME}
+    spec:
+      location: ${REGION}
 ---
 apiVersion: cluster.x-k8s.io/v1beta2
 kind: Cluster
@@ -168,7 +249,7 @@ spec:
   controlPlaneRef:
     apiGroup: controlplane.cluster.x-k8s.io
     kind: AROControlPlane
-    name: ${CS_CLUSTER_NAME}-control-plane
+    name: ${CS_CLUSTER_NAME}
   infrastructureRef:
     apiGroup: infrastructure.cluster.x-k8s.io
     kind: AROCluster

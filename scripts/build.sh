@@ -172,9 +172,8 @@ build_for_config() {
 mkdir -p "${WKDIR}"
 
 # Execute build function with config type (default to "config" for backward compatibility)
-build_for_config "config"
-for suffix in k8s kind; do
-  if [ -d $PROJECT_ROOT/config-$suffix/$PROJECT ]; then
-       build_for_config "config-$suffix"
+for suffix in "" "-k8s" "-kind"; do
+  if [ -d $PROJECT_ROOT/config$suffix/$PROJECT ]; then
+       build_for_config "config$suffix"
   fi
 done

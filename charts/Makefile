@@ -4,9 +4,10 @@ SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.21
 CAPA_BRANCH ?= backplane-2.11
-CAPZ_BRANCH ?= backplane-2.11
+CAPZ_BRANCH ?= adobe-resources
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
+MV_REPO ?= https://github.com/marek-veber
 # needs overridable branch, as the non-master branch will differ
 OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.11
 METAL3_BRANCH ?= release-4.21
@@ -63,14 +64,14 @@ build-cluster-api-provider-aws-chart:
 build-cluster-api-provider-azure-chart:
 	@echo "Building cluster-api-provider-azure chart"
 	WKDIR="$(WKDIR)" \
-	ORGREPO="$(STOLOSTRON_ORGREPO)" \
+	ORGREPO="$(MV_REPO)" \
 	PROJECT="cluster-api-provider-azure" \
 	BRANCH="$(CAPZ_BRANCH)" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-azure/config/tmp" \
 	CHART_VERSION="$(MCE_VERSION)" \
 	CHART_APP_VERSION="$(MCE_VERSION)" \
-	CHART_VALUES_IMAGE_TAG="$(MCE_VERSION)" \
+	CHART_VALUES_IMAGE_TAG="dev-aso.4.0" \
 	CHART_VALUES_IMAGE_TAG_PREFIX="" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api-provider-azure" \

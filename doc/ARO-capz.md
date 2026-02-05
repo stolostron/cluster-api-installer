@@ -100,7 +100,7 @@ If your ARO cluster is configured with External Authentication (Azure AD integra
 
 9. Run the External Authentication post-deployment script:
 ```
-./doc/aro-hcp-scripts/ea-post-deploy-update.sh aro-stage/aro.yaml
+USE_KIND=true KIND_CLUSTER_NAME=capz-stage ./doc/aro-hcp-scripts/ea-post-deploy-update.sh aro-stage/aro.yaml
 ```
 
 This script will:

@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: mce-capi-webhook-config-issuer
+  namespace: capi-system
+spec:
+  selfSigned: {}

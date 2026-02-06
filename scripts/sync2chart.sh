@@ -147,7 +147,6 @@ CHARTDIR="$PROJECT_ROOT/charts/$PROJECT"
 NEWCHART="$(realpath "$BUILTDIR")/new-chart.yml"
 
 if [ "$SYNC2CHARTS" ] ;then
-    set -x
     for suffix in "" "-k8s" "-kind" ; do
         [ -d "$CHARTDIR$suffix" ] || continue
         sync_chart_files "$BUILTDIR" "$CHARTDIR" "$suffix" 

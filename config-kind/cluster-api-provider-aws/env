@@ -1,0 +1,5 @@
+export CAPA_EKS_IAM=true
+export CAPA_EKS_ADD_ROLES=true
+export EXP_EKS_FARGATE=true
+export EXP_MACHINE_POOL=true
+export EXP_ROSA=true

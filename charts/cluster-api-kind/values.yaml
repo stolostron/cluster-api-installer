@@ -2,4 +2,4 @@ manager:
   cmd: /manager
   image:
     tag: v4.21
-    url: registry.redhat.io/openshift4/ose-cluster-api-rhel9
+    url: quay.io/acm-d/ose-cluster-api-rhel9

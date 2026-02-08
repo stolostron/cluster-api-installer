@@ -5,5 +5,5 @@ aso:
     url: registry.redhat.io/multicluster-engine/azure-service-operator-rhel9
 manager:
   image:
-    tag: dev-aso.4.1
+    tag: dev-aso.4.0
     url: registry.redhat.io/multicluster-engine/cluster-api-provider-azure-rhel9

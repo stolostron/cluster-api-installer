@@ -25,13 +25,13 @@ We expect the following:
 
 1. Check out the deployment:
 ```
-git clone -b installer-aro https://github.com/stolostron/cluster-api-installer.git installer-aro
-cd installer-aro
+git clone -b installer-adobe https://github.com/stolostron/cluster-api-installer.git installer-adobe
+cd installer-adobe
 ```
 
 2. The next command will prepare an instance of a kind cluster (with cert manager, CAPI, CAPZ and ASO):
 ```
-USER=ad KIND_CLUSTER_NAME=capz-stage ./scripts/deploy-charts-kind-capz.sh
+KIND_CLUSTER_NAME=capz-stage ./scripts/deploy-charts-kind-capz.sh
 ```
 Please keep the `USER` value shorter than 5 charasters and `KIND_CLUSTER_NAME` shorter than 10 characters.
 

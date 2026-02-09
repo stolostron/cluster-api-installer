@@ -5,9 +5,6 @@ metadata:
  name: ${CS_CLUSTER_NAME}
  namespace: ${NAMESPACE}
 spec:
- platform:
-   resourceGroup: ${RESOURCEGROUPNAME}
-   keyVault: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}/providers/Microsoft.KeyVault/vaults/${KV}"
  subscriptionID: "${AZURE_SUBSCRIPTION_ID}"
  identityRef:
     kind: AzureClusterIdentity

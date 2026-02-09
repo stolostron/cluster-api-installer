@@ -59,12 +59,6 @@ spec:
           spec:
             description: AROControlPlaneSpec defines the desired state of AROControlPlane.
             properties:
-              additionalTags:
-                additionalProperties:
-                  type: string
-                description: AdditionalTags are user-defined tags to be added on the
-                  AWS resources associated with the control plane.
-                type: object
               azureEnvironment:
                 description: |-
                   AzureEnvironment is the name of the AzureCloud to be used.
@@ -85,28 +79,6 @@ spec:
 
                   [ASO docs]: https://azure.github.io/azure-service-operator/guide/aso-controller-settings-options/
                 type: string
-              channelGroup:
-                default: stable
-                description: OpenShift version channel group; default is stable.
-                enum:
-                - stable
-                - candidate
-                - nightly
-                - fast
-                - eus
-                type: string
-              domainPrefix:
-                description: |-
-                  DomainPrefix is an optional prefix added to the cluster's domain name. It will be used
-                  when generating a sub-domain for the cluster on the openshiftapps domain. It must be a valid DNS-1035 label
-                  consisting of lower case alphanumeric characters or '-', start with an alphabetic character,
-                  end with an alphanumeric character, and have a maximum length of 15 characters.
-                maxLength: 15
-                pattern: ^[a-z]([-a-z0-9]*[a-z0-9])?$
-                type: string
-                x-kubernetes-validations:
-                - message: domainPrefix is immutable
-                  rule: self == oldSelf
               identityRef:
                 description: |-
                   IdentityRef is a reference to an identity to be used when reconciling the aro control plane.
@@ -157,34 +129,18 @@ spec:
                   Resources are embedded ASO resources to be managed by this AROControlPlane.
                   This allows you to define the full infrastructure including HcpOpenShiftCluster and
                   HcpOpenShiftClustersExternalAuth resources directly using ASO types.
+
+                  All cluster configuration (version, domain prefix, channel group, etc.) should be
+                  defined in the HcpOpenShiftCluster resource within this field.
                 items:
                   type: object
                   x-kubernetes-preserve-unknown-fields: true
                 type: array
               subscriptionID:
-                description: SubscriptionID is the GUID of the Azure subscription
-                  that owns this cluster.
-                type: string
-              version:
-                description: OpenShift semantic version, for example "4.14.5".
-                type: string
-              versionGate:
-                default: WaitForAcknowledge
                 description: |-
-                  VersionGate requires acknowledgment when upgrading ARO-HCP y-stream versions (e.g., from 4.15 to 4.16).
-                  Default is WaitForAcknowledge.
-                  WaitForAcknowledge: If acknowledgment is required, the upgrade will not proceed until VersionGate is set to Acknowledge or AlwaysAcknowledge.
-                  Acknowledge: If acknowledgment is required, apply it for the upgrade. After upgrade is done set the version gate to WaitForAcknowledge.
-                  AlwaysAcknowledge: If acknowledgment is required, apply it and proceed with the upgrade.
-                enum:
-                - Acknowledge
-                - WaitForAcknowledge
-                - AlwaysAcknowledge
+                  SubscriptionID is the GUID of the Azure subscription that owns this cluster.
+                  Required for Azure API authentication and ARM resource ID construction.
                 type: string
-            required:
-            - channelGroup
-            - version
-            - versionGate
             type: object
           status:
             description: AROControlPlaneStatus defines the observed state of AROControlPlane.

@@ -128,13 +128,13 @@ TEMPLATE_FILE_ARO=$(dirname $0)/aro-template.yaml
 TEMPLATE_FILE_IS=$(dirname $0)/is-template.yaml
 
 
-echo creating: "$GEN_OUTPUT/is.yaml"
-envsubst  < $TEMPLATE_FILE_IS > "$GEN_OUTPUT/is.yaml"
-
 if [ -z "$GEN_ASO" ] ; then
     echo creating: "$GEN_OUTPUT/aro.yaml"
     envsubst  < $TEMPLATE_FILE_ARO > "$GEN_OUTPUT/aro.yaml"
 else
+    echo creating: "$GEN_OUTPUT/is.yaml"
+    envsubst  < $TEMPLATE_FILE_IS > "$GEN_OUTPUT/is.yaml"
+
     TEMPLATE_FILE_ASO=$(dirname $0)/aro-aso-template.yaml
     TEMPLATE_FILE_ASO_EA=$(dirname $0)/aro-aso-ea-template.yaml
     echo creating: "$GEN_OUTPUT/aro-aso.yaml"

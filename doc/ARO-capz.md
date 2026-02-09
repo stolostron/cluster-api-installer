@@ -25,13 +25,13 @@ We expect the following:
 
 1. Check out the deployment:
 ```
-git clone -b installer-aro https://github.com/stolostron/cluster-api-installer.git installer-aro
-cd installer-aro
+git clone -b backplane-2.11 https://github.com/stolostron/cluster-api-installer.git backplane-2.11
+cd backplane-2.11
 ```
 
 2. The next command will prepare an instance of a kind cluster (with cert manager, CAPI, CAPZ and ASO):
 ```
-USER=ad KIND_CLUSTER_NAME=capz-stage ./scripts/deploy-charts-kind-capz.sh
+KIND_CLUSTER_NAME=capz-stage ./scripts/deploy-charts-kind-capz.sh
 ```
 Please keep the `USER` value shorter than 5 charasters and `KIND_CLUSTER_NAME` shorter than 10 characters.
 
@@ -100,7 +100,7 @@ If your ARO cluster is configured with External Authentication (Azure AD integra
 
 9. Run the External Authentication post-deployment script:
 ```
-./doc/aro-hcp-scripts/ea-post-deploy-update.sh aro-stage/aro.yaml
+USE_KIND=true KIND_CLUSTER_NAME=capz-stage ./doc/aro-hcp-scripts/ea-post-deploy-update.sh aro-stage/aro.yaml
 ```
 
 This script will:

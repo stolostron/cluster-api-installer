@@ -49,10 +49,10 @@ export REGION=${REGION:-westus3}
 4. The next command (please use your right values for REGION, USER, ENV and AZURE_SUBSCRIPTION_NAME) will generate:
  * `sp-$SUBSCRIPTION_ID.json` file with generated ServicePrincipal (named `$USER-sp-$randomIdentifier`) which has the assigned role `Custom-Owner (Block Billing and Subscription deletion)` for the specified subscription
  * `operators-uamis-suffix.txt` - Random name suffix used for User Assigned Identities
- * YAML files with k8s resources:
+ * YAML files with k8s resources (based on templates: [aro-template.yaml](./aro-hcp-scripts/aro-template.yaml) and [credentials-sp-template.yaml](./aro-hcp-scripts/credentials-sp-template.yaml)):
    * `aro-stage/credentials.yaml` - `Secret/aso-secret` & `AzureClusterIdentity/cluster-identity` & `Secret/cluster-identity-secret`
-   * `aro-stage/is.yaml` - Infrastructure required for ARO HCP cluster: `ResourceGroup`, `NetworkSecurityGroup`, `VirtualNetwork`, `VirtualNetworksSubnet`, `Vault`, `UserAssignedIdentity`s, `RoleAssignment`s
    * `aro-stage/aro.yaml` - `AROControlPlane`, `AROCluster`, `Cluster`, `AROMachinePool` and `MachinePool`
+       * `AROCluster.spec.resources[]` - Contains the infrastructure required for ARO HCP cluster: `ResourceGroup`, `NetworkSecurityGroup`, `VirtualNetwork`, `VirtualNetworksSubnet`, `Vault`, `UserAssignedIdentity`s, `RoleAssignment`s
 
 Simple deployment for stage:
 ```
@@ -67,7 +67,7 @@ ENV=prod ./doc/aro-hcp-scripts/aro-hcp-gen.sh aro-prod
 
 5. Apply the YAML files with resources (YAMLs from the directory in the specified order):
 ```
-(cd aro-stage; oc apply -f credentials.yaml -f is.yaml -f aro.yaml)
+(cd aro-stage; oc apply -f credentials.yaml -f aro.yaml)
 ```
 
 6. You need the upstream `clusterctl` to monitor, e.g.:

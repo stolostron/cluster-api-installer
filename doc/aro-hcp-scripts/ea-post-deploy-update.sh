@@ -17,13 +17,14 @@ else
     KUBE_CONTEXT="--context=$OCP_CONTEXT"
 fi
 
-export CLUSTER_NAME=$(yq 'select(.kind == "AROControlPlane").spec.aroClusterName'     < "$ARO_YAML_FILE" )
+export CLUSTER_NAME=$(yq 'select(.kind == "AROControlPlane") | .spec.resources[] | select(.kind == "HcpOpenShiftCluster").spec.azureName' < "$ARO_YAML_FILE" )
+export ARO_CP_NAME=$(yq 'select(.kind == "AROControlPlane").metadata.name' < "$ARO_YAML_FILE" )
 export CLUSTER_NAMESPACE=$(yq 'select(.kind == "AROControlPlane").metadata.namespace' < "$ARO_YAML_FILE" )
-export EA_AZURE_TENANT_ID=$(yq 'select(.kind == "AROControlPlane").spec.externalAuthProviders[0].issuer.issuerURL' < "$ARO_YAML_FILE"|sed -e 's;/v2.\0$;;' -e 's;.*/;;')
-export EA_AZURE_CLIENT_ID=$(yq 'select(.kind == "AROControlPlane").spec.externalAuthProviders[0].issuer.audiences[0]' < "$ARO_YAML_FILE")
+export EA_AZURE_TENANT_ID=$(yq 'select(.kind == "AROControlPlane") | .spec.resources[] | select(.kind == "HcpOpenShiftClustersExternalAuth").spec.properties.issuer.url' < "$ARO_YAML_FILE"|sed -e 's;/v2.\0$;;' -e 's;.*/;;')
+export EA_AZURE_CLIENT_ID=$(yq 'select(.kind == "AROControlPlane") | .spec.resources[] | select(.kind == "HcpOpenShiftClustersExternalAuth").spec.properties.issuer.audiences[0]' < "$ARO_YAML_FILE")
 export GROUP_NAME="aro-hcp-engineering-App Developer"
 
-export CONSOLE_URL=$(oc $KUBE_CONTEXT get -n "$CLUSTER_NAMESPACE" arocp "$CLUSTER_NAME-control-plane" -o json|jq -r '.status.consoleURL')
+export CONSOLE_URL=$(oc $KUBE_CONTEXT get -n "$CLUSTER_NAMESPACE" arocp "$ARO_CP_NAME" -o json|jq -r '.status.consoleURL')
 
 export CLUSTER_DOMAIN=${CONSOLE_URL##"https://console-openshift-console.apps."}
 

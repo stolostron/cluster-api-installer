@@ -1,0 +1,129 @@
+name: Helm chart deploy test (CAPI + CAPA on kind)
+
+on:
+  pull_request:
+    paths:
+      - "charts/cluster-api/crds/**"
+      - "charts/cluster-api/templates/**"
+      - "charts/cluster-api/Chart.yaml"
+      - "charts/cluster-api/values.yaml"
+      - "charts/cluster-api-provider-aws/crds/**"
+      - "charts/cluster-api-provider-aws/templates/**"
+      - "charts/cluster-api-provider-aws/Chart.yaml"
+      - "charts/cluster-api-provider-aws/values.yaml"
+      - ".github/workflows/test-helm-capi-capa-kind.yml"
+  push:
+    branches: [ main ]
+    paths:
+      - "charts/cluster-api/crds/**"
+      - "charts/cluster-api/templates/**"
+      - "charts/cluster-api/Chart.yaml"
+      - "charts/cluster-api/values.yaml"
+      - "charts/cluster-api-provider-aws/crds/**"
+      - "charts/cluster-api-provider-aws/templates/**"
+      - "charts/cluster-api-provider-aws/Chart.yaml"
+      - "charts/cluster-api-provider-aws/values.yaml"
+      - ".github/workflows/test-helm-capi-capa-kind.yml"
+
+jobs:
+  deploy-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      KIND_CLUSTER_NAME: capi-e2e
+      CAPI_NAMESPACE: capi-system
+      CAPA_NAMESPACE: capa-system
+
+      # Adjust chart paths to match your repo
+      CAPI_CHART_PATH: charts/cluster-api
+      CAPA_CHART_PATH: charts/cluster-api-provider-aws
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tooling (kubectl/helm/kind)
+        uses: azure/setup-helm@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.0
+
+      - name: Install kind
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: ${{ env.KIND_CLUSTER_NAME }}
+          wait: 180s
+
+      - name: Show cluster info
+        run: |
+          kubectl cluster-info
+          kubectl get nodes -o wide
+
+      # cert-manager is required by Cluster API by default
+      - name: Install cert-manager
+        run: |
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml
+          kubectl rollout status deploy/cert-manager -n cert-manager --timeout=300s
+          kubectl rollout status deploy/cert-manager-cainjector -n cert-manager --timeout=300s
+          kubectl rollout status deploy/cert-manager-webhook -n cert-manager --timeout=300s
+
+      - name: Helm lint
+        run: |
+          helm lint ${{ env.CAPI_CHART_PATH }}
+          helm lint ${{ env.CAPA_CHART_PATH }}
+
+      - name: Install CAPI Helm chart
+        run: |
+          kubectl create namespace ${{ env.CAPI_NAMESPACE }} || true
+
+          helm upgrade --install capi ${{ env.CAPI_CHART_PATH }} \
+            --namespace ${{ env.CAPI_NAMESPACE }} \
+            --wait \
+            --timeout 10m
+
+      - name: Wait for CAPI controllers
+        run: |
+          kubectl get pods -n ${{ env.CAPI_NAMESPACE }} -o wide
+          kubectl rollout status deploy/capi-controller-manager -n ${{ env.CAPI_NAMESPACE }} --timeout=600s || true
+          kubectl rollout status deploy/capi-kubeadm-bootstrap-controller-manager -n ${{ env.CAPI_NAMESPACE }} --timeout=600s || true
+          kubectl rollout status deploy/capi-kubeadm-control-plane-controller-manager -n ${{ env.CAPI_NAMESPACE }} --timeout=600s || true
+
+      - name: Install CAPA Helm chart
+        run: |
+          kubectl create namespace ${{ env.CAPA_NAMESPACE }} || true
+
+          helm upgrade --install capa ${{ env.CAPA_CHART_PATH }} \
+            --namespace ${{ env.CAPA_NAMESPACE }} \
+            --wait \
+            --timeout 10m
+
+      - name: Wait for CAPA controller
+        run: |
+          kubectl get pods -n ${{ env.CAPA_NAMESPACE }} -o wide
+          kubectl rollout status deploy/capa-controller-manager -n ${{ env.CAPA_NAMESPACE }} --timeout=600s
+
+      - name: Smoke tests (CRDs + basic resources)
+        run: |
+          echo "Checking key CRDs..."
+          kubectl get crd clusters.cluster.x-k8s.io
+          kubectl get crd awsmanagedcontrolplanes.controlplane.cluster.x-k8s.io || true
+          kubectl get crd rosacontrolplanes.controlplane.cluster.x-k8s.io || true
+
+          echo "Checking deployments..."
+          kubectl get deploy -A | grep -E "capi|capa|cluster-api|controller-manager" || true
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          echo "==== pods all namespaces ===="
+          kubectl get pods -A -o wide
+          echo "==== events ===="
+          kubectl get events -A --sort-by=.metadata.creationTimestamp | tail -n 200
+          echo "==== capi logs ===="
+          kubectl logs -n ${{ env.CAPI_NAMESPACE }} deploy/capi-controller-manager --tail=200 || true
+          echo "==== capa logs ===="
+          kubectl logs -n ${{ env.CAPA_NAMESPACE }} deploy/capa-controller-manager --tail=200 || true
+

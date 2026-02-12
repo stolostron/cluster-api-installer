@@ -1,5 +1,10 @@
 declare -A helm_add_args_a=(
-  [capi]="--set manager.image.url=quay.io/mveber/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/mveber/mce-capi-webhook-config-rhel9"
-  [capz]="--set manager.image.url=quay.io/mveber/cluster-api-provider-azure-rhel9 --set manager.image.tag=dev-aso.4.0 --set aso.image.url=quay.io/mveber/azure-service-operator-rhel9     "
+  [capi]="--set manager.image.url=quay.io/mveber/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/mveber/mce-capi-webhook-config-rhel9 --set manager.image.tag=v4.21 --set webhook.image.tag=2.11.0-1"
+  [capz]="--set manager.image.url=quay.io/mveber/cluster-api-provider-azure-rhel9 --set     aso.image.url=quay.io/mveber/azureserviceoperator  --set manager.image.tag=2.17.0-3 --set aso.image.tag=v2.13.0-hcpclusters.3"
+  [capa]="--set manager.image.url=quay.io/mveber/cluster-api-provider-aws-rhel9   --set manager.image.tag=latest"
+  [capm3]="--set manager.image.url=quay.io/acm-d/ose-baremetal-cluster-api-controllers-rhel9"
 )
+#  [capa]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-aws-rhel9"
+#  [capz]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-azure-rhel9 --set     aso.image.url=quay.io/mveber/azureserviceoperator  --set manager.image.tag=2.11.0-141b78f --set aso.image.tag=v2.13.0-hcpclusters.3"
+#  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9"
 

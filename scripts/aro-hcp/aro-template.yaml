@@ -11,7 +11,7 @@ spec:
     name: ${AZURE_CLUSTER_IDENTITY_NAME}
     namespace: ${AZURE_CLUSTER_IDENTITY_NAMESPACE}
  resources:
-   - apiVersion: redhatopenshift.azure.com/v1api20240610preview
+   - apiVersion: redhatopenshift.azure.com/${ARO_HCP_VERSION}
      kind: HcpOpenShiftCluster
      metadata:
        name: ${CS_CLUSTER_NAME}
@@ -116,9 +116,11 @@ spec:
        tags:
          environment: production
          owner: sre-team
+         aro-hcp.experimental.cluster.single-replica: SingleReplica
+         aro-hcp.experimental.cluster.size-override: Minimal
 ${EA_DISABLE}   # External Authentication Configuration
 ${EA_DISABLE}   # IMPORTANT: Replace the values below with your actual OIDC provider details
-${EA_DISABLE}   - apiVersion: redhatopenshift.azure.com/v1api20240610preview
+${EA_DISABLE}   - apiVersion: redhatopenshift.azure.com/${ARO_HCP_VERSION}
 ${EA_DISABLE}     kind: HcpOpenShiftClustersExternalAuth
 ${EA_DISABLE}     metadata:
 ${EA_DISABLE}       name: ${EA_OIDC_PROVIDER_NAME}
@@ -156,13 +158,13 @@ metadata:
  namespace: ${NAMESPACE}
 spec:
   resources:
-    - apiVersion: redhatopenshift.azure.com/v1api20240610preview
+    - apiVersion: redhatopenshift.azure.com/${ARO_HCP_VERSION}
       kind: HcpOpenShiftClustersNodePool
       metadata:
         name: ${CS_CLUSTER_NAME}-mp1
         namespace: ${NAMESPACE}
       spec:
-        azureName: ${CS_CLUSTER_NAME}-mp1
+        azureName: ${NAME_PREFIX}-mp1
         location: ${REGION}
         owner:
           name: ${CS_CLUSTER_NAME}
@@ -194,6 +196,8 @@ spec:
         tags:
           environment: production
           cost-center: engineering
+          aro-hcp.experimental.cluster.single-replica: SingleReplica
+          aro-hcp.experimental.cluster.size-override: Minimal
 ---
 apiVersion: cluster.x-k8s.io/v1beta2
 kind: MachinePool

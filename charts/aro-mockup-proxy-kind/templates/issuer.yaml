@@ -1,0 +1,11 @@
+{{- if and .Values.tls.enabled .Values.tls.create .Values.tls.createIssuer }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  labels:
+    {{- include "aro-mockup-proxy.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}
+{{- end }}

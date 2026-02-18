@@ -4,6 +4,10 @@ kind: Kustomization
 resources:
 - default/
 
+namePrefix: mce-
+
+namespace: multicluster-engine
+
 ## Patch the default resources with OCP downstream requirements.
 patches:
   - target:
@@ -21,13 +25,16 @@ patches:
     patch: |-
       - op: replace
         path: /spec/commonName
-        value: "capm3-webhook-service.{{ .Release.Namespace }}.svc"
+        value: "mce-capm3-webhook-service.multicluster-engine.svc"
       - op: replace
         path: /spec/dnsNames/0
-        value: "capm3-webhook-service.{{ .Release.Namespace }}.svc"
+        value: "mce-capm3-webhook-service.multicluster-engine.svc"
       - op: replace
         path: /spec/dnsNames/1
-        value: "capm3-webhook-service.{{ .Release.Namespace }}.svc.cluster.local"
+        value: "mce-capm3-webhook-service.multicluster-engine.svc.cluster.local"
+      - op: replace
+        path: /spec/secretName
+        value: "mce-capm3-webhook-service-cert"
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1
@@ -36,13 +43,20 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "multicluster-engine/capm3-serving-cert"
+        value: "multicluster-engine/mce-capm3-serving-cert"
+  - target:
+      kind: Deployment
+      name: capm3-controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes/0/secret/secretName
+        value: mce-capm3-webhook-service-cert
   - target:
       namespace: capm3-system
     patch: |-
       - op: replace
         path: /metadata/namespace
-        value: '{{ .Release.Namespace }}'
+        value: 'multicluster-engine'
   - target:
       version: v1
       kind: CustomResourceDefinition
@@ -140,34 +154,34 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "{{ .Release.Namespace }}/capm3-serving-cert"
+        value: "multicluster-engine/mce-capm3-serving-cert"
       - op: replace
         path: /webhooks/0/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/2/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/3/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/4/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/5/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/6/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
   - target:
       version: v1
       kind: ValidatingWebhookConfiguration
@@ -175,31 +189,31 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/annotations/cert-manager.io~1inject-ca-from
-        value: "{{ .Release.Namespace }}/capm3-serving-cert"
+        value: "multicluster-engine/mce-capm3-serving-cert"
       - op: replace
         path: /webhooks/0/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/2/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/3/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/4/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/5/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/6/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/7/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"
       - op: replace
         path: /webhooks/8/clientConfig/service/namespace
-        value: "{{ .Release.Namespace }}"
+        value: "multicluster-engine"

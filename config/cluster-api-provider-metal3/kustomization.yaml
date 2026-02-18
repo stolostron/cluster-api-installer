@@ -9,8 +9,18 @@ resources:
 
 namePrefix: mce-
 
+namespace: multicluster-engine
+
 ## Patch the default resources with OCP downstream requirements.
 patches:
+  - target:
+      kind: Namespace
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: capm3-system
    # Remove cert-manager Certificate and Issuer
   - target:
       kind: Certificate

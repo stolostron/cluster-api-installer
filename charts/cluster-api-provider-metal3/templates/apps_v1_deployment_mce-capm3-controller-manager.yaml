@@ -6,7 +6,7 @@ metadata:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
   name: mce-capm3-controller-manager
-  namespace: capm3-system
+  namespace: multicluster-engine
 spec:
   selector:
     matchLabels:

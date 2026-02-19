@@ -11,6 +11,15 @@ transformers:
 
 ## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements.
 patches:
+  # Remove capi-system namespace resource as it is created with helm install
+  - target:
+      kind: Namespace
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: capi-system
   # Remove unnecessary resources
   - target:
        kind: CustomResourceDefinition

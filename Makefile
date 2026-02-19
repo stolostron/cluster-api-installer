@@ -64,3 +64,9 @@ $(HELM):
 $(CLUSTERCTL):
 	curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/$(CLUSTERCTL_VER)/clusterctl-$(CLUSTERCTL_PLATFORM) -o $(CLUSTERCTL)
 	chmod a+x $(CLUSTERCTL)
+
+.PHONY: lint
+lint:
+	@for chart in $$(ls -1 charts/ | grep -v Makefile); do \
+	    $(HELM) lint "./charts/$$chart"; \
+        done

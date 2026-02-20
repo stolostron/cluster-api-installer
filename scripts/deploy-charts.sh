@@ -4,6 +4,7 @@ DO_INIT_KIND=${INIT_KIND:-true}
 DO_DEPLOY=${DO_DEPLOY:-true}
 DO_CHECK=${DO_CHECK:-true}
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+declare -A DEPLOYMENTS=()
 
 [ -s ./replace-params ] && . ./replace-params
 
@@ -24,23 +25,43 @@ else
 fi
 
 function set_namespace_and_t {
-    case "$PROJECT" in
-      cluster-api)
-        T="capi"
-        NAMESPACE="capi-system"
-        ;;
-      cluster-api-provider-azure)
-        T="capz"
-        NAMESPACE="capz-system"
-        ;;
-      cluster-api-provider-aws)
-        T="capa"
-        NAMESPACE="capa-system"
-        ;;
-    esac
+    DEPLOYMENTS=()
+    NAMESPACE=""
     if [ "$USE_K8S" = true ] ; then
         NAMESPACE="multicluster-engine"
     fi
+    case "$PROJECT" in
+      cluster-api)
+        T="capi"
+        NAMESPACE=${NAMESPACE:-"capi-system"}
+        DEPLOYMENTS[$NAMESPACE]="${T}-controller-manager"
+        if [ "$USE_KIND" != true -a "$USE_K8S" != true ] ; then
+            DEPLOYMENTS[$NAMESPACE]="${DEPLOYMENTS[$NAMESPACE]} mce-capi-webhook-config"
+        fi
+        ;;
+      cluster-api-provider-azure)
+        T="capz"
+        NAMESPACE=${NAMESPACE:-"capz-system"}
+        DEPLOYMENTS[$NAMESPACE]="${T}-controller-manager azureserviceoperator-controller-manager"
+        ;;
+      cluster-api-provider-aws)
+        T="capa"
+        NAMESPACE=${NAMESPACE:-"capa-system"}
+        DEPLOYMENTS[$NAMESPACE]="${T}-controller-manager"
+        ;;
+      cluster-api-provider-metal3)
+        T="capm3"
+        NAMESPACE=${NAMESPACE:-"capm3-system"}
+        DEPLOYMENTS[$NAMESPACE]="mce-${T}-controller-manager"
+        ;;
+      cluster-api-provider-openshift-assisted)
+        T="capoa"
+        DEPLOYMENTS['capoa-bootstrap-system']="capoa-bootstrap-controller-manager"
+        DEPLOYMENTS['capoa-controlplane-system']="capoa-controlplane-controller-manager"
+        NAMESPACE=${NAMESPACE:-"capoa-controlplane-system capoa-bootstrap-system"}
+        DEPLOYMENTS[$NAMESPACE]="capoa-bootstrap-controller-manager capoa-controlplane-controller-manager"
+        ;;
+    esac
 }
 
 CHARTS=$(echo cluster-api $*|tr ' ' '\n'|sort -u|tr '\n' ' ')
@@ -48,7 +69,10 @@ CHARTS=$(echo cluster-api $*|tr ' ' '\n'|sort -u|tr '\n' ' ')
 if [ "$DO_DEPLOY" = true ] ; then
     for PROJECT in $CHARTS ; do
         CHART="charts/$PROJECT$CHART_SUFFIX"
-        [ -f $CHART/Chart.yaml ] || continue
+        [ -f $CHART/Chart.yaml ] || {
+            echo "!!!!!!!!! SKIP DEPLOY: $CHART "
+            continue
+        }
         set_namespace_and_t
         echo ========= deploy: $CHART "using context: $KUBE_CONTEXT"
         echo "        PROJECT: $PROJECT"
@@ -68,22 +92,17 @@ if [ "$DO_CHECK" = true ] ; then
         CHART="charts/$PROJECT$CHART_SUFFIX"
         [ -f $CHART/Chart.yaml ] || continue
         set_namespace_and_t
-        echo "Waiting for ${T} controller (in $NAMESPACE namespace):"
-        kubectl $KUBE_CONTEXT events -n "$NAMESPACE" --watch &
-        CH_PID=$!
-        kubectl $KUBE_CONTEXT -n "$NAMESPACE" wait deployment/${T}-controller-manager --for condition=Available=True  --timeout=10m
-        if [ "${T}" = capz ] ; then
-            echo "Waiting for azureserviceoperator controller (in $NAMESPACE namespace):"
-            kubectl $KUBE_CONTEXT -n "$NAMESPACE" wait deployment/azureserviceoperator-controller-manager --for condition=Available=True  --timeout=10m
-        fi
-        if [ "${T}" = capi ] ; then
-            if [ "$USE_KIND" != true -a "$USE_K8S" != true ] ; then
-                echo "Waiting for mce-capi-webhook-config controller (in $NAMESPACE namespace):"
-                kubectl $KUBE_CONTEXT -n "$NAMESPACE" wait deployment/mce-capi-webhook-config --for condition=Available=True  --timeout=10m
-            fi
-        fi
-        kill $CH_PID
-        echo
+        for i in $NAMESPACE; do
+            for D in ${DEPLOYMENTS[$i]} ; do
+                echo "Waiting for $D controller (in $i namespace):"
+                kubectl $KUBE_CONTEXT events -n "$i" --watch &
+                CH_PID=$!
+                trap "kill $CH_PID" EXIT
+                kubectl $KUBE_CONTEXT -n "$i" wait deployment/${D} --for condition=Available=True  --timeout=10m
+                kill $CH_PID
+                echo
+            done
+        done
     done
 fi
 

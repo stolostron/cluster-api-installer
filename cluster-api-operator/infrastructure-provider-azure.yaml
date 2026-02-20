@@ -1,0 +1,89 @@
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: InfrastructureProvider
+metadata:
+  name: azure
+  namespace: capz-system
+spec:
+  # Use your custom version from the GitHub release
+  version: v1.22.0-mce-217
+
+  # Point to your custom GitHub releases
+  fetchConfig:
+    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/v1.22.0-mce-217/infrastructure-components.yaml
+
+  # Azure Service Operator deployment configuration
+  additionalDeployments:
+    azureserviceoperator-controller-manager:
+      deployment:
+        containers:
+        - name: manager
+          imageUrl: quay.io/mveber/azure-service-operator-rhel9:2.11.0-1
+          args:
+            --crd-pattern: authorization.azure.com/*;managedidentity.azure.com/*;network.azure.com/*;eventhub.azure.com/*;storage.azure.com/*;web.azure.com/*;insights.azure.com/*;keyvault.azure.com/*
+            --secure-metrics: "false"
+          env:
+          - name: AZURE_SYNC_PERIOD
+            value: 1h
+
+  # Main CAPZ controller deployment configuration
+  deployment:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/os
+              operator: In
+              values:
+              - linux
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: control-plane
+                operator: In
+                values:
+                - capz-controller-manager
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+
+    containers:
+    - name: manager
+      # Use your custom image
+      imageUrl: quay.io/mveber/cluster-api-provider-azure-rhel9:2.11.0-1
+      args:
+        --azurecluster-concurrency: "20"
+        --azuremachine-concurrency: "50"
+        --azuremachinepool-concurrency: "50"
+        --azuremachinepoolmachine-concurrency: "50"
+        --bootstrap-config-gvk: EKSConfig.v1beta2.bootstrap.cluster.x-k8s.io
+        --debouncing-timer: 10s
+        --insecure-diagnostics: "true"
+      env:
+      - name: CLUSTER_TOPOLOGY
+        value: "true"
+      - name: EXP_CLUSTER_RESOURCE_SET
+        value: "true"
+      - name: EXP_MACHINE_POOL
+        value: "true"
+      resources:
+        limits:
+          cpu: "1"
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 512Mi
+    replicas: 2
+
+  # Manager configuration
+  manager:
+    featureGates:
+      AKSResourceHealth: true
+      ASOAPI: true
+      ARO: true
+    health: {}
+    metrics: {}
+    syncPeriod: 10m0s
+    verbosity: 1
+    webhook: {}

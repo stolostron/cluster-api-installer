@@ -251,3 +251,54 @@ Ensure:
 2. The release contains `metadata.yaml` and `infrastructure-components.yaml` files
 3. The cluster can reach github.com (or configure a proxy if needed)
 
+### Azure Service Operator in CrashLoopBackoff
+
+If ASO is crashing with leader election errors:
+```
+I0220 06:11:31.158530       1 manager.go:107] "Lost leader due to cooperative lease release"
+leaseDurationSeconds: 1
+```
+
+**Symptoms**:
+- ASO pod shows `RESTARTS` constantly increasing
+- Deployment shows `readyReplicas: null` and `Available: False`
+- Lease has `leaseDurationSeconds: 1` and empty `holderIdentity: ""`
+
+**Root Cause**: A corrupt pre-existing Kubernetes lease from a previous deployment or failed upgrade. The lease has `leaseDurationSeconds: 1` instead of the proper default (15s), causing constant leader election churn and preventing ASO from starting.
+
+**Fix - Delete the Corrupt Lease** (recommended):
+
+1. **Check if the lease is corrupt**:
+   ```bash
+   kubectl get lease -n capz-system controllers-leader-election-azinfra-generated -o jsonpath='{.spec.leaseDurationSeconds}'
+   ```
+   If this returns `1`, the lease is corrupt.
+
+2. **Delete the corrupt lease and restart ASO**:
+   ```bash
+   # Delete the corrupt lease
+   kubectl delete lease -n capz-system controllers-leader-election-azinfra-generated
+
+   # Restart ASO to recreate the lease with correct defaults
+   kubectl rollout restart deployment/azureserviceoperator-controller-manager -n capz-system
+   ```
+
+3. **Verify the fix**:
+   ```bash
+   # Wait for ASO to be ready
+   kubectl rollout status deployment/azureserviceoperator-controller-manager -n capz-system
+
+   # Check lease is now healthy (should be 15)
+   kubectl get lease -n capz-system controllers-leader-election-azinfra-generated -o jsonpath='{.spec.leaseDurationSeconds}'
+
+   # Verify holderIdentity is populated (should show pod name)
+   kubectl get lease -n capz-system controllers-leader-election-azinfra-generated -o jsonpath='{.spec.holderIdentity}'
+   ```
+**Expected Healthy Lease**:
+```yaml
+spec:
+  leaseDurationSeconds: 15  # Not 1!
+  holderIdentity: azureserviceoperator-controller-manager-xxxxx_<uuid>  # Not empty!
+  leaseTransitions: 0-2  # Low number, not 50+
+```
+

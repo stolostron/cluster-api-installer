@@ -4,7 +4,7 @@ SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.21
 CAPA_BRANCH ?= backplane-2.11
-CAPZ_BRANCH ?= adobe-resources
+CAPZ_BRANCH ?= ARO-24514-identityRef-optional
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 MV_REPO ?= https://github.com/marek-veber

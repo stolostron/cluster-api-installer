@@ -121,8 +121,8 @@ jobs:
       - name: Wait for CAPI controllers
         run: |
           kubectl get pods -n ${{ env.CAPI_NAMESPACE }} -o wide
-          kubectl rollout status deploy/capi-controller-manager -n ${{ env.CAPI_NAMESPACE }} --timeout=600s || true
-          kubectl rollout status deploy/mce-capi-webhook-config -n ${{ env.CAPI_NAMESPACE }} --timeout=600s || true
+          kubectl rollout status deploy/capi-controller-manager -n ${{ env.CAPI_NAMESPACE }} --timeout=600s
+          kubectl rollout status deploy/mce-capi-webhook-config -n ${{ env.CAPI_NAMESPACE }} --timeout=600s
 
       - name: Install CAPA Helm chart
         run: |
@@ -141,11 +141,11 @@ jobs:
         run: |
           echo "Checking key CRDs..."
           kubectl get crd clusters.cluster.x-k8s.io
-          kubectl get crd awsmanagedcontrolplanes.controlplane.cluster.x-k8s.io || true
-          kubectl get crd rosacontrolplanes.controlplane.cluster.x-k8s.io || true
+          kubectl get crd awsmanagedcontrolplanes.controlplane.cluster.x-k8s.io
+          kubectl get crd rosacontrolplanes.controlplane.cluster.x-k8s.io
 
           echo "Checking deployments..."
-          kubectl get deploy -A | grep -E "capi|capa|cluster-api|controller-manager" || true
+          kubectl get deploy -A | grep -E "capi|capa|cluster-api|controller-manager"
 
       - name: Dump diagnostics on failure
         if: failure()

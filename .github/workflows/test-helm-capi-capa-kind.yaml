@@ -112,10 +112,9 @@ jobs:
 
       - name: Install CAPI Helm chart
         run: |
-          kubectl create namespace ${{ env.CAPI_NAMESPACE }} || true
-
           helm upgrade --install capi ${{ env.CAPI_CHART_PATH }} \
             --namespace ${{ env.CAPI_NAMESPACE }} \
+            --create-namespace \
             --wait \
             --timeout 10m
 
@@ -127,10 +126,9 @@ jobs:
 
       - name: Install CAPA Helm chart
         run: |
-          kubectl create namespace ${{ env.CAPA_NAMESPACE }} || true
-
           helm upgrade --install capa ${{ env.CAPA_CHART_PATH }} \
             --namespace ${{ env.CAPA_NAMESPACE }} \
+            --create-namespace \
             --wait \
             --timeout 10m
 

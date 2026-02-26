@@ -72,13 +72,12 @@ jobs:
 
       - name: Load images into kind
         run: |
-          # Read image URLs and tags from values.yaml files
-          CAPI_IMAGE_URL=$(grep -A4 "^manager:" ${{ env.CAPI_CHART_PATH }}/values.yaml | grep "url:" | awk '{print $2}')
-          CAPI_IMAGE_TAG=$(grep -A4 "^manager:" ${{ env.CAPI_CHART_PATH }}/values.yaml | grep "tag:" | awk '{print $2}')
-          CAPI_WEBHOOK_IMAGE_URL=$(grep -A4 "^webhook:" ${{ env.CAPI_CHART_PATH }}/values.yaml | grep "url:" | awk '{print $2}')
-          CAPI_WEBHOOK_IMAGE_TAG=$(grep -A4 "^webhook:" ${{ env.CAPI_CHART_PATH }}/values.yaml | grep "tag:" | awk '{print $2}')
-          CAPA_IMAGE_URL=$(grep -A4 "^manager:" ${{ env.CAPA_CHART_PATH }}/values.yaml | grep "url:" | awk '{print $2}')
-          CAPA_IMAGE_TAG=$(grep -A4 "^manager:" ${{ env.CAPA_CHART_PATH }}/values.yaml | grep "tag:" | awk '{print $2}')
+          CAPI_IMAGE_URL=$(yq '.manager.image.url' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPI_IMAGE_TAG=$(yq '.manager.image.tag' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPI_WEBHOOK_IMAGE_URL=$(yq '.webhook.image.url' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPI_WEBHOOK_IMAGE_TAG=$(yq '.webhook.image.tag' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPA_IMAGE_URL=$(yq '.manager.image.url' ${{ env.CAPA_CHART_PATH }}/values.yaml)
+          CAPA_IMAGE_TAG=$(yq '.manager.image.tag' ${{ env.CAPA_CHART_PATH }}/values.yaml)
 
           CAPI_IMAGE=${CAPI_IMAGE_URL}:${CAPI_IMAGE_TAG}
           CAPI_WEBHOOK_IMAGE=${CAPI_WEBHOOK_IMAGE_URL}:${CAPI_WEBHOOK_IMAGE_TAG}

@@ -136,26 +136,38 @@ jobs:
           kubectl get pods -n ${{ env.CAPA_NAMESPACE }} -o wide
           kubectl rollout status deploy/capa-controller-manager -n ${{ env.CAPA_NAMESPACE }} --timeout=600s
 
-      - name: Verify MCE watch-filter labeling
+      - name: Verify MCE filter labeling
         run: |
           echo "Verifying MCE webhook labels resources..."
-          kubectl create ns watch-filter-test
+          kubectl create ns filter-test
           kubectl apply -f - <<'EOF'
           apiVersion: cluster.x-k8s.io/v1beta1
           kind: Cluster
           metadata:
-            name: label-test
-            namespace: watch-filter-test
+            name: cls-test
+            namespace: filter-test
           spec:
             paused: true
+            infrastructureRef:
+              apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+              kind: ROSACluster
+              name: cls-test
+              namespace: filter-test
+          ---
+          apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+          kind: ROSACluster
+          metadata:
+            name: cls-test
+            namespace: filter-test
+          spec: {}    
           EOF
           sleep 5
-          LABEL=$(kubectl get cluster label-test -n watch-filter-test -o jsonpath='{.metadata.labels.cluster\.x-k8s\.io/watch-filter}')
+          LABEL=$(kubectl get cluster cls-test -n filter-test -o jsonpath='{.metadata.labels.cluster\.x-k8s\.io/watch-filter}')
           if [ "$LABEL" != "multicluster-engine" ]; then
-            echo "FAIL: MCE webhook did not apply watch-filter label (got: '$LABEL')"
+            echo "FAIL: MCE webhook did not apply filter label (got: '$LABEL')"
             exit 1
           fi
-          echo "OK: watch-filter label applied correctly"
+          echo "OK: filter label applied correctly"
 
       - name: Smoke tests (CRDs + basic resources)
         run: |

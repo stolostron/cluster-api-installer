@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mce-capi-webhook-config
+  namespace: capi-system
+spec:
+  dnsNames:
+  - mce-capi-webhook-config-service.capi-system.svc
+  - mce-capi-webhook-config-service.capi-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: mce-capi-webhook-config-issuer
+  secretName: mce-capi-webhook-config-service-cert

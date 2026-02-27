@@ -19,77 +19,6 @@ patches:
       kind: Namespace
       metadata:
         name: capa-system
-  # Remove unnecessary resources
-  - target:
-      kind: Certificate
-    patch: |-
-      $patch: delete
-      apiVersion: cert-manager.io/v1
-      kind: Certificate
-      metadata:
-        name: capa-serving-cert
-        namespace: capa-system
-  - target:
-      kind: Issuer
-    patch: |-
-      $patch: delete
-      apiVersion: cert-manager.io/v1
-      kind: Issuer
-      metadata:
-        name: capa-selfsigned-issuer
-        namespace: capa-system
-  # # Removing the caBundle field (TODO: remove this patch in next release as caBundle is removed upstream)
-  # - target:
-  #     version: v1
-  #     kind: CustomResourceDefinition
-  #     annotationSelector: "cert-manager.io/inject-ca-from"
-  #   patch: |-
-  #     apiVersion: apiextensions.k8s.io/v1
-  #     kind: CustomResourceDefinition
-  #     metadata:
-  #       name: "notused"
-  #     spec:
-  #       conversion:
-  #         webhook:
-  #           clientConfig:
-  #             caBundle: null
-  # # related to above patch (TODO: remove next release)
-  # - target:
-  #     version: v1
-  #     kind: CustomResourceDefinition
-  #     name: awsmanagedclusters.infrastructure.cluster.x-k8s.io
-  #   patch: |-
-  #     - op: remove
-  #       path: /spec/conversion 
-  # Remove cert-manager annotation and add OCP cert service annotation
-  - target:
-      version: v1
-      kind: CustomResourceDefinition
-      annotationSelector: "cert-manager.io/inject-ca-from"
-    patch: |-
-      - op: remove
-        path: /metadata/annotations/cert-manager.io~1inject-ca-from
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-        value: true
-  - target:
-      version: v1
-      kind: MutatingWebhookConfiguration
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-        value: true
-      - op: remove
-        path: /metadata/annotations/cert-manager.io~1inject-ca-from
-  - target:
-      version: v1
-      kind: ValidatingWebhookConfiguration
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-        value: true
-      - op: remove
-        path: /metadata/annotations/cert-manager.io~1inject-ca-from
   # Replace service account annotation with AWS IAM role helm chart value
   - target:
       version: v1
@@ -156,17 +85,9 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsUser
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsGroup
-      - op: remove
-        path: /spec/template/spec/securityContext/fsGroup
-  # Add OCP cert service annotation
-  - target:
-      kind: Service
-      name: capa-webhook-service
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-        value: capa-webhook-service-cert
+      # - op: remove
+      #   path: /spec/template/spec/containers/0/securityContext/runAsUser
+      # - op: remove
+      #   path: /spec/template/spec/containers/0/securityContext/runAsGroup
+      # - op: remove
+      #   path: /spec/template/spec/securityContext/fsGroup

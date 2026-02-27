@@ -4,12 +4,23 @@ kind: Kustomization
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
 - default/
+- base/mce-capi-webhook-config/
+
 
 transformers:
 - base/transformer.yaml
 
 ## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements.
 patches:
+  # Remove capi-system namespace resource as it is created with helm install
+  - target:
+      kind: Namespace
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: capi-system
   # Replace Deployment with default values & helm chart value
   - target:
       kind: Deployment
@@ -22,6 +33,19 @@ patches:
         path: /spec/template/spec/containers/0/command
         value:
         - '{{ .Values.manager.cmd  }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent
+      - op: add
+        path: /spec/template/spec/containers/0/args/0
+        value: '--watch-filter=multicluster-engine'
+  - target:
+      kind: Deployment
+      name: mce-capi-webhook-config
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.webhook.image.url  }}:{{ .Values.webhook.image.tag  }}'
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent

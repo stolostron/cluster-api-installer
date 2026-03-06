@@ -1,0 +1,195 @@
+name: Helm chart deploy test (CAPI + CAPA on kind)
+
+on:
+  pull_request:
+    paths:
+      - "charts/cluster-api-kind/crds/**"
+      - "charts/cluster-api-kind/templates/**"
+      - "charts/cluster-api-kind/Chart.yaml"
+      - "charts/cluster-api-kind/values.yaml"
+      - "charts/cluster-api-kind/values.yaml"
+      - "charts/cluster-api-provider-aws-kind/crds/**"
+      - "charts/cluster-api-provider-aws-kind/templates/**"
+      - "charts/cluster-api-provider-aws-kind/Chart.yaml"
+      - "charts/cluster-api-provider-aws-kind/values.yaml"
+      - ".github/workflows/test-helm-capi-capa-kind.yaml"
+  push:
+    branches: [ main ]
+    paths:
+      - "charts/cluster-api-kind/crds/**"
+      - "charts/cluster-api-kind/templates/**"
+      - "charts/cluster-api-kind/Chart.yaml"
+      - "charts/cluster-api-kind/values.yaml"
+      - "charts/cluster-api-provider-aws-kind/crds/**"
+      - "charts/cluster-api-provider-aws-kind/templates/**"
+      - "charts/cluster-api-provider-aws-kind/Chart.yaml"
+      - "charts/cluster-api-provider-aws-kind/values.yaml"
+      - ".github/workflows/test-helm-capi-capa-kind.yaml"
+
+jobs:
+  deploy-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      KIND_CLUSTER_NAME: capi-e2e
+      CAPI_NAMESPACE: capi-system
+      CAPA_NAMESPACE: capa-system
+
+      # Adjust chart paths to match your repo
+      CAPI_CHART_PATH: charts/cluster-api-kind
+      CAPA_CHART_PATH: charts/cluster-api-provider-aws-kind
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tooling (kubectl/helm/kind)
+        uses: azure/setup-helm@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.0
+
+      - name: Install kind
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: ${{ env.KIND_CLUSTER_NAME }}
+          wait: 180s
+
+      - name: Show cluster info
+        run: |
+          kubectl cluster-info
+          kubectl get nodes -o wide
+
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: "${{ secrets.QUAY_USERNAME }}"
+          password: "${{ secrets.QUAY_PASSWORD }}"
+
+      - name: Load images into kind
+        run: |
+          CAPI_IMAGE_URL=$(yq '.manager.image.url' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPI_IMAGE_TAG=$(yq '.manager.image.tag' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPI_WEBHOOK_IMAGE_URL=$(yq '.webhook.image.url' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPI_WEBHOOK_IMAGE_TAG=$(yq '.webhook.image.tag' ${{ env.CAPI_CHART_PATH }}/values.yaml)
+          CAPA_IMAGE_URL=$(yq '.manager.image.url' ${{ env.CAPA_CHART_PATH }}/values.yaml)
+          CAPA_IMAGE_TAG=$(yq '.manager.image.tag' ${{ env.CAPA_CHART_PATH }}/values.yaml)
+
+          CAPI_IMAGE=${CAPI_IMAGE_URL}:${CAPI_IMAGE_TAG}
+          CAPI_WEBHOOK_IMAGE=${CAPI_WEBHOOK_IMAGE_URL}:${CAPI_WEBHOOK_IMAGE_TAG}
+          CAPA_IMAGE=${CAPA_IMAGE_URL}:${CAPA_IMAGE_TAG}
+
+          echo "CAPI Image: ${CAPI_IMAGE}"
+          echo "CAPA Image: ${CAPA_IMAGE}"
+
+          # Pull images from quay.io
+          docker pull ${CAPA_IMAGE}
+          docker pull ${CAPI_IMAGE}
+          docker pull ${CAPI_WEBHOOK_IMAGE}
+
+          # Load images into kind cluster
+          kind load docker-image ${CAPA_IMAGE} --name ${{ env.KIND_CLUSTER_NAME }}
+          kind load docker-image ${CAPI_IMAGE} --name ${{ env.KIND_CLUSTER_NAME }}
+          kind load docker-image ${CAPI_WEBHOOK_IMAGE} --name ${{ env.KIND_CLUSTER_NAME }}
+
+      # cert-manager is required by Cluster API by default
+      - name: Install cert-manager
+        run: |
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml
+          kubectl rollout status deploy/cert-manager -n cert-manager --timeout=300s
+          kubectl rollout status deploy/cert-manager-cainjector -n cert-manager --timeout=300s
+          kubectl rollout status deploy/cert-manager-webhook -n cert-manager --timeout=300s
+
+      - name: Helm lint
+        run: |
+          helm lint ${{ env.CAPI_CHART_PATH }}
+          helm lint ${{ env.CAPA_CHART_PATH }}
+
+      - name: Install CAPI Helm chart
+        run: |
+          helm upgrade --install capi ${{ env.CAPI_CHART_PATH }} \
+            --namespace ${{ env.CAPI_NAMESPACE }} \
+            --create-namespace \
+            --wait \
+            --timeout 10m
+
+      - name: Wait for CAPI controllers
+        run: |
+          kubectl get pods -n ${{ env.CAPI_NAMESPACE }} -o wide
+          kubectl rollout status deploy/capi-controller-manager -n ${{ env.CAPI_NAMESPACE }} --timeout=600s
+          kubectl rollout status deploy/mce-capi-webhook-config -n ${{ env.CAPI_NAMESPACE }} --timeout=600s
+
+      - name: Install CAPA Helm chart
+        run: |
+          helm upgrade --install capa ${{ env.CAPA_CHART_PATH }} \
+            --namespace ${{ env.CAPA_NAMESPACE }} \
+            --create-namespace \
+            --wait \
+            --timeout 10m
+
+      - name: Wait for CAPA controller
+        run: |
+          kubectl get pods -n ${{ env.CAPA_NAMESPACE }} -o wide
+          kubectl rollout status deploy/capa-controller-manager -n ${{ env.CAPA_NAMESPACE }} --timeout=600s
+
+      - name: Verify MCE filter labeling
+        run: |
+          echo "Verifying MCE webhook labels resources..."
+          kubectl create ns filter-test
+          kubectl apply -f - <<'EOF'
+          apiVersion: cluster.x-k8s.io/v1beta1
+          kind: Cluster
+          metadata:
+            name: cls-test
+            namespace: filter-test
+          spec:
+            paused: true
+            infrastructureRef:
+              apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+              kind: ROSACluster
+              name: cls-test
+              namespace: filter-test
+          ---
+          apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+          kind: ROSACluster
+          metadata:
+            name: cls-test
+            namespace: filter-test
+          spec: {}    
+          EOF
+          sleep 5
+          LABEL=$(kubectl get cluster cls-test -n filter-test -o jsonpath='{.metadata.labels.cluster\.x-k8s\.io/watch-filter}')
+          if [ "$LABEL" != "multicluster-engine" ]; then
+            echo "FAIL: MCE webhook did not apply filter label (got: '$LABEL')"
+            exit 1
+          fi
+          echo "OK: filter label applied correctly"
+
+      - name: Smoke tests (CRDs + basic resources)
+        run: |
+          echo "Checking key CRDs..."
+          kubectl get crd clusters.cluster.x-k8s.io
+          kubectl get crd awsmanagedcontrolplanes.controlplane.cluster.x-k8s.io
+          kubectl get crd rosacontrolplanes.controlplane.cluster.x-k8s.io
+
+          echo "Checking deployments..."
+          kubectl get deploy -A | grep -E "capi|capa|cluster-api|controller-manager"
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          echo "==== CAPI & CAPA pods ===="
+          kubectl get pods -n capi-system -o yaml
+          kubectl get pods -n capa-system -o yaml
+          echo "==== events ===="
+          kubectl get events -n capi-system --sort-by=.metadata.creationTimestamp | tail -n 200
+          kubectl get events -n capa-system --sort-by=.metadata.creationTimestamp | tail -n 200
+          echo "==== capi logs ===="
+          kubectl logs -n ${{ env.CAPI_NAMESPACE }} deploy/capi-controller-manager --tail=200 || true
+          echo "==== capa logs ===="
+          kubectl logs -n ${{ env.CAPA_NAMESPACE }} deploy/capa-controller-manager --tail=200 || true
+

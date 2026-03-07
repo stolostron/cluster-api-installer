@@ -16,7 +16,6 @@ CAPI components require the cert-manager operator to generate the necessary cert
 The cluster-api-installer syncs the changes from the upstream repos to the chart directory:
  * Core CAPI provider → `charts/cluster-api`
  * CAPA - AWS provider → `charts/cluster-api-provider-aws`
- * CAPZ - Azure provider → `charts/cluster-api-provider-azure`
  * CAPM3 - Metal3 provider → `charts/cluster-api-provider-metal3`
  * OpenShift Assisted provider → `charts/cluster-api-provider-openshift-assisted`
 

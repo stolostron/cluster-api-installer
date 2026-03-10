@@ -38,8 +38,8 @@ Where:
   * `OCP_VERSION` ... the base for:
     * Controller image version - used in the Kubernetes deployment
     * Helm chart version (version in Chart.yaml)
-  * `*_BRANCH` ... the branch from which we will sync the changes for each provider
-  * `*_ORGREPO` ... source repository URLs
+  * `BRANCH` ... the branch from which we will sync the changes for each provider
+  * `ORGREPO` ... source repository URLs
 
 Then (for each provider project):
  1. The Git repository `$ORGREPO/$PROJECT` will be cloned into `out/$PROJECT`, and the `$BRANCH` will be checked out into the `out` temporary directory.

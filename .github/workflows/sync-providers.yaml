@@ -45,6 +45,16 @@ jobs:
       uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
       with:
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capz') }}
+    - name: test-target-branch-capoa
+      id: check-branch-exists-capoa
+      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
+      with:
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capoa') }}
+    - name: test-target-branch-metal3
+      id: check-branch-exists-metal3
+      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
+      with:
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'metal3') }}
     - name: checkout
       uses: actions/checkout@v4
       with:
@@ -116,6 +126,52 @@ jobs:
           - Updated with *today's* date
         labels: |
           capz
+          report
+          automated pr
+        assignees: marek-veber
+        reviewers: marek-veber
+        draft: true
+    - name: Create Pull Request CAPOA
+      id: cpr-capoa
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-openshift-assisted == 'true' && steps.check-branch-exists-capoa.outputs.exists == 'false' }}
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: CAPOA Update report
+        add-paths: charts/cluster-api-provider-openshift-assisted, src/cluster-api-provider-openshift-assisted.yaml
+        committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capoa') }}
+        delete-branch: true
+        title: '[CAPOA@${{inputs.dst-branch}}] Update report'
+        body: |
+          CAPOA@${{inputs.dst-branch}} Update report
+          - Updated with *today's* date
+        labels: |
+          capoa
+          report
+          automated pr
+        assignees: marek-veber
+        reviewers: marek-veber
+        draft: true
+    - name: Create Pull Request Metal3
+      id: cpr-metal3
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-metal3 == 'true' && steps.check-branch-exists-metal3.outputs.exists == 'false' }}
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: Metal3 Update report
+        add-paths: charts/cluster-api-provider-metal3, src/cluster-api-provider-metal3.yaml
+        committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'metal3') }}
+        delete-branch: true
+        title: '[Metal3@${{inputs.dst-branch}}] Update report'
+        body: |
+          Metal3@${{inputs.dst-branch}} Update report
+          - Updated with *today's* date
+        labels: |
+          metal3
           report
           automated pr
         assignees: marek-veber
@@ -244,3 +300,85 @@ jobs:
         echo "Response Status (create, update-epic): ${{ steps.jira-capz.outputs.status }}, ${{ steps.jira-epic-capz.outputs.status }}"
         echo "Response create Data: ${{ steps.jira-capz.outputs.response }}"
         echo "Response update-epic Data: ${{ steps.jira-epic-capz.outputs.response }}"
+    - name: Create Jira task CAPOA
+      id: jira-capoa
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-openshift-assisted == 'true' && steps.check-branch-exists-capoa.outputs.exists == 'false' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "project":
+                  {
+                     "key": "${{ env.JIRA_PROJECT }}"
+                  },
+                  "summary": "[cluster-api-installer/CAPOA@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-capoa.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPOA@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-capoa.outputs.pull-request-url }}",
+                  "issuetype": {
+                     "name": "Task"
+                  }
+              }
+            }
+        method: POST
+    - name: Update epic in Jira task CAPOA
+      id: jira-epic-capoa
+      if: ${{ steps.jira-capoa.outputs.status == '201' && fromJson(steps.jira-capoa.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capoa.outputs.response).id}}"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "${{ env.JIRA_EPIC_LINK }}"
+              }
+            }
+        method: PUT
+    - name: Show Jira task CAPOA API Responses
+      run: |
+        echo "Response Status (create, update-epic): ${{ steps.jira-capoa.outputs.status }}, ${{ steps.jira-epic-capoa.outputs.status }}"
+        echo "Response create Data: ${{ steps.jira-capoa.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-capoa.outputs.response }}"
+    - name: Create Jira task Metal3
+      id: jira-metal3
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-metal3 == 'true' && steps.check-branch-exists-metal3.outputs.exists == 'false' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "project":
+                  {
+                     "key": "${{ env.JIRA_PROJECT }}"
+                  },
+                  "summary": "[cluster-api-installer/Metal3@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-metal3.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/Metal3@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-metal3.outputs.pull-request-url }}",
+                  "issuetype": {
+                     "name": "Task"
+                  }
+              }
+            }
+        method: POST
+    - name: Update epic in Jira task Metal3
+      id: jira-epic-metal3
+      if: ${{ steps.jira-metal3.outputs.status == '201' && fromJson(steps.jira-metal3.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-metal3.outputs.response).id}}"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "${{ env.JIRA_EPIC_LINK }}"
+              }
+            }
+        method: PUT
+    - name: Show Jira task Metal3 API Responses
+      run: |
+        echo "Response Status (create, update-epic): ${{ steps.jira-metal3.outputs.status }}, ${{ steps.jira-epic-metal3.outputs.status }}"
+        echo "Response create Data: ${{ steps.jira-metal3.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-metal3.outputs.response }}"

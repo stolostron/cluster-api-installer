@@ -40,6 +40,11 @@ jobs:
       uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
       with:
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
+    - name: test-target-branch-capz
+      id: check-branch-exists-capz
+      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
+      with:
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capz') }}
     - name: checkout
       uses: actions/checkout@v4
       with:
@@ -88,6 +93,29 @@ jobs:
           - Updated with *today's* date
         labels: |
           capa
+          report
+          automated pr
+        assignees: marek-veber
+        reviewers: marek-veber
+        draft: true
+    - name: Create Pull Request CAPZ
+      id: cpr-capz
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-azure == 'true' && steps.check-branch-exists-capz.outputs.exists == 'false' }}
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: CAPZ Update report
+        add-paths: charts/cluster-api-provider-azure
+        committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capz') }}
+        delete-branch: true
+        title: '[CAPZ@${{inputs.dst-branch}}] Update report'
+        body: |
+          CAPZ@${{inputs.dst-branch}} Update report
+          - Updated with *today's* date
+        labels: |
+          capz
           report
           automated pr
         assignees: marek-veber
@@ -175,3 +203,44 @@ jobs:
         echo "Response Status (create, update-epic): ${{ steps.jira-capi.outputs.status }}, ${{ steps.jira-epic-capi.outputs.status }}"
         echo "Response create Data: ${{ steps.jira-capi.outputs.response }}"
         echo "Response update-epic Data: ${{ steps.jira-epic-capi.outputs.response }}"
+    - name: Create Jira task CAPZ
+      id: jira-capz
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-azure == 'true' && steps.check-branch-exists-capz.outputs.exists == 'false' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "project":
+                  {
+                     "key": "${{ env.JIRA_PROJECT }}"
+                  },
+                  "summary": "[cluster-api-installer/CAPZ@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-capz.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPZ@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-capz.outputs.pull-request-url }}",
+                  "issuetype": {
+                     "name": "Task"
+                  }
+              }
+            }
+        method: POST
+    - name: Update epic in Jira task CAPZ
+      id: jira-epic-capz
+      if: ${{ steps.jira-capz.outputs.status == '201' && fromJson(steps.jira-capz.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capz.outputs.response).id}}"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "${{ env.JIRA_EPIC_LINK }}"
+              }
+            }
+        method: PUT
+    - name: Show Jira task CAPZ API Responses
+      run: |
+        echo "Response Status (create, update-epic): ${{ steps.jira-capz.outputs.status }}, ${{ steps.jira-epic-capz.outputs.status }}"
+        echo "Response create Data: ${{ steps.jira-capz.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-capz.outputs.response }}"

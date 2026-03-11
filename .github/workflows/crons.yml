@@ -9,7 +9,7 @@ jobs:
   call-sync-branches:
     strategy:
       matrix:
-        dst-branch: [release-2.10, release-2.11]
+        dst-branch: [main]
     permissions:
       contents: write
       pull-requests: write

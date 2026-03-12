@@ -1,10 +1,10 @@
-OCP_VERSION ?= 4.21
-MCE_VERSION ?= 2.11.0-1
+OCP_VERSION ?= 4.22
+MCE_VERSION ?= 2.17.0-1
 SYNC2CHARTS ?= true
 
-DEFAULT_BRANCH ?= release-4.21
-CAPA_BRANCH ?= backplane-2.11
-CAPZ_BRANCH ?= backplane-2.11
+DEFAULT_BRANCH ?= release-4.22
+CAPA_BRANCH ?= backplane-2.17
+CAPZ_BRANCH ?= backplane-2.17
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ

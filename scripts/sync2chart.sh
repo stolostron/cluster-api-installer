@@ -67,6 +67,16 @@ _update_chart_yaml() {
     local chart_version="$2"
     local chart_app_version="$3"
     local chart_values_image_tag="$4"
+    local suffix="$5"
+    if [ -n "$suffix" ] ; then
+        local base_chartdir="${chartdir%${suffix}}"
+        for i in Chart.yaml values.yaml ; do
+            if [ ! -f "$chartdir/$i" -a -f "$base_chartdir/$i" ] ; then
+                echo "copy : $base_chartdir/$i $chartdir/$i"
+                cp -a "$base_chartdir/$i" "$chartdir/$i"
+            fi
+        done
+    fi
     echo "updating versions in: $chartdir/Chart.yaml $chartdir/values.yaml"
     echo "* chart version: ${chart_version}"
     echo "* chart app version: ${chart_app_version}"
@@ -91,7 +101,7 @@ update_chart_versions() {
 
    local _chartdir="${chartdir}$suffix"
    [ -d "$_chartdir" ] || return 0
-   _update_chart_yaml "$_chartdir" "$chart_version" "$chart_app_version" "$chart_values_image_tag"
+   _update_chart_yaml "$_chartdir" "$chart_version" "$chart_app_version" "$chart_values_image_tag" "$suffix"
    echo "updated chart versions in $_chartdir"
 }
 
@@ -147,17 +157,17 @@ CHARTDIR="$PROJECT_ROOT/charts/$PROJECT"
 NEWCHART="$(realpath "$BUILTDIR")/new-chart.yml"
 
 if [ "$SYNC2CHARTS" ] ;then
+    IS_UPDATED=false
     for suffix in "" "-k8s" "-kind" ; do
+        [ "$PROJECT_ROOT/charts/config$suffix/$PROJECT" ] || continue # not defined/required
         sync_chart_files "$BUILTDIR" "$CHARTDIR" "$suffix" 
         update_chart_versions "$CHARTDIR" "$CHART_VERSION" "$CHART_APP_VERSION" "$CHART_VALUES_IMAGE_TAG" "$suffix"
         generate_helm_template "$CHARTDIR" "$NEWCHART" "$suffix"
+        if [ $(git diff --name-only "$CHARTDIR$suffix" $SRC_PROJECT_FILE|wc -l) -gt 0 ] ; then
+            IS_UPDATED=true
+        fi
     done
 
-
-    IS_UPDATED=false
-    if [ $(git diff --name-only "$CHARTDIR" $SRC_PROJECT_FILE|wc -l) -gt 0 ] ; then
-        IS_UPDATED=true
-    fi
     echo "updated_$PROJECT=$IS_UPDATED"
     if [ -n "$GITHUB_OUTPUT" ] ; then
         # when started under github workflow

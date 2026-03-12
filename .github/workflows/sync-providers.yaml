@@ -61,7 +61,7 @@ jobs:
         ref: ${{ inputs.dst-branch }}
     - name: Sync
       id: sync
-      run: make build-helm-charts
+      run: make build-${{ matrix.project }}-chart
     - name: Create Pull Request
       id: cpr
       if: ${{ steps.sync.outputs[format('updated_{0}', matrix.project)] == 'true' && steps.check-branch-exists.outputs.exists == 'false' }}

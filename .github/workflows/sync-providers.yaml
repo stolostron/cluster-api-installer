@@ -26,19 +26,19 @@ jobs:
           - short-name: capi
             project: cluster-api
             display-name: CAPI
-            add-paths: "charts/cluster-api, src/cluster-api.yaml"
+            add-paths: "charts/cluster-api, charts/cluster-api-k8s, charts/cluster-api-kind, src/cluster-api.yaml"
           - short-name: capa
             project: cluster-api-provider-aws
             display-name: CAPA
-            add-paths: "charts/cluster-api-provider-aws, src/cluster-api-provider-aws.yaml"
+            add-paths: "charts/cluster-api-provider-aws, charts/cluster-api-provider-aws-kind, src/cluster-api-provider-aws.yaml"
           - short-name: capz
             project: cluster-api-provider-azure
             display-name: CAPZ
-            add-paths: "charts/cluster-api-provider-azure"
+            add-paths: "charts/cluster-api-provider-azure, charts/cluster-api-provider-azure-k8s, charts/cluster-api-provider-azure-kind, src/cluster-api-provider-azure.yaml"
           - short-name: capoa
             project: cluster-api-provider-openshift-assisted
             display-name: CAPOA
-            add-paths: "charts/cluster-api-provider-openshift-assisted, src/cluster-api-provider-openshift-assisted.yaml"
+            add-paths: "charts/cluster-api-provider-openshift-assisted, charts/cluster-api-provider-openshift-assisted-k8s, src/cluster-api-provider-openshift-assisted.yaml"
           - short-name: metal3
             project: cluster-api-provider-metal3
             display-name: Metal3

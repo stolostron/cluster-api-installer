@@ -2,32 +2,46 @@
 
 ## Introduction
 
-The Cluster-api-installer repository creates Helm charts for Cluster-API (CAPI) and its providers, such as Cluster-API-provider-AWS (CAPA), designed for deployment on OpenShift clusters. The MultiClusterEngine operator utilizes these Helm charts to deploy CAPI and CAPA as components of the MultiClusterEngine. For the upcoming release, the Cluster-api-installer repository will include Helm charts for additional Cluster-API providers, such as Cluster-API-provider-Azure (CAPZ) and Cluster-API-provider-Metal3 (CAPM).
+The Cluster-api-installer repository creates Helm charts for Cluster-API (CAPI) and its providers, designed for deployment on OpenShift clusters. The MultiClusterEngine operator utilizes these Helm charts to deploy CAPI and its providers as components of the MultiClusterEngine.
+
+Currently supported providers:
+ * Cluster-API-provider-AWS (CAPA)
+ * Cluster-API-provider-Azure (CAPZ)
+ * Cluster-API-provider-Metal3 (CAPM3)
+ * Cluster-API-provider-OpenShift-Assisted
 
 CAPI components require the cert-manager operator to generate the necessary certificates. The Cluster-api-installer modifies the CAPI Helm charts to leverage the cert-serve-service (certificate service) that already exists within the OpenShift cluster, instead of relying on the cert-manager operator.
 
 ## How it works
-The cluster-api-installer synch the changes happened in the openshift/cluser-api and openshift/cluster-api-provider-aws repos to the chart directory 
+The cluster-api-installer syncs the changes from the upstream repos to the chart directory:
  * Core CAPI provider → `charts/cluster-api`
  * CAPA - AWS provider → `charts/cluster-api-provider-aws`
+ * CAPM3 - Metal3 provider → `charts/cluster-api-provider-metal3`
+ * OpenShift Assisted provider → `charts/cluster-api-provider-openshift-assisted`
 
 The synchronization process synchronizes the Kubernetes deployment and creates a Helm chart (used for the Backplane Operator).
 
 The synchronizations are defined in `charts/Makefile`:
 ```make
-OCP_VERSION ?= 4.19
-BRANCH ?= master
-ORGREPO ?= https://github.com/openshift
+OCP_VERSION ?= 4.21
+DEFAULT_BRANCH ?= release-4.21
+CAPA_BRANCH ?= backplane-2.11
+CAPZ_BRANCH ?= backplane-2.11
+OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.11
+METAL3_BRANCH ?= release-4.21
+DEFAULT_ORGREPO ?= https://github.com/openshift
+STOLOSTRON_ORGREPO ?= https://github.com/stolostron
+OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
 ```
 
 Where:
   * `OCP_VERSION` ... the base for:
     * Controller image version - used in the Kubernetes deployment
     * Helm chart version (version in Chart.yaml)
-  * `BRANCH` ... the branch from which we will sync the changes
-  * `ORGREPO` ... source repository URL
+  * `BRANCH` ... the branch from which we will sync the changes for each provider
+  * `ORGREPO` ... source repository URLs
 
-Then (for `PROJECT` in `cluster-api` `cluster-api-provider-aws`):
+Then (for each provider project):
  1. The Git repository `$ORGREPO/$PROJECT` will be cloned into `out/$PROJECT`, and the `$BRANCH` will be checked out into the `out` temporary directory.
  2. The `src/$PROJECT.yaml` file with the source objects (before transformation - see below) will be created.
  3. The synchronization of CRDs and Helm chart templates will begin, and the necessary files will be created/updated in the `charts/$PROJECT/crds` and `charts/$PROJECT/templates` directories.

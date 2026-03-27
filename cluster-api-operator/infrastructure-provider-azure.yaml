@@ -17,7 +17,7 @@ spec:
       deployment:
         containers:
         - name: manager
-          imageUrl: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.3
+          imageUrl: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.5
           args:
             --crd-pattern: authorization.azure.com/*;managedidentity.azure.com/*;network.azure.com/*;eventhub.azure.com/*;storage.azure.com/*;web.azure.com/*;insights.azure.com/*;keyvault.azure.com/*
             --secure-metrics: "false"
@@ -51,7 +51,7 @@ spec:
     containers:
     - name: manager
       # Use your custom image
-      imageUrl: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-5
+      imageUrl: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-7
       args:
         --azurecluster-concurrency: "20"
         --azuremachine-concurrency: "50"

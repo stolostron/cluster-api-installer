@@ -2,6 +2,32 @@
 
 This directory contains configuration files for deploying the Cluster API Operator with a custom Azure Infrastructure Provider.
 
+## Automated Deployment
+
+Use `scripts/deploy-operator.sh` to automate the full deployment (operator + providers):
+
+```bash
+# On Kind cluster
+USE_KIND=true KIND_CLUSTER_NAME=my-cluster ./scripts/deploy-operator.sh cluster-api-provider-azure
+
+# On OpenShift (CRC)
+./scripts/deploy-operator.sh cluster-api-provider-azure
+```
+
+The script handles:
+1. Installing `cluster-api-operator` via helm (if not already installed)
+2. Applying `core-provider.yaml` and `infrastructure-provider-azure.yaml`
+3. Waiting for `ProviderInstalled` condition on each provider
+4. Waiting for controller deployments to become available
+
+Environment variables:
+- `USE_KIND=true` - use Kind cluster
+- `KIND_CLUSTER_NAME` - Kind cluster name (default: `aso2`)
+- `OCP_CONTEXT` - OpenShift context (default: `crc-admin`)
+- `CLUSTER_API_OPERATOR_VERSION` - operator helm chart version (default: `v0.24.0`)
+- `DO_DEPLOY=false` - skip deploy, only check
+- `DO_CHECK=false` - skip health checks
+
 ## Requirements
 
 - **cluster-api-operator**: v0.24.0 or later (required for v1beta2 API support)
@@ -18,9 +44,29 @@ This directory contains configuration files for deploying the Cluster API Operat
 ## Custom Images
 
 This configuration uses custom images:
-- **CAPZ Controller**: quay.io/mveber/cluster-api-provider-azure-rhel9:2.11.0-1
-- **ASO Controller**: quay.io/mveber/azure-service-operator-rhel9:2.11.0-1
+- **CAPZ Controller**: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-8
+- **ASO Controller**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.5
 - **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.0-mce-217
+
+## API Version Support
+
+The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
+
+| ARO HCP API Version | Required CAPZ Release | Status |
+|----------------------|-----------------------|--------|
+| `v1api20240610preview` | v1.22.0-mce-217 | Current |
+| `v1api20251223preview` | TBD (new release needed) | Pending |
+
+To migrate from `v1api20240610preview` to `v1api20251223preview`, see
+[Migration Guide](../doc/aro-hcp-api-v1api20251223preview-migration.md).
+
+The new release must include updated `infrastructure-components.yaml` with CRDs for:
+- `hcpopenshiftclusters.redhatopenshift.azure.com` (v1api20251223preview)
+- `hcpopenshiftclustersnodepools.redhatopenshift.azure.com` (v1api20251223preview)
+- `hcpopenshiftclustersexternalauths.redhatopenshift.azure.com` (v1api20251223preview)
+
+The ASO CRD pattern in `infrastructure-provider-azure.yaml` must include
+`redhatopenshift.azure.com/*` for ARO HCP resources to be reconciled.
 
 ## Version Compatibility
 
@@ -172,7 +218,7 @@ releaseSeries:
 ## Azure Service Operator
 
 The configuration includes an additional deployment for Azure Service Operator controller manager with:
-- **Custom Image**: quay.io/mveber/azure-service-operator-rhel9:2.11.0-1
+- **Custom Image**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.5
 - **CRD Pattern Filter**: authorization.azure.com/*, managedidentity.azure.com/*, network.azure.com/*, eventhub.azure.com/*, storage.azure.com/*, web.azure.com/*, insights.azure.com/*, keyvault.azure.com/*
 - **Sync Period**: 1 hour
 

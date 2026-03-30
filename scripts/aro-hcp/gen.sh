@@ -22,8 +22,8 @@ export ENV=${ENV:-stage}
 KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-aso2}"
 export CREATE_CREDENTIALS=true
 export NAMESPACE=${NAMESPACE:-default}
-#export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
-export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20240610preview}
+export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
+#export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20240610preview}
 
 
 if [ "$USE_CI" != "true" ] ; then
@@ -152,6 +152,9 @@ if [ -n "$CREATE_CREDENTIALS" ] ; then
     envsubst  < $TEMPLATE_FILE_CRE > "$GEN_OUTPUT/credentials.yaml"
 fi
 
+if [ "$ARO_HCP_VERSION" == "v1api20240610preview" ] ; then
+    ARO_TEMPLATE=${ARO_TEMPLATE:-'aro-template-v1api20240610preview.yaml'}
+fi
 ARO_TEMPLATE=${ARO_TEMPLATE:-'aro-template.yaml'}
 TEMPLATE_FILE_ARO=$(dirname $0)/${ARO_TEMPLATE}
 TEMPLATE_FILE_IS=$(dirname $0)/is-template.yaml

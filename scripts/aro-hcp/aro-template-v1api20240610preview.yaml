@@ -89,10 +89,6 @@ spec:
              group: network.azure.com
              kind: VirtualNetworksSubnet
              name: "${VNET}-${SUBNET}"
-           vnetIntegrationSubnetReference:
-             group: network.azure.com
-             kind: VirtualNetworksSubnet
-             name: "${VNET}-${SUBNET}"
            managedResourceGroup: "capz_node_${CS_CLUSTER_NAME}_${RESOURCEGROUPNAME}_rg"
            outboundType: LoadBalancer
          clusterImageRegistry:
@@ -103,9 +99,8 @@ spec:
              customerManaged:
                encryptionType: KMS
                kms:
-                 vaultName: "${KV}"
-                 visibility: Public
                  activeKey:
+                   vaultName: "${KV}"
                    name: "etcd-data-kms-encryption-key"
          network:
            hostPrefix: 23

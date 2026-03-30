@@ -27,6 +27,7 @@ fi
 function set_namespace_and_t {
     DEPLOYMENTS=()
     NAMESPACE=""
+    HELM_RELEASE_NAME=""
     if [ "$USE_K8S" = true ] ; then
         NAMESPACE="multicluster-engine"
     fi
@@ -63,13 +64,18 @@ function set_namespace_and_t {
         ;;
       aro-mockup-proxy)
         T="aro-mockup-proxy"
-        NAMESPACE=${NAMESPACE:-"aro-mockup-proxy"}
+        HELM_RELEASE_NAME="aro-mockup-proxy"
+        NAMESPACE=${NAMESPACE:-"capz-system"}
         DEPLOYMENTS[$NAMESPACE]="${T}"
         ;;
     esac
 }
 
 CHARTS=$(echo cluster-api $*|tr ' ' '\n'|sort -u|tr '\n' ' ')
+
+if [ "$ARO_NULL_PROVISIONING" = "true" ] ; then
+    CHARTS=$(echo aro-mockup-proxy $CHARTS|tr ' ' '\n'|sort -u|tr '\n' ' ')
+fi
 
 if [ "$DO_DEPLOY" = true ] ; then
     for PROJECT in $CHARTS ; do
@@ -83,8 +89,22 @@ if [ "$DO_DEPLOY" = true ] ; then
         echo "        PROJECT: $PROJECT"
         echo "      NAMESPACE: $NAMESPACE"
         kubectl $KUBE_CONTEXT get namespace "$NAMESPACE" >/dev/null 2>&1 || kubectl $KUBE_CONTEXT create namespace "$NAMESPACE" 
+        # Create prerequisites for aro-mockup-proxy
+        if [ "$PROJECT" = "aro-mockup-proxy" ] ; then
+            KUBECONFIG_FILE=${MOCK_KUBECONFIG_FILE:-"${SCRIPT_DIR}/../aro-mockup-proxy/workload-kubeconfig.yaml"}
+            if [ -f "$KUBECONFIG_FILE" ] ; then
+                echo "  Creating mockup-proxy-kubeconfig secret from $KUBECONFIG_FILE"
+                kubectl $KUBE_CONTEXT -n "$NAMESPACE" create secret generic mockup-proxy-kubeconfig \
+                    --from-file=workload-kubeconfig.yaml="$KUBECONFIG_FILE" \
+                    --dry-run=client -o yaml | kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f -
+            else
+                echo "  WARNING: kubeconfig file not found at $KUBECONFIG_FILE, requestAdminCredential will fail"
+            fi
+        fi
         echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]}
-        helm template $CHART --include-crds --namespace "$NAMESPACE" --set "Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]}|kubectl $KUBE_CONTEXT apply -f - --server-side --force-conflicts
+        HELM_NAME_ARG=""
+        [ -n "$HELM_RELEASE_NAME" ] && HELM_NAME_ARG="--name-template=$HELM_RELEASE_NAME"
+        helm template $HELM_NAME_ARG $CHART --include-crds --namespace "$NAMESPACE" --set "Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]}|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
         echo
     done
 fi
@@ -113,19 +133,32 @@ fi
 if [ "$ARO_NULL_PROVISIONING" = "true" ] && echo "$CHARTS" | grep -q "aro-mockup-proxy"; then
     echo "========= Configuring ARO null-provisioning mode ========="
 
-    # Get the mockup proxy service endpoint
-    MOCKUP_PROXY_SERVICE="aro-mockup-proxy.aro-mockup-proxy.svc.cluster.local:8443"
+    # Get the mockup proxy service endpoint (in capz-system namespace)
+    MOCKUP_PROXY_SERVICE="aro-mockup-proxy.capz-system.svc.cluster.local:8443"
     echo "Mockup proxy service: $MOCKUP_PROXY_SERVICE"
 
     # Configure Azure Service Operator to use the mockup proxy
+    # ASO reads these env vars from the aso-controller-settings secret via valueFrom,
+    # so we patch the secret rather than the deployment to avoid value/valueFrom conflicts
     if echo "$CHARTS" | grep -q "cluster-api-provider-azure"; then
-        echo "Patching Azure Service Operator deployment to use mockup proxy..."
+        echo "Patching aso-controller-settings secret to use mockup proxy..."
 
-        # Set environment variables using kubectl set env (replaces if exists, adds if not)
-        kubectl $KUBE_CONTEXT -n capz-system set env deployment/azureserviceoperator-controller-manager \
-            AZURE_RESOURCE_MANAGER_ENDPOINT="https://$MOCKUP_PROXY_SERVICE" \
-            AZURE_RESOURCE_MANAGER_AUDIENCE="https://management.azure.com/" \
-            || echo "Warning: Failed to configure ASO deployment"
+        kubectl $KUBE_CONTEXT -n capz-system patch secret aso-controller-settings \
+            --type merge -p "{\"stringData\":{\"AZURE_RESOURCE_MANAGER_ENDPOINT\":\"https://$MOCKUP_PROXY_SERVICE\",\"AZURE_RESOURCE_MANAGER_AUDIENCE\":\"https://management.azure.com/\"}}" \
+            || echo "Warning: Failed to patch aso-controller-settings secret"
+
+        # Patch ASO deployment to trust the mockup proxy CA certificate and restart
+        # Skip if already patched (idempotent)
+        if ! kubectl $KUBE_CONTEXT -n capz-system get deployment azureserviceoperator-controller-manager -o jsonpath='{.spec.template.spec.volumes[*].name}' | grep -q mockup-proxy-ca; then
+            echo "Patching ASO deployment to trust mockup proxy CA..."
+            kubectl $KUBE_CONTEXT -n capz-system patch deployment azureserviceoperator-controller-manager --type=json -p='[
+              {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"mockup-proxy-ca","secret":{"secretName":"aro-mockup-proxy-tls","items":[{"key":"ca.crt","path":"ca.crt"}]}}},
+              {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts/-","value":{"name":"mockup-proxy-ca","mountPath":"/etc/ssl/certs/aro-mockup-proxy-ca.crt","subPath":"ca.crt","readOnly":true}},
+              {"op":"add","path":"/spec/template/spec/containers/0/env/-","value":{"name":"SSL_CERT_FILE","value":"/etc/ssl/certs/aro-mockup-proxy-ca.crt"}}
+            ]'
+        else
+            echo "ASO deployment already patched with mockup proxy CA, skipping"
+        fi
 
         echo "✓ Azure Service Operator configured to use mockup proxy"
         echo "  ARM endpoint: https://$MOCKUP_PROXY_SERVICE"

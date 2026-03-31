@@ -63,9 +63,9 @@ build-cluster-api-provider-aws-chart:
 build-cluster-api-provider-azure-chart:
 	@echo "Building cluster-api-provider-azure chart"
 	WKDIR="$(WKDIR)" \
-	ORGREPO="$(STOLOSTRON_ORGREPO)" \
+	ORGREPO="https://github.com/marek-veber" \
 	PROJECT="cluster-api-provider-azure" \
-	BRANCH="$(CAPZ_BRANCH)" \
+	BRANCH="2025-12-23-preview" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-azure/config/tmp" \
 	CHART_VERSION="$(MCE_VERSION)" \

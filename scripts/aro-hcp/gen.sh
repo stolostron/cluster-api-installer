@@ -114,6 +114,7 @@ export OPERATORS_UAMIS_SUFFIX=$(cat "$OPERATORS_UAMIS_SUFFIX_FILE")
 
 export VNET="$NAME_PREFIX-vnet"
 export SUBNET="$NAME_PREFIX-subnet"
+export INTEGRATION_SUBNET="$NAME_PREFIX-integration-subnet"
 export NSG="$NAME_PREFIX-nsg"
 export KV="$NAME_PREFIX-kv"
 export KV_VERSION="40037529f72042cbb4f69ddb97b8bced"

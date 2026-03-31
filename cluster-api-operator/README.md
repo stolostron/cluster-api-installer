@@ -46,7 +46,7 @@ Environment variables:
 This configuration uses custom images:
 - **CAPZ Controller**: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-8
 - **ASO Controller**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.5
-- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.0-mce-217
+- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.1-mce-217
 
 ## API Version Support
 
@@ -54,8 +54,11 @@ The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 
 | ARO HCP API Version | Required CAPZ Release | Status |
 |----------------------|-----------------------|--------|
-| `v1api20240610preview` | v1.22.0-mce-217 | Current |
-| `v1api20251223preview` | TBD (new release needed) | Pending |
+| `v1api20240610preview` | v1.22.0-mce-217 or v1.22.1-mce-217 | Supported |
+| `v1api20251223preview` | v1.22.1-mce-217 | Current |
+
+> **Note:** Release v1.22.1-mce-217 uses the `2025-12-23-preview` API version
+> to communicate with ARM, even when using `v1api20240610preview` CRDs.
 
 To migrate from `v1api20240610preview` to `v1api20251223preview`, see
 [Migration Guide](../doc/aro-hcp-api-v1api20251223preview-migration.md).
@@ -191,7 +194,7 @@ kubectl logs -n capz-system -l control-plane=azureserviceoperator-controller-man
 
 ## Custom Release Requirements
 
-Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.0-mce-217 must include:
+Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.1-mce-217 must include:
 
 1. **metadata.yaml** - Provider metadata with version information
 2. **infrastructure-components.yaml** - All CRDs, deployments, and resources (including ARO HCP CRDs)
@@ -293,7 +296,7 @@ Common issues:
 ### Cannot fetch manifests from GitHub
 
 Ensure:
-1. The release v1.22.0-mce-217 exists at https://github.com/stolostron/cluster-api-provider-azure/releases
+1. The release v1.22.1-mce-217 exists at https://github.com/stolostron/cluster-api-provider-azure/releases
 2. The release contains `metadata.yaml` and `infrastructure-components.yaml` files
 3. The cluster can reach github.com (or configure a proxy if needed)
 

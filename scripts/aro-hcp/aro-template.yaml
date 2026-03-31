@@ -1080,6 +1080,26 @@ spec:
       roleDefinitionReference:
         # c0ff367d-66d8-445e-917c-583feb0ef0d4 represents 'hcpServiceManagedIdentityRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/c0ff367d-66d8-445e-917c-583feb0ef0d4
+  # Temporary custom role assignment for service-managed-identity network permissions
+  # (until the built-in hcpServiceManagedIdentityRoleId is updated globally)
+  # Created by: scripts/aro-hcp/create-smi-network-role.sh
+  - apiVersion: authorization.azure.com/v1api20220401
+    kind: RoleAssignment
+    metadata:
+      name: ${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}-sminetworktemp-rg
+      namespace: ${NAMESPACE}
+    spec:
+      owner:
+        name: ${RESOURCEGROUPNAME}
+        group: resources.azure.com
+        kind: ResourceGroup
+      principalIdFromConfig:
+        name: identity-map-${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}
+        key: principalId
+      principalType: ServicePrincipal
+      roleDefinitionReference:
+        # ${SMI_NETWORK_ROLE_ID} represents 'ARO HCP SMI Network Temp' custom role
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/${SMI_NETWORK_ROLE_ID}
 ---
 apiVersion: cluster.x-k8s.io/v1beta2
 kind: Cluster

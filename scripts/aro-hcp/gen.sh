@@ -119,16 +119,6 @@ export NSG="$NAME_PREFIX-nsg"
 export KV="$NAME_PREFIX-kv"
 export KV_VERSION="40037529f72042cbb4f69ddb97b8bced"
 
-# Lookup custom SMI network role (created by create-smi-network-role.sh)
-SMI_NETWORK_ROLE_NAME="ARO HCP SMI Network Temp"
-SMI_NETWORK_ROLE_ID=$(az role definition list --name "$SMI_NETWORK_ROLE_NAME" --subscription "$AZURE_SUBSCRIPTION_ID" --query '[0].name' -o tsv 2>/dev/null || true)
-if [ -n "$SMI_NETWORK_ROLE_ID" ]; then
-    export SMI_NETWORK_ROLE_ID
-    echo "SMI_NETWORK_ROLE_ID=$SMI_NETWORK_ROLE_ID"
-else
-    echo "⚠  Custom role '$SMI_NETWORK_ROLE_NAME' not found - run create-smi-network-role.sh first"
-fi
-
 # Settings needed for AzureClusterIdentity used by the AzureCluster
 export AZURE_CLUSTER_IDENTITY_NAME="cluster-identity"
 export AZURE_CLUSTER_IDENTITY_NAMESPACE="$NAMESPACE"

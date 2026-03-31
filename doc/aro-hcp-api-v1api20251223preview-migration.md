@@ -85,6 +85,33 @@ A new required field `vnetIntegrationSubnetReference` was added to the
 between the hosted control plane and cluster nodes. It must be dedicated
 to ARO HCP and cannot be shared with the cluster subnet or node pool subnets.
 
+The integration subnet requires:
+- A **separate address prefix** from the cluster subnet (e.g. `10.100.77.0/24`)
+- A **delegation** to `Microsoft.RedHatOpenShift/hcpOpenShiftClusters`
+- **No NSG** associated (unlike the cluster subnet)
+
+#### Integration subnet ASO resource
+
+Create a dedicated `VirtualNetworksSubnet` with the delegation:
+
+```yaml
+- apiVersion: network.azure.com/v1api20201101
+  kind: VirtualNetworksSubnet
+  metadata:
+    name: my-vnet-my-integration-subnet
+    namespace: default
+  spec:
+    owner:
+      name: my-vnet
+    addressPrefix: 10.100.77.0/24
+    azureName: my-integration-subnet
+    delegations:
+      - name: Microsoft.RedHatOpenShift.hcpOpenShiftClusters
+        serviceName: Microsoft.RedHatOpenShift/hcpOpenShiftClusters
+```
+
+#### HcpOpenShiftCluster reference
+
 ```yaml
 # Before (v1api20240610preview)
 properties:
@@ -117,6 +144,30 @@ properties:
       name: "my-nsg"
     managedResourceGroup: "my-managed-rg"
     outboundType: LoadBalancer
+```
+
+#### Role assignments for the integration subnet
+
+The `service-managed-identity` needs `hcpServiceManagedIdentityRoleId` on the
+integration subnet (same as on the cluster subnet):
+
+```yaml
+- apiVersion: authorization.azure.com/v1api20220401
+  kind: RoleAssignment
+  metadata:
+    name: <user>-<cluster>-service-managed-identity-<suffix>-hcpservicemanagedidentityroleid-intsubnet
+  spec:
+    owner:
+      name: my-vnet-my-integration-subnet
+      group: network.azure.com
+      kind: VirtualNetworksSubnet
+    principalIdFromConfig:
+      name: identity-map-<user>-<cluster>-service-managed-identity-<suffix>
+      key: principalId
+    principalType: ServicePrincipal
+    roleDefinitionReference:
+      # c0ff367d-66d8-445e-917c-583feb0ef0d4 represents 'hcpServiceManagedIdentityRoleId'
+      armId: /subscriptions/<sub-id>/providers/Microsoft.Authorization/roleDefinitions/c0ff367d-66d8-445e-917c-583feb0ef0d4
 ```
 
 ### 4. Operators Authentication (now required)

@@ -7,10 +7,14 @@ This directory contains configuration files for deploying the Cluster API Operat
 Use `scripts/deploy-operator.sh` to automate the full deployment (operator + providers):
 
 ```bash
+# clone the repo
+git clone -b capi-test-rebase https://github.com/marek-veber/cluster-api-installer.git capi-test-rebase
+cd capi-test-rebase
+
 # On Kind cluster
 USE_KIND=true KIND_CLUSTER_NAME=my-cluster ./scripts/deploy-operator.sh cluster-api-provider-azure
 
-# On OpenShift (CRC)
+# Or on OpenShift (CRC)
 ./scripts/deploy-operator.sh cluster-api-provider-azure
 ```
 
@@ -44,8 +48,8 @@ Environment variables:
 ## Custom Images
 
 This configuration uses custom images:
-- **CAPZ Controller**: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-8
-- **ASO Controller**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.5
+- **CAPZ Controller**: quay.io/mveber/cluster-api-provider-azure-rhel9:v2.17.0-10
+- **ASO Controller**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.9
 - **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.1-mce-217
 
 ## API Version Support
@@ -221,7 +225,7 @@ releaseSeries:
 ## Azure Service Operator
 
 The configuration includes an additional deployment for Azure Service Operator controller manager with:
-- **Custom Image**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.5
+- **Custom Image**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.9
 - **CRD Pattern Filter**: authorization.azure.com/*, managedidentity.azure.com/*, network.azure.com/*, eventhub.azure.com/*, storage.azure.com/*, web.azure.com/*, insights.azure.com/*, keyvault.azure.com/*
 - **Sync Period**: 1 hour
 

@@ -16,9 +16,9 @@ metadata:
   name: azure
   namespace: capz-system
 spec:
-  version: <new-version>
+  version: v1.22.1-mce-217
   fetchConfig:
-    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/<new-version>/infrastructure-components.yaml
+    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/v1.22.1-mce-217/infrastructure-components.yaml
   additionalDeployments:
     azureserviceoperator-controller-manager:
       deployment:
@@ -28,6 +28,10 @@ spec:
           args:
             --crd-pattern: authorization.azure.com/*;managedidentity.azure.com/*;network.azure.com/*;eventhub.azure.com/*;storage.azure.com/*;web.azure.com/*;insights.azure.com/*;keyvault.azure.com/*;redhatopenshift.azure.com/*
 ```
+See: [infrastructure-provider-azure.yaml](../cluster-api-operator/infrastructure-provider-azure.yaml)
+The following images are used:
+* CAPZ: quay.io/mveber/cluster-api-provider-azure-rhel9:v2.17.0-10
+* ASO: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.9
 
 ## HcpOpenShiftCluster Changes
 

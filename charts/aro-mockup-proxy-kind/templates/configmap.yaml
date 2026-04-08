@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "aro-mockup-proxy.fullname" . }}
+  labels:
+    {{- include "aro-mockup-proxy.labels" . | nindent 4 }}
+data:
+  MOCK_PROXY_PORT: {{ .Values.config.port | quote }}
+  MOCK_PROXY_DB: {{ .Values.config.databasePath | quote }}
+  AZURE_ENDPOINT: {{ .Values.config.azureEndpoint | quote }}
+  ENABLE_TLS: {{ .Values.config.enableTLS | quote }}
+  ENABLE_ASYNC_OPS: {{ .Values.config.enableAsyncOperations | quote }}
+  ENABLE_VALIDATION: {{ .Values.config.enableValidation | quote }}
+  ENABLE_METRICS: {{ .Values.config.enableMetrics | quote }}
+  PROVISIONING_DELAY: {{ .Values.config.provisioningDelay | quote }}
+  DEFAULT_PROVISIONING_STATE: {{ .Values.config.defaultProvisioningState | quote }}
+  SIMULATE_FAILURES: {{ .Values.config.simulateFailures | quote }}
+  FAILURE_RATE: {{ .Values.config.failureRate | quote }}
+  ASYNC_TIMEOUT: {{ .Values.config.asyncOperationTimeout | quote }}
+  POLLING_INTERVAL: {{ .Values.config.pollingInterval | quote }}
+  MOCK_PROXY_EXTERNAL_HOST: {{ .Values.config.externalHost | quote }}
+  {{- if .Values.tls.enabled }}
+  TLS_CERT_FILE: "/tls/tls.crt"
+  TLS_KEY_FILE: "/tls/tls.key"
+  {{- end }}

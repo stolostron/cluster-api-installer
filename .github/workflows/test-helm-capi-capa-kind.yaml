@@ -1,7 +1,7 @@
 name: Helm chart deploy test (CAPI + CAPA on kind)
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - "charts/cluster-api-kind/crds/**"
       - "charts/cluster-api-kind/templates/**"
@@ -41,8 +41,20 @@ jobs:
       CAPA_CHART_PATH: charts/cluster-api-provider-aws-kind
 
     steps:
+      # 🔐 Determine if PR is trusted (same repo)
+      - name: Check if trusted PR
+        id: trust
+        run: |
+          if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+            echo "trusted=true" >> $GITHUB_OUTPUT
+          else
+            echo "trusted=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install tooling (kubectl/helm/kind)
         uses: azure/setup-helm@v4
@@ -64,6 +76,7 @@ jobs:
           kubectl get nodes -o wide
 
       - name: Login to Quay.io
+        if: steps.trust.outputs.trusted == 'true'
         uses: docker/login-action@v3
         with:
           registry: quay.io
@@ -71,6 +84,7 @@ jobs:
           password: "${{ secrets.QUAY_PASSWORD }}"
 
       - name: Load images into kind
+        if: steps.trust.outputs.trusted == 'true'
         run: |
           CAPI_IMAGE_URL=$(yq '.manager.image.url' ${{ env.CAPI_CHART_PATH }}/values.yaml)
           CAPI_IMAGE_TAG=$(yq '.manager.image.tag' ${{ env.CAPI_CHART_PATH }}/values.yaml)

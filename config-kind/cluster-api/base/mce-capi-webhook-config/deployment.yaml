@@ -35,3 +35,5 @@ spec:
         secret:
           secretName: mce-capi-webhook-config-service-cert
       serviceAccount: mce-labeling-manager
+      imagePullSecrets:
+      - name: capi-manager-pull-credentials

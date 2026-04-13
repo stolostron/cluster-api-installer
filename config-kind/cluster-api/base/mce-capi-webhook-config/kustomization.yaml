@@ -6,3 +6,4 @@ resources:
 - mutatingwebhook.yaml
 - rbac.yaml
 - cert.yaml
+- capi-pull-secret.yaml

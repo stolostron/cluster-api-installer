@@ -8,3 +8,4 @@ manager:
   image:
     tag: 2.17.0-defc50d
     url: quay.io/acm-d/cluster-api-provider-aws-rhel9
+imagePullSecret: ""

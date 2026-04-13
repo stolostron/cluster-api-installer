@@ -29,6 +29,8 @@ spec:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
+      imagePullSecrets:
+      - name: capi-manager-pull-credentials
       serviceAccount: mce-labeling-manager
       volumes:
       - name: cert

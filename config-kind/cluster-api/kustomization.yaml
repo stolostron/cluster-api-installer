@@ -40,6 +40,14 @@ patches:
         path: /spec/template/spec/containers/0/args/0
         value: '--watch-filter=multicluster-engine'
   - target:
+      kind: ServiceAccount
+      name: capi-manager
+    patch: |-
+      - op: add
+        path: /imagePullSecrets
+        value:
+        - name: capi-manager-pull-credentials
+  - target:
       kind: Deployment
       name: mce-capi-webhook-config
     patch: |-
@@ -49,3 +57,7 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+        - name: capi-manager-pull-credentials

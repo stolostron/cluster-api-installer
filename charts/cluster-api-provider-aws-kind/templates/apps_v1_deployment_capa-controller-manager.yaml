@@ -89,6 +89,8 @@ spec:
           readOnly: true
         - mountPath: /home/.aws
           name: credentials
+      imagePullSecrets:
+      - name: capa-manager-pull-credentials
       securityContext:
         fsGroup: 1000
         runAsNonRoot: true

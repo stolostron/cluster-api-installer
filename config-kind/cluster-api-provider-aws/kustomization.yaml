@@ -4,6 +4,7 @@ kind: Kustomization
 ## condsidering resources under cluster-api-provider-aws/config/default directory to generate the CAPA CRDs and CRs
 resources:
 - default/
+- base/capa-pull-secret.yaml
 
 transformers:
 - base/transformer.yaml
@@ -29,6 +30,10 @@ patches:
         path: /metadata/annotations
         value:
           iam.amazonaws.com/role: '{{ .Values.aws.iamRole }}'
+      - op: add
+        path: /imagePullSecrets
+        value:
+        - name: capa-manager-pull-credentials
   # Update secrets
   - target:
       version: v1
@@ -85,6 +90,10 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+        - name: capa-manager-pull-credentials
       # - op: remove
       #   path: /spec/template/spec/containers/0/securityContext/runAsUser
       # - op: remove

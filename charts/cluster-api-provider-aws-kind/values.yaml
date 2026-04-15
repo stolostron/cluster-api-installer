@@ -6,6 +6,6 @@ rosa:
 manager:
   cmd: /bin/cluster-api-provider-aws-controller-manager
   image:
-    tag: 2.17.0-defc50d
+    tag: 2.17.0-1
     url: quay.io/acm-d/cluster-api-provider-aws-rhel9
 imagePullSecret: ""

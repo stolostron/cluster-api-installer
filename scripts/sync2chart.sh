@@ -159,7 +159,7 @@ NEWCHART="$(realpath "$BUILTDIR")/new-chart.yml"
 if [ "$SYNC2CHARTS" ] ;then
     IS_UPDATED=false
     for suffix in "" "-k8s" "-kind" ; do
-        [ "$PROJECT_ROOT/charts/config$suffix/$PROJECT" ] || continue # not defined/required
+        [ -d "$PROJECT_ROOT/charts/config$suffix/$PROJECT" ] || continue # not defined/required
         sync_chart_files "$BUILTDIR" "$CHARTDIR" "$suffix" 
         update_chart_versions "$CHARTDIR" "$CHART_VERSION" "$CHART_APP_VERSION" "$CHART_VALUES_IMAGE_TAG" "$suffix"
         generate_helm_template "$CHARTDIR" "$NEWCHART" "$suffix"

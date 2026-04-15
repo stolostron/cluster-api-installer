@@ -1,7 +1,7 @@
 name: Helm chart deploy test (CAPI + CAPA on kind)
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - "charts/cluster-api-kind/crds/**"
       - "charts/cluster-api-kind/templates/**"
@@ -30,6 +30,7 @@ jobs:
   deploy-smoke-test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment: quay-secure
 
     env:
       KIND_CLUSTER_NAME: capi-e2e
@@ -43,6 +44,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install tooling (kubectl/helm/kind)
         uses: azure/setup-helm@v4

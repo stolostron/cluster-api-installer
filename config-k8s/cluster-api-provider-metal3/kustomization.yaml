@@ -161,27 +161,6 @@ patches:
       - op: replace
         path: /webhooks/1/clientConfig/service/namespace
         value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/2/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/3/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/4/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/5/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/6/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/7/clientConfig/service/namespace
-        value: "multicluster-engine"
-      - op: replace
-        path: /webhooks/8/clientConfig/service/namespace
-        value: "multicluster-engine"
   - target:
       version: v1
       kind: ValidatingWebhookConfiguration

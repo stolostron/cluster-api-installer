@@ -1,0 +1,63 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: "${CLUSTER_NAME}"
+  namespace: "${NAMESPACE}"
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: ["192.168.0.0/16"]
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    kind: ROSACluster
+    name: "${CLUSTER_NAME}"
+    namespace: "${NAMESPACE}"
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+    kind: ROSAControlPlane
+    name: "${CLUSTER_NAME}-control-plane"
+    namespace: "${NAMESPACE}"
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: ROSACluster
+metadata:
+  name: "${CLUSTER_NAME}"
+  namespace: "${NAMESPACE}"
+spec:
+  identityRef:
+    kind: AWSClusterStaticIdentity
+    name: "${CLUSTER_NAME}-account"
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: ROSAControlPlane
+metadata:
+  name: "${CLUSTER_NAME}-control-plane"
+  namespace: "${NAMESPACE}"
+spec:
+  identityRef:
+    kind: AWSClusterStaticIdentity
+    name: "${CLUSTER_NAME}-account"
+  credentialsSecretRef:
+    name: rosa-creds-secret
+  rosaClusterName: "${CLUSTER_NAME}"
+  domainPrefix: "${DOMAIN_PREFIX}"
+  rosaRoleConfigRef:
+    name: "${ROLE_CONFIG}"
+  version: "${OPENSHIFT_VERSION}"
+  ## The region should match the aws region used to create the ROSANetwork
+  region: "${AWS_REGION}"
+  rosaNetworkRef:
+    name: "${ROSA_VPC}"
+  network:
+    machineCIDR: "10.0.0.0/16"
+    podCIDR: "10.128.0.0/14"
+    serviceCIDR: "172.30.0.0/16"
+  defaultMachinePoolSpec:
+    instanceType: "m5.xlarge"
+    autoscaling:
+      maxReplicas: 6
+      minReplicas: 3
+  additionalTags:
+    env: "demo"
+    profile: "hcp"

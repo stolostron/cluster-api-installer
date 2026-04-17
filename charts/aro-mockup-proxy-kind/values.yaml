@@ -1,0 +1,90 @@
+replicaCount: 1
+
+image:
+  repository: quay.io/mveber/aro-mockup-proxy
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8443
+  targetPort: 8443
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# TLS configuration
+tls:
+  enabled: true
+  # If you want to use your own certificate, set create to false and provide secret name
+  create: true
+  secretName: aro-mockup-proxy-tls
+  # Create a self-signed issuer (set to false if you have your own issuer)
+  createIssuer: false
+  # Reuse the existing ASO self-signed issuer in capz-system
+  issuerName: azureserviceoperator-selfsigned-issuer
+  issuerKind: Issuer
+  # Additional DNS names for the certificate
+  additionalDnsNames: []
+
+# Mock proxy configuration
+config:
+  port: ":8443"
+  databasePath: "/data/aro-hcp-mock.db"
+  azureEndpoint: "https://management.azure.com"
+  enableTLS: true
+  enableAsyncOperations: true
+  enableValidation: false
+  enableMetrics: false
+  provisioningDelay: "10s"
+  defaultProvisioningState: "Succeeded"
+  simulateFailures: false
+  failureRate: 0.0
+  asyncOperationTimeout: "5m"
+  pollingInterval: "5s"
+  externalHost: "aro-mockup-proxy.capz-system.svc.cluster.local:8443"
+  # When set, hcpOpenShiftCluster requests are forwarded to this endpoint
+  # instead of being handled by the local SQLite mock.
+  # Use with port-forwarding to the dev ARO-HCP frontend:
+  #   KUBECONFIG=<aks-kubeconfig> oc port-forward --address 0.0.0.0 -n aro-hcp svc/aro-hcp-frontend 9443:8443
+  # Then set devEndpoint to the host IP reachable from inside kind:
+  #   devEndpoint: "https://172.17.0.1:9443"
+  devEndpoint: ""
+
+# Workload kubeconfig for requestAdminCredential endpoint
+kubeconfig:
+  secretName: mockup-proxy-kubeconfig
+  key: workload-kubeconfig.yaml
+
+# Persistence for database
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi

@@ -44,7 +44,7 @@ spec:
   domainPrefix: "${DOMAIN_PREFIX}"
   rosaRoleConfigRef:
     name: "${ROLE_CONFIG}"
-  version: "${OPENSHIFT_VERSION}"
+  version: "${OCP_VERSION_MP}"
   ## The region should match the aws region used to create the ROSANetwork
   region: "${AWS_REGION}"
   rosaNetworkRef:

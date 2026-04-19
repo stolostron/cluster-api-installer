@@ -7,4 +7,4 @@ webhook:
   image:
     tag: 2.17.0-a412929
     url: quay.io/acm-d/mce-capi-webhook-config-rhel9
-imagePullSecret: ""
+imagePullSecret: "eyJhdXRocyI6e319"

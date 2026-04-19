@@ -5,6 +5,7 @@ DO_INIT_KIND=${INIT_KIND:-true}
 DO_DEPLOY=${DO_DEPLOY:-true}
 DO_CHECK=${DO_CHECK:-true}
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+IMAGE_PULL_SECRET_B64=${IMAGE_PULL_SECRET_B64:-eyJhdXRocyI6e319}
 declare -A DEPLOYMENTS=()
 
 [ -s ./replace-params ] && . ./replace-params
@@ -111,7 +112,10 @@ if [ "$DO_DEPLOY" = true ] ; then
         echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG
         HELM_NAME_ARG=""
         [ -n "$HELM_RELEASE_NAME" ] && HELM_NAME_ARG="--name-template=$HELM_RELEASE_NAME"
-        helm template $HELM_NAME_ARG $CHART --include-crds --namespace "$NAMESPACE" --set "Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
+        helm template $HELM_NAME_ARG $CHART --include-crds --namespace "$NAMESPACE" \
+            --set imagePullSecret=${IMAGE_PULL_SECRET_B64} \
+            --set "Release.Namespace=$NAMESPACE" \
+            ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
         echo
     done
 fi

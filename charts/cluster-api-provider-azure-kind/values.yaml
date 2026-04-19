@@ -7,3 +7,4 @@ manager:
   image:
     tag: 2.17.0-1
     url: registry.redhat.io/multicluster-engine/cluster-api-provider-azure-rhel9
+imagePullSecret: "eyJhdXRocyI6e319"

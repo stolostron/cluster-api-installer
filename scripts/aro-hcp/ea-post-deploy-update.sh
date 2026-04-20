@@ -96,17 +96,11 @@ oc $KUBE_CONTEXT create secret generic "${CLUSTER_NAME}-ea-console-openshift-con
 export KC="${CLUSTER_NAME}.kubeconfig"
 oc $KUBE_CONTEXT get secret "${CLUSTER_NAME}-kubeconfig" -n "$CLUSTER_NAMESPACE" -o jsonpath='{.data.value}' | base64 -d > "$KC"
 
-# WORKAROUND: Azure ARO HCP should create this secret automatically, but it doesn't
-[ -n "$DELETE_SECRETS" ] && oc --kubeconfig="$KC" delete secret -n openshift-console "${CLUSTER_NAME}-ea-console-openshift-console"
-oc --kubeconfig="$KC" create secret generic "${CLUSTER_NAME}-ea-console-openshift-console" \
-    -n openshift-console \
-    --from-literal=clientSecret="$AZURE_CLIENT_SECRET"
-
-# Create the console-oauth-config secret required by the console operator
+# Create the entra-console-openshift-console secret required by the console operator
 # This secret contains the OIDC client configuration
 [ -n "$DELETE_SECRETS" ] && oc --kubeconfig="$KC" delete secret -n openshift-console console-oauth-config
-oc --kubeconfig="$KC" create secret generic console-oauth-config \
-    -n openshift-console \
+oc --kubeconfig="$KC" create secret generic entra-console-openshift-console \
+    -n openshift-config \
     --from-literal=clientID="$EA_AZURE_CLIENT_ID" \
     --from-literal=clientSecret="$AZURE_CLIENT_SECRET" \
     --from-literal=issuer="https://login.microsoftonline.com/$EA_AZURE_TENANT_ID/v2.0" \

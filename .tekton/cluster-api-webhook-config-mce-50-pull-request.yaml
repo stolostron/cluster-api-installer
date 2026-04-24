@@ -4,16 +4,17 @@ metadata:
   annotations:
     build.appstudio.openshift.io/repo: https://github.com/stolostron/cluster-api-installer?rev={{revision}}
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
-    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "backplane-2.17"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "backplane-5.0"
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: release-mce-217
-    appstudio.openshift.io/component: cluster-api-webhook-config-mce-217
+    appstudio.openshift.io/application: release-mce-50
+    appstudio.openshift.io/component: cluster-api-webhook-config-mce-50
     pipelines.appstudio.openshift.io/type: build
-  name: cluster-api-webhook-config-mce-217-on-push
+  name: cluster-api-webhook-config-mce-50-on-pull-request
   namespace: crt-redhat-acm-tenant
 spec:
   params:
@@ -22,13 +23,12 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-webhook-config-mce-217:{{revision}}
+    value: quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-webhook-config-mce-50:on-pr-{{revision}}
+  - name: image-expires-after
+    value: 5d
   - name: build-platforms
     value:
     - linux/x86_64
-    - linux/arm64
-    - linux/ppc64le
-    - linux/s390x
   - name: dockerfile
     value: mce-capi-webhook-config/Dockerfile
   - name: build-source-image
@@ -39,12 +39,6 @@ spec:
     value: '[{"type": "gomod", "path": "mce-capi-webhook-config"}]'
   - name: path-context
     value: mce-capi-webhook-config
-  - name: send-slack-notification
-    value: true
-  - name: konflux-application-name
-    value: release-mce-217
-  - name: slack-member-id
-    value: C07JR0ARW1E # capi-squad channel-id.
   pipelineRef:
     resolver: git
     params:
@@ -55,7 +49,7 @@ spec:
       - name: pathInRepo
         value: pipelines/common.yaml
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cluster-api-webhook-config-mce-217
+    serviceAccountName: build-pipeline-cluster-api-webhook-config-mce-50
   workspaces:
   - name: git-auth
     secret:

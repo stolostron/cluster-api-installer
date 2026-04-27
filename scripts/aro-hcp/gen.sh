@@ -68,11 +68,12 @@ export USER=${USER:-user1}
 export CS_CLUSTER_NAME=${WORKLOAD_CLUSTER_NAME:-"$CS_CLUSTER_NAME"}
 export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-$ENV}
 export NAME_PREFIX=${NAME_PREFIX:-$CS_CLUSTER_NAME}
-export RESOURCEGROUPNAME="$CS_CLUSTER_NAME-resgroup"
+export RESOURCEGROUPNAME=${RESOURCEGROUPNAME:-"$CS_CLUSTER_NAME-resgroup"}
 export OCP_VERSION=${OCP_VERSION:-4.20}
 export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.17}
 export REGION=${REGION:-westus3}
 export NODEPOOL_PREFIX="w-${REGION:0:7}"
+export NAME_PREFIX="${NAME_PREFIX:0:14}"
 
 
 
@@ -110,17 +111,19 @@ if [ "$USE_CI" != "true" ] ; then
 fi
 
 
-OPERATORS_UAMIS_SUFFIX_FILE="${OPERATORS_UAMIS_SUFFIX_FILE:-operators-uamis-suffix.txt}"
-if [ ! -f "$OPERATORS_UAMIS_SUFFIX_FILE" ] ; then
-    openssl rand -hex 3 > "$OPERATORS_UAMIS_SUFFIX_FILE"
+if [ -z "$OPERATORS_UAMIS_SUFFIX" ] ; then
+    OPERATORS_UAMIS_SUFFIX_FILE="${OPERATORS_UAMIS_SUFFIX_FILE:-operators-uamis-suffix.txt}"
+    if [ ! -s "$OPERATORS_UAMIS_SUFFIX_FILE" ] ; then
+        openssl rand -hex 3 > "$OPERATORS_UAMIS_SUFFIX_FILE"
+    fi
+    export OPERATORS_UAMIS_SUFFIX=$(cat "$OPERATORS_UAMIS_SUFFIX_FILE")
 fi
-export OPERATORS_UAMIS_SUFFIX=$(cat "$OPERATORS_UAMIS_SUFFIX_FILE")
 
-export VNET="$NAME_PREFIX-vnet"
-export SUBNET="$NAME_PREFIX-subnet"
-export INTEGRATION_SUBNET="$NAME_PREFIX-integration-subnet"
-export NSG="$NAME_PREFIX-nsg"
-export KV="$NAME_PREFIX-kv"
+export VNET="$NAME_PREFIX-vnet-$OPERATORS_UAMIS_SUFFIX"
+export SUBNET="$NAME_PREFIX-subnet-$OPERATORS_UAMIS_SUFFIX"
+export INTEGRATION_SUBNET="$NAME_PREFIX-integration-subnet-$OPERATORS_UAMIS_SUFFIX"
+export NSG="$NAME_PREFIX-nsg-$OPERATORS_UAMIS_SUFFIX"
+export KV="$NAME_PREFIX-kv-$OPERATORS_UAMIS_SUFFIX"
 export KV_VERSION="40037529f72042cbb4f69ddb97b8bced"
 
 # Settings needed for AzureClusterIdentity used by the AzureCluster

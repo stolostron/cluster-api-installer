@@ -1,15 +1,15 @@
-OCP_VERSION ?= 4.22
-MCE_VERSION ?= 2.17.0-1
+OCP_VERSION ?= 5.0
+MCE_VERSION ?= 5.0.0-1
 SYNC2CHARTS ?= true
 
-DEFAULT_BRANCH ?= release-4.22
-CAPA_BRANCH ?= backplane-2.17
+DEFAULT_BRANCH ?= release-5.0
+CAPA_BRANCH ?= backplane-5.0
 CAPZ_BRANCH ?= backplane-2.17
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ
-OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.17
-METAL3_BRANCH ?= release-4.22
+OPENSHIFT_ASSISTED_BRANCH ?= backplane-5.0
+METAL3_BRANCH ?= release-5.0
 
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
 

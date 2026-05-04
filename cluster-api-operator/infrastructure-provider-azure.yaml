@@ -59,7 +59,6 @@ spec:
         --azuremachinepoolmachine-concurrency: "50"
         --bootstrap-config-gvk: EKSConfig.v1beta2.bootstrap.cluster.x-k8s.io
         --debouncing-timer: 10s
-        --insecure-diagnostics: "true"
       env:
       - name: CLUSTER_TOPOLOGY
         value: "true"
@@ -83,7 +82,8 @@ spec:
       ASOAPI: true
       ARO: true
     health: {}
-    metrics: {}
+    metrics:
+      insecureDiagnostics: true
     syncPeriod: 10m0s
     verbosity: 1
     webhook: {}

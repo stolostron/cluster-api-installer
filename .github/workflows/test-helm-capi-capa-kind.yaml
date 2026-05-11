@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install tooling (kubectl/helm/kind)
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4

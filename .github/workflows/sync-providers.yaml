@@ -30,7 +30,7 @@ jobs:
       with:
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
        ref: ${{ inputs.dst-branch }}
     - name: Sync

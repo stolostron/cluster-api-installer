@@ -1,3 +1,10 @@
+features:
+  rosa:
+    enabled: true
+  eks:
+    enabled: true
+  unmanaged:
+    enabled: false
 aws:
   encodedCredentials: ""
   iamRole: ""

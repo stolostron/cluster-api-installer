@@ -7,6 +7,7 @@ metadata:
     cluster.x-k8s.io/provider: infrastructure-aws
   name: capa-validating-webhook-configuration
 webhooks:
+{{- if .Values.features.unmanaged.enabled }}
 - admissionReviewVersions:
   - v1
   - v1beta1
@@ -29,6 +30,7 @@ webhooks:
     resources:
     - awsclusters
   sideEffects: None
+{{- end }}
 - admissionReviewVersions:
   - v1
   - v1beta1
@@ -95,6 +97,7 @@ webhooks:
     resources:
     - awsclusterstaticidentities
   sideEffects: None
+{{- if .Values.features.unmanaged.enabled }}
 - admissionReviewVersions:
   - v1
   - v1beta1
@@ -117,6 +120,8 @@ webhooks:
     resources:
     - awsclustertemplates
   sideEffects: None
+{{- end }}
+{{- if .Values.features.unmanaged.enabled }}
 - admissionReviewVersions:
   - v1
   - v1beta1
@@ -139,6 +144,8 @@ webhooks:
     resources:
     - awsmachines
   sideEffects: None
+{{- end }}
+{{- if .Values.features.unmanaged.enabled }}
 - admissionReviewVersions:
   - v1
   - v1beta1
@@ -161,6 +168,7 @@ webhooks:
     resources:
     - awsmachinetemplates
   sideEffects: None
+{{- end }}
 - admissionReviewVersions:
   - v1
   - v1beta1

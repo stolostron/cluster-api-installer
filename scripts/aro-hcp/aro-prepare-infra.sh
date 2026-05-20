@@ -24,7 +24,8 @@ else
         servicePrincipalName="msdocs-sp-$randomIdentifier"
         roleName="Contributor"
         echo "Creating SP for RBAC with name $servicePrincipalName, with role $roleName and in scopes /subscriptions/$AZURE_SUBSCRIPTION_ID"
-        az ad sp create-for-rbac --name $servicePrincipalName --role $roleName --scopes /subscriptions/$AZURE_SUBSCRIPTION_ID > "$SP_JSON_FILE"
+        az ad sp create-for-rbac --name "$servicePrincipalName" --role "$roleName" --scopes "/subscriptions/$AZURE_SUBSCRIPTION_ID" > "$SP_JSON_FILE"
+        chmod 600 "$SP_JSON_FILE"
     fi
     export AZURE_TENANT_ID=$(jq -r .tenant "$SP_JSON_FILE")
     export AZURE_CLIENT_ID=$(jq -r .appId "$SP_JSON_FILE")

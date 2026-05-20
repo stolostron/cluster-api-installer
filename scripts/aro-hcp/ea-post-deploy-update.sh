@@ -96,6 +96,7 @@ oc $KUBE_CONTEXT create secret generic "${CLUSTER_NAME}-ea-console-openshift-con
 
 export KC="${CLUSTER_NAME}.kubeconfig"
 oc $KUBE_CONTEXT get secret "${CLUSTER_NAME}-kubeconfig" -n "$CLUSTER_NAMESPACE" -o jsonpath='{.data.value}' | base64 -d > "$KC"
+chmod 600 "$KC"
 
 # Create the entra-console-openshift-console secret required by the console operator
 # This secret contains the OIDC client configuration

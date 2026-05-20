@@ -1,3 +1,4 @@
+#!/bin/bash
 # export OICD_RESOURCE_GROUP=mveber-oidc-issuer
 # export USER_ASSIGNED_IDENTITY=mveber-aso-tests
 # az cli

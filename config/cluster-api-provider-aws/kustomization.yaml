@@ -170,3 +170,89 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: capa-webhook-service-cert
+  # Remove unmanaged CRDs (controllers already disabled)
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: awsclusters.infrastructure.cluster.x-k8s.io
+    patch: |-
+      $patch: delete
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: awsclusters.infrastructure.cluster.x-k8s.io
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: awsmachines.infrastructure.cluster.x-k8s.io
+    patch: |-
+      $patch: delete
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: awsmachines.infrastructure.cluster.x-k8s.io
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: awsmachinetemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      $patch: delete
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: awsmachinetemplates.infrastructure.cluster.x-k8s.io
+  - target:
+      version: v1
+      kind: CustomResourceDefinition
+      name: awsclustertemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      $patch: delete
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: awsclustertemplates.infrastructure.cluster.x-k8s.io
+  # Remove webhook entries for unmanaged CRDs (removed in reverse order to avoid index shifts)
+  - target:
+      kind: MutatingWebhookConfiguration
+      name: capa-mutating-webhook-configuration
+    patch: |-
+      - op: test
+        path: /webhooks/5/name
+        value: mutation.awsmachine.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/5
+      - op: test
+        path: /webhooks/4/name
+        value: default.awsclustertemplate.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/4
+      - op: test
+        path: /webhooks/0/name
+        value: default.awscluster.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/0
+  - target:
+      kind: ValidatingWebhookConfiguration
+      name: capa-validating-webhook-configuration
+    patch: |-
+      - op: test
+        path: /webhooks/6/name
+        value: validation.awsmachinetemplate.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/6
+      - op: test
+        path: /webhooks/5/name
+        value: validation.awsmachine.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/5
+      - op: test
+        path: /webhooks/4/name
+        value: validation.awsclustertemplate.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/4
+      - op: test
+        path: /webhooks/0/name
+        value: validation.awscluster.infrastructure.cluster.x-k8s.io
+      - op: remove
+        path: /webhooks/0
+

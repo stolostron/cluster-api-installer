@@ -100,7 +100,7 @@ cat <<EOF | json_pp > cluster-azure-new.json
 {
   "properties": {
     "location": "${REGION}",
-    "name": "${S_CLUSTER_NAME}",
+    "name": "${CS_CLUSTER_NAME}",
     "version": {
       "id": "${OCP_VERSION}",
       "channelGroup": "stable"

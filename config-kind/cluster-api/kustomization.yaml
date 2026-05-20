@@ -4,6 +4,8 @@ kind: Kustomization
 ## condsidering resources under cluster-api/config/default directory to generate the CAPI CRDs and CRs
 resources:
 - default/
+- base/mce-capi-webhook-config/
+
 
 transformers:
 - base/transformer.yaml
@@ -25,3 +27,28 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
+      - op: add
+        path: /spec/template/spec/containers/0/args/0
+        value: '--watch-filter=multicluster-engine'
+  - target:
+      kind: ServiceAccount
+      name: capi-manager
+    patch: |-
+      - op: add
+        path: /imagePullSecrets
+        value:
+        - name: capi-manager-pull-credentials
+  - target:
+      kind: Deployment
+      name: mce-capi-webhook-config
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.webhook.image.url  }}:{{ .Values.webhook.image.tag  }}'
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+        - name: capi-manager-pull-credentials

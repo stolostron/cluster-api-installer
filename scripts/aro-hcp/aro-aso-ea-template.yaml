@@ -1,0 +1,33 @@
+---
+apiVersion: redhatopenshift.azure.com/v1api20240610preview
+kind: HcpOpenShiftClustersExternalAuth
+metadata:
+  name: ${EA_OIDC_PROVIDER_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  azureName: ${EA_OIDC_PROVIDER_NAME}
+  owner:
+    group: redhatopenshift.azure.com
+    kind: HcpOpenShiftCluster
+    name: ${CS_CLUSTER_NAME}
+  properties:
+    issuer:
+      url: "https://login.microsoftonline.com/${EA_AZURE_TENANT_ID}/v2.0"
+      audiences:
+        - "${EA_AZURE_CLIENT_ID}"
+    claim:
+      mappings:
+        username:
+          claim: "${EA_OIDC_USERNAME_CLAIM}"
+          prefixPolicy: "NoPrefix"
+        groups:
+          claim: "${EA_OIDC_GROUPS_CLAIM}"
+    clients:
+      - clientId: "${EA_AZURE_CLIENT_ID}"
+        component:
+          name: "console"
+          authClientNamespace: "openshift-console"
+        type: "Confidential"
+        extraScopes:
+          - "openid"
+          - "profile"

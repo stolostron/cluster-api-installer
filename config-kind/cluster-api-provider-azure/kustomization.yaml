@@ -4,6 +4,7 @@ kind: Kustomization
 ## condsidering resources under cluster-api-provider-azure/config/default directory to generate the CAPZ CRDs and CRs
 resources:
 - default/
+- base/capz-pull-secret.yaml
 
 transformers:
 - base/transformer.yaml
@@ -36,3 +37,19 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.aso.image.url  }}:{{ .Values.aso.image.tag  }}'
+  - target:
+      kind: ServiceAccount
+      name: capz-manager
+    patch: |-
+      - op: add
+        path: /imagePullSecrets
+        value:
+        - name: capz-manager-pull-credentials
+  - target:
+      kind: ServiceAccount
+      name: azureserviceoperator-default
+    patch: |-
+      - op: add
+        path: /imagePullSecrets
+        value:
+        - name: capz-manager-pull-credentials

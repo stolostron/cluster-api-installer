@@ -1,5 +1,5 @@
 declare -A helm_add_args_a=(
-  [capi]="--set manager.image.url=quay.io/mveber/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/mveber/mce-capi-webhook-config-rhel9"
-  [capz]="--set manager.image.url=quay.io/mveber/cluster-api-provider-azure-rhel9 --set manager.image.tag=dev-aso.4.0 --set aso.image.url=quay.io/mveber/azure-service-operator-rhel9     "
+  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=v4.21 --set webhook.image.tag=2.11-dev"
+  [capz]="--set manager.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-provider-azure-mce-211 --set aso.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-211 --set manager.image.tag=2.11.0-latest --set aso.image.tag=2.11.0-latest"
 )
 

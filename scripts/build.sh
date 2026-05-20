@@ -149,6 +149,8 @@ build_for_config() {
         mkdir -p $WKDIR
         rm -rf "$project_dir"
         mkdir "$project_dir"
+        echo ================== CLONE:
+        echo git clone --depth=1 --branch="${BRANCH}" "${ORGREPO}/${PROJECT}" "${project_dir}"
         git clone --depth=1 --branch="${BRANCH}" "${ORGREPO}/${PROJECT}" "${project_dir}"
     fi
 

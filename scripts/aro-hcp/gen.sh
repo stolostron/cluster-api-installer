@@ -96,6 +96,7 @@ if [ "$USE_CI" != "true" ] ; then
             roleName="Custom-Owner (Block Billing and Subscription deletion)"
             echo "Creating SP for RBAC with name $servicePrincipalName, with role $roleName and in scopes /subscriptions/$AZURE_SUBSCRIPTION_ID"
             az ad sp create-for-rbac --name "$servicePrincipalName" --role "$roleName" --scopes "/subscriptions/$AZURE_SUBSCRIPTION_ID" > "$SP_JSON_FILE"
+            chmod 600 "$SP_JSON_FILE"
         fi
         if [ -n "${ASSIGN_ROLE_SP}" ] ; then
             roleName="Custom-Owner (Block Billing and Subscription deletion)"

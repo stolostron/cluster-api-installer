@@ -1,8 +1,18 @@
+if [ "$ARO_REPO_DIR" = "backplane-5.1" ] ; then
+    AZURE_TAG="5.1.0-latest"
+    CAPI_TAG="v5.1"
+    MCE_VER="mce-51"
+    WH_TAG="5.0-dev"
+else
+    AZURE_TAG="5.0.0-latest"
+    CAPI_TAG="v5.0"
+    MCE_VER="mce-50"
+    WH_TAG="5.0-dev"
+fi
 declare -A helm_add_args_a=(
-  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=v4.22 --set webhook.image.tag=2.17.0-c19acd7"
-  [capz]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-azure-rhel9 --set     aso.image.url=quay.io/acm-d/azure-service-operator-rhel9 --set manager.image.tag=2.17.0-c452227 --set aso.image.tag=2.17.0-dc98e44"
+  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=${CAPI_TAG} --set webhook.image.tag=${WH_TAG}"
+  [capz]="--set manager.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-provider-azure-${MCE_VER} --set aso.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-${MCE_VER} --set manager.image.tag=${AZURE_TAG} --set aso.image.tag=${AZURE_TAG}"
   [capa]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-aws-rhel9   --set manager.image.tag=latest"
   [capm3]="--set manager.image.url=quay.io/acm-d/ose-baremetal-cluster-api-controllers-rhel9"
 )
-#  [capz]="--set manager.image.url=quay.io/mveber/cluster-api-provider-azure-rhel9 --set     aso.image.url=quay.io/mveber/azure-service-operator-rhel9  --set manager.image.tag=v2.17.0-10 --set aso.image.tag=v2.13.0-hcpclusters.9"
 

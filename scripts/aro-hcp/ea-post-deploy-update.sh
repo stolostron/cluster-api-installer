@@ -78,7 +78,8 @@ az ad app permission add --id "$EA_AZURE_CLIENT_ID" \
 
 APP_SECRET_FILE="ea-secret-$EA_AZURE_CLIENT_ID.json"
 if [ ! -f "$APP_SECRET_FILE" ] ; then
-    az ad app credential reset --id $EA_AZURE_CLIENT_ID --append > "$APP_SECRET_FILE"
+    az ad app credential reset --id "$EA_AZURE_CLIENT_ID" --append > "$APP_SECRET_FILE"
+    chmod 600 "$APP_SECRET_FILE"
 fi
 export AZURE_CLIENT_SECRET=$(jq -r .password "$APP_SECRET_FILE")
 if [ -z "$AZURE_CLIENT_SECRET" ] ; then

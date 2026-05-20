@@ -1,6 +1,6 @@
 declare -A helm_add_args_a=(
-  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=v4.22 --set webhook.image.tag=2.17.0-c19acd7"
-  [capz]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-azure-rhel9 --set     aso.image.url=quay.io/acm-d/azure-service-operator-rhel9 --set manager.image.tag=2.17.0-c452227 --set aso.image.tag=2.17.0-dc98e44"
+  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=v4.22 --set webhook.image.tag=2.17-dev"
+  [capz]="--set manager.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-provider-azure-mce-217 --set aso.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-217 --set manager.image.tag=2.17.0-latest --set aso.image.tag=2.17.0-latest"
   [capa]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-aws-rhel9   --set manager.image.tag=latest"
   [capm3]="--set manager.image.url=quay.io/acm-d/ose-baremetal-cluster-api-controllers-rhel9"
 )

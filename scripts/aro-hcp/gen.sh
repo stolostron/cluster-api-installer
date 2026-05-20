@@ -159,6 +159,7 @@ if [ -n "$CREATE_CREDENTIALS" ] ; then
     fi
     echo creating: "$GEN_OUTPUT/credentials.yaml"
     envsubst  < $TEMPLATE_FILE_CRE > "$GEN_OUTPUT/credentials.yaml"
+    chmod 600 "$GEN_OUTPUT/credentials.yaml"
 fi
 
 if [ "$ARO_HCP_VERSION" == "v1api20240610preview" ] ; then

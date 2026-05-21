@@ -96,11 +96,11 @@ DP_DISK_CSI_DRIVER_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCE
 DP_IMAGE_REGISTRY_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCEGROUPNAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$USER-$CS_CLUSTER_NAME-dp-image-registry-$OPERATORS_UAMIS_SUFFIX"
 DP_FILE_CSI_DRIVER_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCEGROUPNAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$USER-$CS_CLUSTER_NAME-dp-file-csi-driver-$OPERATORS_UAMIS_SUFFIX"
 SERVICE_MANAGED_IDENTITY_UAMI="/subscriptions/$SUBSCRIPTIONID/resourcegroups/$RESOURCEGROUPNAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$USER-$CS_CLUSTER_NAME-service-managed-identity-$OPERATORS_UAMIS_SUFFIX"
-cat <<EOF | json_pp > cluster-azure-new.json
+cat <<EOF | json_pp > cluster-azure.json
 {
   "properties": {
     "location": "${REGION}",
-    "name": "${S_CLUSTER_NAME}",
+    "name": "${CS_CLUSTER_NAME}",
     "version": {
       "id": "${OCP_VERSION}",
       "channelGroup": "stable"

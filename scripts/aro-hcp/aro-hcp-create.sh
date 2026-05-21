@@ -12,7 +12,11 @@ fi
 ocm login --url=http://localhost:8000 "$OCM_PARAM"
 
 if [ "$(ocm get /api/aro_hcp/v1alpha1/clusters |jq -r .kind)" != "ClusterList" ] ; then
-    ARO_HCP_DIR=/home/mveber/projekty/capi/ARO-HCP
+    ARO_HCP_DIR=${ARO_HCP_DIR:-ARO-HCP}
+    if [ ! -d "$ARO_HCP_DIR" ] ; then
+        echo "Cloning ARO-HCP"
+        git clone https://github.com/Azure/ARO-HCP.git "$ARO_HCP_DIR"
+    fi
     KUBECONFIG=$(cd "$ARO_HCP_DIR";DEPLOY_ENV=dev make infra.svc.aks.kubeconfigfile) oc port-forward svc/clusters-service 8000:8000 -n cluster-service &
 
     N=10

@@ -96,6 +96,7 @@ if [ "$USE_CI" != "true" ] ; then
             roleName="Custom-Owner (Block Billing and Subscription deletion)"
             echo "Creating SP for RBAC with name $servicePrincipalName, with role $roleName and in scopes /subscriptions/$AZURE_SUBSCRIPTION_ID"
             az ad sp create-for-rbac --name "$servicePrincipalName" --role "$roleName" --scopes "/subscriptions/$AZURE_SUBSCRIPTION_ID" > "$SP_JSON_FILE"
+            chmod 600 "$SP_JSON_FILE"
         fi
         if [ -n "${ASSIGN_ROLE_SP}" ] ; then
             roleName="Custom-Owner (Block Billing and Subscription deletion)"
@@ -158,6 +159,7 @@ if [ -n "$CREATE_CREDENTIALS" ] ; then
     fi
     echo creating: "$GEN_OUTPUT/credentials.yaml"
     envsubst  < $TEMPLATE_FILE_CRE > "$GEN_OUTPUT/credentials.yaml"
+    chmod 600 "$GEN_OUTPUT/credentials.yaml"
 fi
 
 if [ "$ARO_HCP_VERSION" == "v1api20240610preview" ] ; then

@@ -78,7 +78,8 @@ az ad app permission add --id "$EA_AZURE_CLIENT_ID" \
 
 APP_SECRET_FILE="ea-secret-$EA_AZURE_CLIENT_ID.json"
 if [ ! -f "$APP_SECRET_FILE" ] ; then
-    az ad app credential reset --id $EA_AZURE_CLIENT_ID --append > "$APP_SECRET_FILE"
+    az ad app credential reset --id "$EA_AZURE_CLIENT_ID" --append > "$APP_SECRET_FILE"
+    chmod 600 "$APP_SECRET_FILE"
 fi
 export AZURE_CLIENT_SECRET=$(jq -r .password "$APP_SECRET_FILE")
 if [ -z "$AZURE_CLIENT_SECRET" ] ; then
@@ -95,6 +96,7 @@ oc $KUBE_CONTEXT create secret generic "${CLUSTER_NAME}-ea-console-openshift-con
 
 export KC="${CLUSTER_NAME}.kubeconfig"
 oc $KUBE_CONTEXT get secret "${CLUSTER_NAME}-kubeconfig" -n "$CLUSTER_NAMESPACE" -o jsonpath='{.data.value}' | base64 -d > "$KC"
+chmod 600 "$KC"
 
 # Create the entra-console-openshift-console secret required by the console operator
 # This secret contains the OIDC client configuration

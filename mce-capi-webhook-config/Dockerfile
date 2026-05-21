@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM registry.access.redhat.com/ubi9/go-toolset:9.7-1776084839 AS builder
+FROM registry.access.redhat.com/ubi9/go-toolset:9.7-1778675823 AS builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -30,6 +30,10 @@ LABEL com.redhat.component="" \
 
 WORKDIR /
 COPY --from=builder /tmp/mce-capi-webhook-config /
+RUN echo "nonroot:x:65532:65532:nonroot:/home/nonroot:/sbin/nologin" >> /etc/passwd && \
+    echo "nonroot:x:65532:" >> /etc/group && \
+    mkdir -p /home/nonroot && \
+    chown -R 65532:65532 /home/nonroot
 USER nonroot:nonroot
 
 ENTRYPOINT ["/mce-capi-webhook-config"]

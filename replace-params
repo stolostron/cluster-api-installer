@@ -1,4 +1,4 @@
-if [ "$ARO_REPO_DIR" = "backplane-5.1" ] ; then
+if [ "$ARO_REPO_BRANCH" = "backplane-5.1" ] ; then
     AZURE_TAG="5.1-dev"
     CAPI_TAG="v4.22" # TODO: -> v.5.1
     WH_TAG="5.0-dev" # TODO: -> 5.1-dev

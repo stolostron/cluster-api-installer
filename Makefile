@@ -33,6 +33,10 @@ CLUSTERCTL_PLATFORM := linux-amd64
 
 CONTAINER_ENGINE ?= docker
 
+build-docker-%-chart:
+	$(CONTAINER_ENGINE) --version|grep -q podman && MOUNT_FLAGS=",Z" ; \
+	$(CONTAINER_ENGINE) run --rm --interactive --workdir=/workspace --mount=type=bind,src=./,target=/workspace$${MOUNT_FLAGS} docker.io/library/golang:1.24.0 make build-$*-chart TOOLS_DIR=hack-docker/tools
+
 build-%-chart: $(YQ) $(KUSTOMIZE) $(CLUSTERCTL) $(HELM)
 	(export YQ=$(YQ) CLUSTERCTL=$(CLUSTERCTL) KUSTOMIZE=$(KUSTOMIZE) HELM=$(HELM); $(MAKE) -C ./charts $@)
 

@@ -1,5 +1,29 @@
+AZURE_CAPZ_URL="quay.io/acm-d/cluster-api-provider-azure-rhel9"
+AZURE_ASO_URL="quay.io/acm-d/azure-service-operator-rhel9"
+
+AZURE_TAG="2.11-dev"
+RELEASE_EXT="211"
+CAPI_TAG="v4.21"
+WH_TAG="2.11-dev"
+
+
+AZURE_CAPZ_TAG="$AZURE_TAG"
+AZURE_ASO_TAG="$AZURE_TAG"
+
+if [ -n "$CAPZ_PR_NO" ] ; then
+    AZURE_CAPZ_URL="quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-provider-azure-mce-$RELEASE_EXT"
+    AZURE_CAPZ_TAG="${AZURE_CAPZ_TAG%%-dev}.0-pr-$CAPZ_PR_NO"
+fi
+
+if [ -n "$ASO_PR_NO" ] ; then
+    AZURE_ASO_URL="quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-$RELEASE_EXT"
+    AZURE_ASO_TAG="${AZURE_ASO_TAG%%-dev}.0-pr-$ASO_PR_NO"
+fi
+
 declare -A helm_add_args_a=(
-  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=v4.21 --set webhook.image.tag=2.11-dev"
-  [capz]="--set manager.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-provider-azure-mce-211 --set aso.image.url=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-211 --set manager.image.tag=2.11.0-latest --set aso.image.tag=2.11.0-latest"
+  [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=${CAPI_TAG} --set webhook.image.tag=${WH_TAG}"
+  [capz]="--set manager.image.url=${AZURE_CAPZ_URL} --set aso.image.url=${AZURE_ASO_URL} --set manager.image.tag=${AZURE_CAPZ_TAG} --set aso.image.tag=${AZURE_ASO_TAG}"
+  [capa]="--set manager.image.url=quay.io/acm-d/cluster-api-provider-aws-rhel9   --set manager.image.tag=latest"
+  [capm3]="--set manager.image.url=quay.io/acm-d/ose-baremetal-cluster-api-controllers-rhel9"
 )
 

@@ -22,7 +22,7 @@ if [ -n "$CAPZ_PR_NO" ] ; then
 fi
 
 if [ -n "$ASO_PR_NO" ] ; then
-    AZURE_ASO_URL=quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-$RELEASE_EXT
+    AZURE_ASO_URL="quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-$RELEASE_EXT"
     AZURE_ASO_TAG="${AZURE_ASO_TAG%%-dev}.0-pr-$ASO_PR_NO"
 fi
 

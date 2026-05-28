@@ -13,12 +13,16 @@ declare -A DEPLOYMENTS=()
 if [ "$USE_KIND" = true -o "$USE_K8S" = true ] ; then
     [ "$USE_KIND" = true ] && CHART_SUFFIX="-kind"
     [ "$USE_K8S" = true ] && CHART_SUFFIX="-k8s"
-    KIND_CLUSTER_NAME=${KIND_CLUSTER_NAME:-aso2}
-    KUBE_CONTEXT="--context=kind-$KIND_CLUSTER_NAME"
-    echo "setting: KUBE_CONTEXT=$KUBE_CONTEXT"
-    if [ "$DO_INIT_KIND" = true ] ; then
-        echo "checking if the cluster exists: KIND_CLUSTER_NAME=$KIND_CLUSTER_NAME"
-        ${SCRIPT_DIR}/setup-kind-cluster.sh
+    if [ -n "$USE_KUBECONFIG" ] ; then
+        export KUBE_CONFIG="$USE_KUBECONFIG"
+    else
+        KIND_CLUSTER_NAME=${KIND_CLUSTER_NAME:-aso2}
+        KUBE_CONTEXT="--context=kind-$KIND_CLUSTER_NAME"
+        echo "setting: KUBE_CONTEXT=$KUBE_CONTEXT"
+        if [ "$DO_INIT_KIND" = true ] ; then
+            echo "checking if the cluster exists: KIND_CLUSTER_NAME=$KIND_CLUSTER_NAME"
+            ${SCRIPT_DIR}/setup-kind-cluster.sh
+        fi
     fi
 else
     OCP_CONTEXT=${OCP_CONTEXT:-crc-admin}

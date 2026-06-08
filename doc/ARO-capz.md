@@ -59,7 +59,7 @@ Simple deployment for stage:
 ENV=stage ./scripts/aro-hcp/gen.sh aro-stage
 ```
 
-For pruduction we can use e.g.:
+For production we can use e.g.:
 ```
 REGION="switzerlandnorth" USER=mveber4 AZURE_SUBSCRIPTION_NAME="974ebd46-8ad3-41e3-afef-7ef25fd5c371" \
 ENV=prod ./scripts/aro-hcp/gen.sh aro-prod

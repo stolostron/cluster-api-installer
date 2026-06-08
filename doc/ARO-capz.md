@@ -33,7 +33,7 @@ cd backplane-2.17
 ```
 KIND_CLUSTER_NAME=capz-stage ./scripts/deploy-charts-kind-capz.sh
 ```
-Please keep the `USER` value shorter than 5 charasters and `KIND_CLUSTER_NAME` shorter than 10 characters.
+Please keep the `USER` value shorter than 5 characters and `KIND_CLUSTER_NAME` shorter than 10 characters.
 
 3. Edit the variables in the script (if needed): ./scripts/aro-hcp/gen.sh
 ```

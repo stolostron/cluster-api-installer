@@ -25,8 +25,8 @@ We expect the following:
 
 1. Check out the deployment:
 ```
-git clone -b backplane-2.11 https://github.com/stolostron/cluster-api-installer.git backplane-2.11
-cd backplane-2.11
+git clone -b backplane-2.17 https://github.com/stolostron/cluster-api-installer.git backplane-2.17
+cd backplane-2.17
 ```
 
 2. The next command will prepare an instance of a kind cluster (with cert manager, CAPI, CAPZ and ASO):
@@ -35,7 +35,7 @@ KIND_CLUSTER_NAME=capz-stage ./scripts/deploy-charts-kind-capz.sh
 ```
 Please keep the `USER` value shorter than 5 charasters and `KIND_CLUSTER_NAME` shorter than 10 characters.
 
-3. Edit the variables in the script (if needed): ./doc/aro-hcp-scripts/aro-hcp-gen.sh
+3. Edit the variables in the script (if needed): ./scripts/aro-hcp/gen.sh
 ```
 export USER=${USER:-user1}
 export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-$ENV}
@@ -56,13 +56,13 @@ export REGION=${REGION:-westus3}
 
 Simple deployment for stage:
 ```
-ENV=stage ./doc/aro-hcp-scripts/aro-hcp-gen.sh aro-stage
+ENV=stage ./scripts/aro-hcp/gen.sh aro-stage
 ```
 
 For pruduction we can use e.g.:
 ```
 REGION="switzerlandnorth" USER=mveber4 AZURE_SUBSCRIPTION_NAME="974ebd46-8ad3-41e3-afef-7ef25fd5c371" \
-ENV=prod ./doc/aro-hcp-scripts/aro-hcp-gen.sh aro-prod
+ENV=prod ./scripts/aro-hcp/gen.sh aro-prod
 ```
 
 5. Apply the YAML files with resources (YAMLs from the directory in the specified order):
@@ -93,6 +93,19 @@ watch -n 5 --color --no-wrap ./bin/clusterctl describe cluster "<your-cluster-na
 ```
 KUBECONFIG=/tmp/kc.yaml oc get nodes
 ```
+
+## Updating Cluster Configuration
+
+### Image Digest Mirrors
+
+> **Warning:** Any change to `imageDigestMirrors` (adding, removing, or modifying an entry) will trigger a **rolling replacement of all nodes across all existing NodePools**. This applies to updates made via the CAPZ `AROControlPlane` CR or the ARM API.
+>
+> At initial cluster creation this has no impact because no NodePools exist yet. However, updating `imageDigestMirrors` on a running cluster will cause every node in every NodePool to be replaced in a rolling fashion. If workloads use PodDisruptionBudgets that block drains, the rollout can stall indefinitely.
+>
+> **Before updating `imageDigestMirrors` on a live cluster:**
+> - Plan for a maintenance window — all NodePools will roll simultaneously.
+> - Verify that PodDisruptionBudgets allow at least one node to drain at a time.
+> - Batch all mirror changes into a single update to avoid multiple successive rollouts.
 
 ## External Authentication Configuration
 

@@ -67,6 +67,12 @@ The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 To migrate from `v1api20240610preview` to `v1api20251223preview`, see
 [Migration Guide](../doc/aro-hcp-api-v1api20251223preview-migration.md).
 
+> **Warning:** The `v1api20251223preview` API introduces an optional `imageDigestMirrors` field.
+> Any change to this field (adding, removing, or modifying an entry) on a running cluster will
+> trigger a **rolling replacement of all nodes across all existing NodePools**. See the
+> [Updating Cluster Configuration](../doc/ARO-capz.md#updating-cluster-configuration) section
+> for details.
+
 The new release must include updated `infrastructure-components.yaml` with CRDs for:
 - `hcpopenshiftclusters.redhatopenshift.azure.com` (v1api20251223preview)
 - `hcpopenshiftclustersnodepools.redhatopenshift.azure.com` (v1api20251223preview)

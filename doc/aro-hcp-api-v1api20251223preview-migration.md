@@ -195,6 +195,8 @@ properties:
         - "mirror2.example.com/my-repo"
 ```
 
+> **Warning:** Any change to `imageDigestMirrors` (adding, removing, or modifying an entry) on a running cluster will trigger a **rolling replacement of all nodes across all existing NodePools**. Plan for a maintenance window and verify that PodDisruptionBudgets allow drains to proceed. Batch all mirror changes into a single update to avoid multiple successive rollouts. See [Updating Cluster Configuration](ARO-capz.md#updating-cluster-configuration) for full guidance.
+
 ## HcpOpenShiftClustersNodePool Changes
 
 ### 1. OS Disk Type (new optional field)

@@ -18,12 +18,12 @@ RG="${1:?Usage: $0 <resource-group> [subscription] [region]}"
 SUBSCRIPTION="${2:-b23756f7-4594-40a3-980f-10bb6168fc20}"
 REGION="${3:-uksouth}"
 
-SUB_FLAG=""
+SUB_ARGS=()
 if [ -n "$SUBSCRIPTION" ]; then
-    SUB_FLAG="--subscription $SUBSCRIPTION"
+    SUB_ARGS=(--subscription "$SUBSCRIPTION")
 fi
 
-SUBSCRIPTION_ID=$(az account show --query id -o tsv $SUB_FLAG)
+SUBSCRIPTION_ID=$(az account show --query id -o tsv "${SUB_ARGS[@]}")
 echo "Subscription: $SUBSCRIPTION_ID"
 echo "Resource group: $RG"
 echo "Region: $REGION"
@@ -47,7 +47,7 @@ IDENTITIES=(
 # --- Create resource group ---
 echo ""
 echo "=== Creating resource group ==="
-az group create --name "$RG" --location "$REGION" $SUB_FLAG -o none
+az group create --name "$RG" --location "$REGION" "${SUB_ARGS[@]}" -o none
 echo "  ✓ $RG"
 
 # --- Create managed identities ---
@@ -58,7 +58,7 @@ for id in "${IDENTITIES[@]}"; do
         --name "$id" \
         --resource-group "$RG" \
         --location "$REGION" \
-        $SUB_FLAG \
+        "${SUB_ARGS[@]}" \
         --query principalId -o tsv)
     echo "  ✓ $id  ($PRINCIPAL_ID)"
 done

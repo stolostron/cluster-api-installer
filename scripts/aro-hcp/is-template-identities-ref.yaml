@@ -1,0 +1,272 @@
+---
+# ASO reference to the pre-existing MSI resource group.
+# detach-on-delete ensures ASO adopts but never deletes the Azure resource.
+apiVersion: resources.azure.com/v1api20200601
+kind: ResourceGroup
+metadata:
+  name: ${MSI_RESOURCEGROUPNAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+spec:
+  location: ${REGION}
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_CONTROL_PLANE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_CONTROL_PLANE}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_CONTROL_PLANE}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_CLUSTER_API_AZURE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_CLUSTER_API_AZURE}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_CLUSTER_API_AZURE}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_CLOUD_CONTROLLER_MANAGER}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_CLOUD_CONTROLLER_MANAGER}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_CLOUD_CONTROLLER_MANAGER}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_INGRESS}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_INGRESS}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_INGRESS}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_DISK_CSI_DRIVER}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_DISK_CSI_DRIVER}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_DISK_CSI_DRIVER}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_FILE_CSI_DRIVER}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_FILE_CSI_DRIVER}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_FILE_CSI_DRIVER}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_IMAGE_REGISTRY}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_IMAGE_REGISTRY}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_IMAGE_REGISTRY}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_CLOUD_NETWORK_CONFIG}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_CLOUD_NETWORK_CONFIG}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_CLOUD_NETWORK_CONFIG}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_KMS}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_KMS}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_KMS}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_DP_DISK_CSI_DRIVER}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_DP_DISK_CSI_DRIVER}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_DP_DISK_CSI_DRIVER}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_DP_IMAGE_REGISTRY}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_DP_IMAGE_REGISTRY}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_DP_IMAGE_REGISTRY}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_DP_FILE_CSI_DRIVER}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_DP_FILE_CSI_DRIVER}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_DP_FILE_CSI_DRIVER}
+        key: clientId
+---
+apiVersion: managedidentity.azure.com/v1api20230131
+kind: UserAssignedIdentity
+metadata:
+  name: ${MI_SERVICE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
+  namespace: ${NAMESPACE}
+spec:
+  location: ${REGION}
+  owner:
+    name: ${MSI_RESOURCEGROUPNAME}
+  operatorSpec:
+    configMaps:
+      principalId:
+        name: identity-map-${MI_SERVICE}
+        key: principalId
+      clientId:
+        name: identity-map-${MI_SERVICE}
+        key: clientId

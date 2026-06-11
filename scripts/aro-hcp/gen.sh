@@ -36,7 +36,7 @@ if [ "$USE_CI" != "true" ] ; then
     
     if [ "$ENV" == devel ] ; then
         export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO Hosted Control Planes (EA Subscription 1)"}
-        export REGION=${REGION:-uksouth}
+        export REGION=${REGION:-westus3}
     fi
 
     if [ "$ENV" == int ] ; then
@@ -120,6 +120,40 @@ if [ -z "$OPERATORS_UAMIS_SUFFIX" ] ; then
     export OPERATORS_UAMIS_SUFFIX=$(cat "$OPERATORS_UAMIS_SUFFIX_FILE")
 fi
 
+# MSI_RESOURCEGROUPNAME selects the mode:
+#   - set: use pre-existing bare-named identities from leased Boskos MSI pool (skip roles generation)
+#   - unset: generate identities+roles via ASO using the per-run naming pattern
+if [ -n "$MSI_RESOURCEGROUPNAME" ]; then
+    export MI_CLUSTER_API_AZURE="cluster-api-azure"
+    export MI_CONTROL_PLANE="control-plane"
+    export MI_CLOUD_CONTROLLER_MANAGER="cloud-controller-manager"
+    export MI_INGRESS="ingress"
+    export MI_DISK_CSI_DRIVER="disk-csi-driver"
+    export MI_FILE_CSI_DRIVER="file-csi-driver"
+    export MI_IMAGE_REGISTRY="image-registry"
+    export MI_CLOUD_NETWORK_CONFIG="cloud-network-config"
+    export MI_KMS="kms"
+    export MI_DP_DISK_CSI_DRIVER="dp-disk-csi-driver"
+    export MI_DP_FILE_CSI_DRIVER="dp-file-csi-driver"
+    export MI_DP_IMAGE_REGISTRY="dp-image-registry"
+    export MI_SERVICE="service"
+else
+    export MSI_RESOURCEGROUPNAME="$RESOURCEGROUPNAME"
+    export MI_CLUSTER_API_AZURE="${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_CONTROL_PLANE="${USER}-${CS_CLUSTER_NAME}-cp-control-plane-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_CLOUD_CONTROLLER_MANAGER="${USER}-${CS_CLUSTER_NAME}-cp-cloud-controller-manager-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_INGRESS="${USER}-${CS_CLUSTER_NAME}-cp-ingress-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_DISK_CSI_DRIVER="${USER}-${CS_CLUSTER_NAME}-cp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_FILE_CSI_DRIVER="${USER}-${CS_CLUSTER_NAME}-cp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_IMAGE_REGISTRY="${USER}-${CS_CLUSTER_NAME}-cp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_CLOUD_NETWORK_CONFIG="${USER}-${CS_CLUSTER_NAME}-cp-cloud-network-config-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_KMS="${USER}-${CS_CLUSTER_NAME}-cp-kms-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_DP_DISK_CSI_DRIVER="${USER}-${CS_CLUSTER_NAME}-dp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_DP_FILE_CSI_DRIVER="${USER}-${CS_CLUSTER_NAME}-dp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_DP_IMAGE_REGISTRY="${USER}-${CS_CLUSTER_NAME}-dp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+    export MI_SERVICE="${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
+fi
+
 export VNET="$NAME_PREFIX-vnet-$OPERATORS_UAMIS_SUFFIX"
 export SUBNET="$NAME_PREFIX-subnet-$OPERATORS_UAMIS_SUFFIX"
 export INTEGRATION_SUBNET="$NAME_PREFIX-integration-subnet-$OPERATORS_UAMIS_SUFFIX"
@@ -173,9 +207,41 @@ TEMPLATE_FILE_IS=$(dirname $0)/is-template.yaml
 if [ -z "$GEN_ASO" ] ; then
     echo creating: "$GEN_OUTPUT/aro.yaml"
     envsubst  < $TEMPLATE_FILE_ARO > "$GEN_OUTPUT/aro.yaml"
+
+    TEMPLATE_FILE_ARO_IDENTITIES=$(dirname $0)/aro-template-identities.yaml
+    TEMPLATE_FILE_ARO_IDENTITIES_REF=$(dirname $0)/aro-template-identities-ref.yaml
+    TEMPLATE_FILE_ARO_ROLEASSIGNMENTS=$(dirname $0)/aro-template-roleassignments.yaml
+    TEMPLATE_FILE_ARO_ROLEASSIGNMENTS_REF=$(dirname $0)/aro-template-roleassignments-ref.yaml
+    if [ "$MSI_RESOURCEGROUPNAME" = "$RESOURCEGROUPNAME" ]; then
+        echo appending identities to: "$GEN_OUTPUT/aro.yaml"
+        envsubst  < $TEMPLATE_FILE_ARO_IDENTITIES >> "$GEN_OUTPUT/aro.yaml"
+        echo appending role assignments to: "$GEN_OUTPUT/aro.yaml"
+        envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS >> "$GEN_OUTPUT/aro.yaml"
+    else
+        echo appending identity references to: "$GEN_OUTPUT/aro.yaml" "(detach-on-delete, MSI from $MSI_RESOURCEGROUPNAME)"
+        envsubst  < $TEMPLATE_FILE_ARO_IDENTITIES_REF >> "$GEN_OUTPUT/aro.yaml"
+        echo appending role assignment references to: "$GEN_OUTPUT/aro.yaml" "(detach-on-delete)"
+        envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS_REF >> "$GEN_OUTPUT/aro.yaml"
+    fi
 else
     echo creating: "$GEN_OUTPUT/is.yaml"
     envsubst  < $TEMPLATE_FILE_IS > "$GEN_OUTPUT/is.yaml"
+
+    TEMPLATE_FILE_IS_IDENTITIES=$(dirname $0)/is-template-identities.yaml
+    TEMPLATE_FILE_IS_IDENTITIES_REF=$(dirname $0)/is-template-identities-ref.yaml
+    TEMPLATE_FILE_IS_ROLEASSIGNMENTS=$(dirname $0)/is-template-roleassignments.yaml
+    TEMPLATE_FILE_IS_ROLEASSIGNMENTS_REF=$(dirname $0)/is-template-roleassignments-ref.yaml
+    if [ "$MSI_RESOURCEGROUPNAME" = "$RESOURCEGROUPNAME" ]; then
+        echo appending identities to: "$GEN_OUTPUT/is.yaml"
+        envsubst  < $TEMPLATE_FILE_IS_IDENTITIES >> "$GEN_OUTPUT/is.yaml"
+        echo appending role assignments to: "$GEN_OUTPUT/is.yaml"
+        envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS >> "$GEN_OUTPUT/is.yaml"
+    else
+        echo appending identity references to: "$GEN_OUTPUT/is.yaml" "(detach-on-delete, MSI from $MSI_RESOURCEGROUPNAME)"
+        envsubst  < $TEMPLATE_FILE_IS_IDENTITIES_REF >> "$GEN_OUTPUT/is.yaml"
+        echo appending role assignment references to: "$GEN_OUTPUT/is.yaml" "(detach-on-delete)"
+        envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS_REF >> "$GEN_OUTPUT/is.yaml"
+    fi
 
     TEMPLATE_FILE_ASO=$(dirname $0)/aro-aso-template.yaml
     TEMPLATE_FILE_ASO_EA=$(dirname $0)/aro-aso-ea-template.yaml

@@ -20,25 +20,25 @@ spec:
     type: UserAssigned
     userAssignedIdentities:
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-controller-manager-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLOUD_CONTROLLER_MANAGER}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-network-config-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLOUD_NETWORK_CONFIG}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLUSTER_API_AZURE}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-control-plane-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CONTROL_PLANE}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DISK_CSI_DRIVER}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_FILE_CSI_DRIVER}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_IMAGE_REGISTRY}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-ingress-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_INGRESS}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-kms-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_KMS}"
         - reference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_SERVICE}"
   properties:
     platform:
       networkSecurityGroupReference:
@@ -49,32 +49,32 @@ spec:
         userAssignedIdentities:
           controlPlaneOperatorsReferences:
             cloud-controller-manager:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-controller-manager-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLOUD_CONTROLLER_MANAGER}"
             cloud-network-config:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cloud-network-config-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLOUD_NETWORK_CONFIG}"
             cluster-api-azure:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLUSTER_API_AZURE}"
             control-plane:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-control-plane-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CONTROL_PLANE}"
             disk-csi-driver:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DISK_CSI_DRIVER}"
             file-csi-driver:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_FILE_CSI_DRIVER}"
             image-registry:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_IMAGE_REGISTRY}"
             ingress:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-ingress-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_INGRESS}"
             kms:
-              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-cp-kms-${OPERATORS_UAMIS_SUFFIX}"
+              armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_KMS}"
           dataPlaneOperatorsReferences:
            disk-csi-driver:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-disk-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DP_DISK_CSI_DRIVER}"
            file-csi-driver:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DP_FILE_CSI_DRIVER}"
            image-registry:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-dp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DP_IMAGE_REGISTRY}"
           serviceManagedIdentityReference:
-            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
+            armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_SERVICE}"
       subnetReference:
         group: network.azure.com
         kind: VirtualNetworksSubnet

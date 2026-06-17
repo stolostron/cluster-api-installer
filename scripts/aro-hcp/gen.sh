@@ -137,6 +137,12 @@ if [ -n "$MSI_RESOURCEGROUPNAME" ]; then
     export MI_DP_FILE_CSI_DRIVER="dp-file-csi-driver"
     export MI_DP_IMAGE_REGISTRY="dp-image-registry"
     export MI_SERVICE="service"
+    MSI_RG_TAIL="${MSI_RESOURCEGROUPNAME##*-}"
+    if [[ "$MSI_RG_TAIL" =~ ^[0-9]+$ ]]; then
+        export MSI_SUFFIX="$MSI_RG_TAIL"
+    else
+        export MSI_SUFFIX="$NAME_PREFIX"
+    fi
 else
     export MSI_RESOURCEGROUPNAME="$RESOURCEGROUPNAME"
     export MI_CLUSTER_API_AZURE="${USER}-${CS_CLUSTER_NAME}-cp-cluster-api-azure-${OPERATORS_UAMIS_SUFFIX}"
@@ -152,6 +158,7 @@ else
     export MI_DP_FILE_CSI_DRIVER="${USER}-${CS_CLUSTER_NAME}-dp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
     export MI_DP_IMAGE_REGISTRY="${USER}-${CS_CLUSTER_NAME}-dp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
     export MI_SERVICE="${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
+    export MSI_SUFFIX="0"
 fi
 
 export VNET="$NAME_PREFIX-vnet-$OPERATORS_UAMIS_SUFFIX"

@@ -24,8 +24,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-clusterapiazuremi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_CLUSTER_API_AZURE}
@@ -64,8 +62,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-kmsmi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_KMS}
@@ -124,8 +120,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-controlplanemi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_CONTROL_PLANE}
@@ -184,8 +178,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-cloudcontrollermanagermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_CLOUD_CONTROLLER_MANAGER}
@@ -224,8 +216,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-ingressmi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_INGRESS}
@@ -244,8 +234,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-diskcsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_DISK_CSI_DRIVER}
@@ -304,8 +292,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-filecsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_FILE_CSI_DRIVER}
@@ -324,8 +310,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-imageregistrymi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_IMAGE_REGISTRY}
@@ -384,8 +368,6 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-cloudnetworkconfigmi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_CLOUD_NETWORK_CONFIG}
@@ -404,8 +386,6 @@
     metadata:
       name: ${MI_SERVICE}-federatedcredentialsroleid-dpdiskcsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_DP_DISK_CSI_DRIVER}
@@ -424,8 +404,6 @@
     metadata:
       name: ${MI_SERVICE}-federatedcredentialsroleid-dpfilecsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_DP_FILE_CSI_DRIVER}
@@ -484,8 +462,6 @@
     metadata:
       name: ${MI_SERVICE}-federatedcredentialsroleid-dpimageregistrymi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${MI_DP_IMAGE_REGISTRY}

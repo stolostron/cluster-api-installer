@@ -23,8 +23,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-clusterapiazuremi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -63,8 +61,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-kmsmi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -123,8 +119,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-controlplanemi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -183,8 +177,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-cloudcontrollermanagermi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -223,8 +215,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-ingressmi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -243,8 +233,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-diskcsidrivermi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -303,8 +291,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-filecsidrivermi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -323,8 +309,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-imageregistrymi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -383,8 +367,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-readerroleid-cloudnetworkconfigmi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -403,8 +385,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-federatedcredentialsroleid-dpdiskcsidrivermi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -423,8 +403,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-federatedcredentialsroleid-dpfilecsidrivermi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -483,8 +461,6 @@ apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-federatedcredentialsroleid-dpimageregistrymi-${MSI_SUFFIX}
-  annotations:
-    serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
   owner:

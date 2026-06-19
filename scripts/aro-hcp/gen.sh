@@ -139,9 +139,9 @@ if [ -n "$MSI_RESOURCEGROUPNAME" ]; then
     export MI_SERVICE="service"
     MSI_RG_TAIL="${MSI_RESOURCEGROUPNAME##*-}"
     if [[ "$MSI_RG_TAIL" =~ ^[0-9]+$ ]]; then
-        export MSI_SUFFIX="$MSI_RG_TAIL"
+        export MSI_SUFFIX="-$MSI_RG_TAIL"
     else
-        export MSI_SUFFIX="$NAME_PREFIX"
+        export MSI_SUFFIX="-$NAME_PREFIX"
     fi
 else
     export MSI_RESOURCEGROUPNAME="$RESOURCEGROUPNAME"
@@ -158,7 +158,7 @@ else
     export MI_DP_FILE_CSI_DRIVER="${USER}-${CS_CLUSTER_NAME}-dp-file-csi-driver-${OPERATORS_UAMIS_SUFFIX}"
     export MI_DP_IMAGE_REGISTRY="${USER}-${CS_CLUSTER_NAME}-dp-image-registry-${OPERATORS_UAMIS_SUFFIX}"
     export MI_SERVICE="${USER}-${CS_CLUSTER_NAME}-service-managed-identity-${OPERATORS_UAMIS_SUFFIX}"
-    export MSI_SUFFIX="0"
+    export MSI_SUFFIX=""
 fi
 
 export VNET="$NAME_PREFIX-vnet-$OPERATORS_UAMIS_SUFFIX"
@@ -218,18 +218,15 @@ if [ -z "$GEN_ASO" ] ; then
     TEMPLATE_FILE_ARO_IDENTITIES=$(dirname $0)/aro-template-identities.yaml
     TEMPLATE_FILE_ARO_IDENTITIES_REF=$(dirname $0)/aro-template-identities-ref.yaml
     TEMPLATE_FILE_ARO_ROLEASSIGNMENTS=$(dirname $0)/aro-template-roleassignments.yaml
-    TEMPLATE_FILE_ARO_ROLEASSIGNMENTS_REF=$(dirname $0)/aro-template-roleassignments-ref.yaml
     if [ "$MSI_RESOURCEGROUPNAME" = "$RESOURCEGROUPNAME" ]; then
         echo appending identities to: "$GEN_OUTPUT/aro.yaml"
         envsubst  < $TEMPLATE_FILE_ARO_IDENTITIES >> "$GEN_OUTPUT/aro.yaml"
-        echo appending role assignments to: "$GEN_OUTPUT/aro.yaml"
-        envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS >> "$GEN_OUTPUT/aro.yaml"
     else
-        echo appending identity references to: "$GEN_OUTPUT/aro.yaml" "(detach-on-delete, MSI from $MSI_RESOURCEGROUPNAME)"
+        echo appending identity references to: "$GEN_OUTPUT/aro.yaml" "(MSI from $MSI_RESOURCEGROUPNAME)"
         envsubst  < $TEMPLATE_FILE_ARO_IDENTITIES_REF >> "$GEN_OUTPUT/aro.yaml"
-        echo appending role assignment references to: "$GEN_OUTPUT/aro.yaml" "(detach-on-delete)"
-        envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS_REF >> "$GEN_OUTPUT/aro.yaml"
     fi
+    echo appending role assignments to: "$GEN_OUTPUT/aro.yaml"
+    envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS >> "$GEN_OUTPUT/aro.yaml"
 else
     echo creating: "$GEN_OUTPUT/is.yaml"
     envsubst  < $TEMPLATE_FILE_IS > "$GEN_OUTPUT/is.yaml"
@@ -237,18 +234,15 @@ else
     TEMPLATE_FILE_IS_IDENTITIES=$(dirname $0)/is-template-identities.yaml
     TEMPLATE_FILE_IS_IDENTITIES_REF=$(dirname $0)/is-template-identities-ref.yaml
     TEMPLATE_FILE_IS_ROLEASSIGNMENTS=$(dirname $0)/is-template-roleassignments.yaml
-    TEMPLATE_FILE_IS_ROLEASSIGNMENTS_REF=$(dirname $0)/is-template-roleassignments-ref.yaml
     if [ "$MSI_RESOURCEGROUPNAME" = "$RESOURCEGROUPNAME" ]; then
         echo appending identities to: "$GEN_OUTPUT/is.yaml"
         envsubst  < $TEMPLATE_FILE_IS_IDENTITIES >> "$GEN_OUTPUT/is.yaml"
-        echo appending role assignments to: "$GEN_OUTPUT/is.yaml"
-        envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS >> "$GEN_OUTPUT/is.yaml"
     else
-        echo appending identity references to: "$GEN_OUTPUT/is.yaml" "(detach-on-delete, MSI from $MSI_RESOURCEGROUPNAME)"
+        echo appending identity references to: "$GEN_OUTPUT/is.yaml" "(MSI from $MSI_RESOURCEGROUPNAME)"
         envsubst  < $TEMPLATE_FILE_IS_IDENTITIES_REF >> "$GEN_OUTPUT/is.yaml"
-        echo appending role assignment references to: "$GEN_OUTPUT/is.yaml" "(detach-on-delete)"
-        envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS_REF >> "$GEN_OUTPUT/is.yaml"
     fi
+    echo appending role assignments to: "$GEN_OUTPUT/is.yaml"
+    envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS >> "$GEN_OUTPUT/is.yaml"
 
     TEMPLATE_FILE_ASO=$(dirname $0)/aro-aso-template.yaml
     TEMPLATE_FILE_ASO_EA=$(dirname $0)/aro-aso-ea-template.yaml

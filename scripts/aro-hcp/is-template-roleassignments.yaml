@@ -2,7 +2,7 @@
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CLUSTER_API_AZURE}-hcpclusterapiproviderroleid-subnet
+  name: ${MI_CLUSTER_API_AZURE}-hcpclusterapiproviderroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -20,7 +20,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-clusterapiazuremi
+  name: ${MI_SERVICE}-readerroleid-clusterapiazuremi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -38,7 +38,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_KMS}-keyvaultcryptouserroleid-keyvault
+  name: ${MI_KMS}-keyvaultcryptouserroleid-keyvault${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -56,7 +56,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-kmsmi
+  name: ${MI_SERVICE}-readerroleid-kmsmi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -74,7 +74,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CONTROL_PLANE}-hcpcontrolplaneoperatorroleid-vnet
+  name: ${MI_CONTROL_PLANE}-hcpcontrolplaneoperatorroleid-vnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -92,7 +92,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CONTROL_PLANE}-hcpcontrolplaneoperatorroleid-nsg
+  name: ${MI_CONTROL_PLANE}-hcpcontrolplaneoperatorroleid-nsg${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -110,7 +110,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-controlplanemi
+  name: ${MI_SERVICE}-readerroleid-controlplanemi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -128,7 +128,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CLOUD_CONTROLLER_MANAGER}-cloudcontrollermanagerroleid-subnet
+  name: ${MI_CLOUD_CONTROLLER_MANAGER}-cloudcontrollermanagerroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -146,7 +146,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CLOUD_CONTROLLER_MANAGER}-cloudcontrollermanagerroleid-nsg
+  name: ${MI_CLOUD_CONTROLLER_MANAGER}-cloudcontrollermanagerroleid-nsg${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -164,7 +164,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-cloudcontrollermanagermi
+  name: ${MI_SERVICE}-readerroleid-cloudcontrollermanagermi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -182,7 +182,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_INGRESS}-ingressoperatorroleid-subnet
+  name: ${MI_INGRESS}-ingressoperatorroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -200,7 +200,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-ingressmi
+  name: ${MI_SERVICE}-readerroleid-ingressmi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -218,7 +218,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-diskcsidrivermi
+  name: ${MI_SERVICE}-readerroleid-diskcsidrivermi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -236,7 +236,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_FILE_CSI_DRIVER}-filestorageoperatorroleid-subnet
+  name: ${MI_FILE_CSI_DRIVER}-filestorageoperatorroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -254,7 +254,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_FILE_CSI_DRIVER}-filestorageoperatorroleid-nsg
+  name: ${MI_FILE_CSI_DRIVER}-filestorageoperatorroleid-nsg${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -272,7 +272,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-filecsidrivermi
+  name: ${MI_SERVICE}-readerroleid-filecsidrivermi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -290,7 +290,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-imageregistrymi
+  name: ${MI_SERVICE}-readerroleid-imageregistrymi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -308,7 +308,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CLOUD_NETWORK_CONFIG}-networkoperatorroleid-subnet
+  name: ${MI_CLOUD_NETWORK_CONFIG}-networkoperatorroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -326,7 +326,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_CLOUD_NETWORK_CONFIG}-networkoperatorroleid-vnet
+  name: ${MI_CLOUD_NETWORK_CONFIG}-networkoperatorroleid-vnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -344,7 +344,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-readerroleid-cloudnetworkconfigmi
+  name: ${MI_SERVICE}-readerroleid-cloudnetworkconfigmi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -362,7 +362,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-federatedcredentialsroleid-dpdiskcsidrivermi
+  name: ${MI_SERVICE}-federatedcredentialsroleid-dpdiskcsidrivermi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -380,7 +380,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-federatedcredentialsroleid-dpfilecsidrivermi
+  name: ${MI_SERVICE}-federatedcredentialsroleid-dpfilecsidrivermi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -398,7 +398,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_DP_FILE_CSI_DRIVER}-filestorageoperatorroleid-subnet
+  name: ${MI_DP_FILE_CSI_DRIVER}-filestorageoperatorroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -416,7 +416,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_DP_FILE_CSI_DRIVER}-filestorageoperatorroleid-nsg
+  name: ${MI_DP_FILE_CSI_DRIVER}-filestorageoperatorroleid-nsg${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -434,7 +434,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-federatedcredentialsroleid-dpimageregistrymi
+  name: ${MI_SERVICE}-federatedcredentialsroleid-dpimageregistrymi${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -452,7 +452,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-vnet
+  name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-vnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -470,7 +470,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-subnet
+  name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-subnet${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:
@@ -488,7 +488,7 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-nsg
+  name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-nsg${MSI_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
   owner:

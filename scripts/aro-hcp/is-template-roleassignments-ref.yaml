@@ -4,6 +4,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CLUSTER_API_AZURE}-hcpclusterapiproviderroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -38,6 +40,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_KMS}-keyvaultcryptouserroleid-keyvault-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${KV}
@@ -72,6 +76,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CONTROL_PLANE}-hcpcontrolplaneoperatorroleid-vnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}
@@ -90,6 +96,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CONTROL_PLANE}-hcpcontrolplaneoperatorroleid-nsg-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${NSG}
@@ -124,6 +132,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CLOUD_CONTROLLER_MANAGER}-cloudcontrollermanagerroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -142,6 +152,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CLOUD_CONTROLLER_MANAGER}-cloudcontrollermanagerroleid-nsg-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${NSG}
@@ -176,6 +188,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_INGRESS}-ingressoperatorroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -226,6 +240,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_FILE_CSI_DRIVER}-filestorageoperatorroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -244,6 +260,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_FILE_CSI_DRIVER}-filestorageoperatorroleid-nsg-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${NSG}
@@ -294,6 +312,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CLOUD_NETWORK_CONFIG}-networkoperatorroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -312,6 +332,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_CLOUD_NETWORK_CONFIG}-networkoperatorroleid-vnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}
@@ -378,6 +400,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_DP_FILE_CSI_DRIVER}-filestorageoperatorroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -396,6 +420,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_DP_FILE_CSI_DRIVER}-filestorageoperatorroleid-nsg-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${NSG}
@@ -430,6 +456,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-vnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}
@@ -448,6 +476,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-subnet-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${VNET}-${SUBNET}
@@ -466,6 +496,8 @@ kind: RoleAssignment
 metadata:
   name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-nsg-${MSI_SUFFIX}
   namespace: ${NAMESPACE}
+  annotations:
+    serviceoperator.azure.com/reconcile-policy: detach-on-delete
 spec:
   owner:
     name: ${NSG}

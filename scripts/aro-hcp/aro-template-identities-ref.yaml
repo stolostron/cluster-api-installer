@@ -1,14 +1,3 @@
-  # ASO reference to the pre-existing MSI resource group.
-  # detach-on-delete ensures ASO adopts but never deletes the Azure resource.
-  - apiVersion: resources.azure.com/v1api20200601
-    kind: ResourceGroup
-    metadata:
-      name: ${MSI_RESOURCEGROUPNAME}
-      namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
-    spec:
-      location: ${REGION}
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -19,7 +8,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -38,7 +27,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -57,7 +46,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -76,7 +65,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -95,7 +84,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -114,7 +103,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -133,7 +122,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -152,7 +141,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -171,7 +160,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -190,7 +179,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -209,7 +198,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -228,7 +217,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:
@@ -247,7 +236,7 @@
     spec:
       location: ${REGION}
       owner:
-        name: ${MSI_RESOURCEGROUPNAME}
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
       operatorSpec:
         configMaps:
           principalId:

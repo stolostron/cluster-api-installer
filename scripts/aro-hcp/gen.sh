@@ -137,11 +137,13 @@ if [ -n "$MSI_RESOURCEGROUPNAME" ]; then
     export MI_DP_FILE_CSI_DRIVER="dp-file-csi-driver"
     export MI_DP_IMAGE_REGISTRY="dp-image-registry"
     export MI_SERVICE="service"
-    MSI_RG_TAIL="${MSI_RESOURCEGROUPNAME##*-}"
-    if [[ "$MSI_RG_TAIL" =~ ^[0-9]+$ ]]; then
-        export MSI_SUFFIX="$MSI_RG_TAIL"
-    else
-        export MSI_SUFFIX="$NAME_PREFIX"
+    if [ -z "${MSI_SUFFIX:-}" ]; then
+        MSI_RG_TAIL="${MSI_RESOURCEGROUPNAME##*-}"
+        if [[ "$MSI_RG_TAIL" =~ ^[0-9]+$ ]]; then
+            export MSI_SUFFIX="$MSI_RG_TAIL"
+        else
+            export MSI_SUFFIX="$NAME_PREFIX"
+        fi
     fi
 else
     export MSI_RESOURCEGROUPNAME="$RESOURCEGROUPNAME"

@@ -8,7 +8,7 @@ metadata:
   name: ${MI_CONTROL_PLANE}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -29,7 +29,7 @@ metadata:
   name: ${MI_CLUSTER_API_AZURE}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -50,7 +50,7 @@ metadata:
   name: ${MI_CLOUD_CONTROLLER_MANAGER}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -71,7 +71,7 @@ metadata:
   name: ${MI_INGRESS}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -92,7 +92,7 @@ metadata:
   name: ${MI_DISK_CSI_DRIVER}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -113,7 +113,7 @@ metadata:
   name: ${MI_FILE_CSI_DRIVER}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -134,7 +134,7 @@ metadata:
   name: ${MI_IMAGE_REGISTRY}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -155,7 +155,7 @@ metadata:
   name: ${MI_CLOUD_NETWORK_CONFIG}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -176,7 +176,7 @@ metadata:
   name: ${MI_KMS}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -197,7 +197,7 @@ metadata:
   name: ${MI_DP_DISK_CSI_DRIVER}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -218,7 +218,7 @@ metadata:
   name: ${MI_DP_IMAGE_REGISTRY}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -239,7 +239,7 @@ metadata:
   name: ${MI_DP_FILE_CSI_DRIVER}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
@@ -260,7 +260,7 @@ metadata:
   name: ${MI_SERVICE}
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     name: ${RESOURCEGROUPNAME}
   operatorSpec:

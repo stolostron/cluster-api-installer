@@ -80,7 +80,7 @@ function set_namespace_and_t {
 CHARTS=$(echo cluster-api $*|tr ' ' '\n'|sort -u|tr '\n' ' ')
 
 if [ "$ARO_NULL_PROVISIONING" = "true" ] ; then
-    CHARTS=$(echo aro-mockup-proxy $CHARTS|tr ' ' '\n'|sort -u|tr '\n' ' ')
+    CHARTS="$CHARTS aro-mockup-proxy"
 fi
 
 if [ "$DO_DEPLOY" = true ] ; then

@@ -7,7 +7,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -27,7 +27,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -47,7 +47,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -67,7 +67,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -87,7 +87,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -107,7 +107,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -127,7 +127,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -147,7 +147,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -167,7 +167,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -187,7 +187,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -207,7 +207,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -227,7 +227,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:
@@ -247,7 +247,7 @@ metadata:
     serviceoperator.azure.com/reconcile-policy: detach-on-delete
   namespace: ${NAMESPACE}
 spec:
-  location: ${REGION}
+  location: ${MSI_REGION}
   owner:
     armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}
   operatorSpec:

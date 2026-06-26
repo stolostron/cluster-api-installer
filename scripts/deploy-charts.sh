@@ -121,7 +121,7 @@ if [ "$DO_DEPLOY" = true ] ; then
             --set "Release.Namespace=$NAMESPACE" \
             ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
         # Wait for cert-manager to issue the TLS certificate before proceeding
-        if [ "$PROJECT" = "aro-mockup-proxy" ] ; then
+        if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
             echo "  Waiting for TLS secret aro-mockup-proxy-tls to be created by cert-manager..."
             for i in $(seq 1 60); do
                 if kubectl $KUBE_CONTEXT -n "$NAMESPACE" get secret aro-mockup-proxy-tls >/dev/null 2>&1; then

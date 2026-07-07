@@ -19,7 +19,7 @@ RUN CGO_ENABLED=1 GO111MODULE=on GOEXPERIMENT=strictfipsruntime go build -a -o /
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
-LABEL com.redhat.component="" \
+LABEL com.redhat.component="mce-capi-webhook-config" \
       url="mce-capi-webhook-config/Dockerfile" \
       description="Auto-labeling CAPI resources based on openshift and hypershift namespaces" \
       io.k8s.description="Auto-labeling CAPI resources based on namespaces" \

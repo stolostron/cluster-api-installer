@@ -48,6 +48,33 @@
                 "indirect"
             ],
             "enabled": false
+        },
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "matchPackagePatterns": [
+                "^k8s.io/"
+            ],
+            "allowedVersions": "<0.35.0"
+        },
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "matchPackageNames": [
+                "sigs.k8s.io/controller-runtime"
+            ],
+            "allowedVersions": "<0.20.0"
+        },
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "matchPackageNames": [
+                "sigs.k8s.io/cluster-api"
+            ],
+            "allowedVersions": "<1.10.0"
         }
     ],
     "rebaseWhen": "behind-base-branch",

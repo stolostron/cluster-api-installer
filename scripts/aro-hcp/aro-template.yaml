@@ -262,6 +262,13 @@ spec:
       namespace: ${NAMESPACE}
     spec:
       location: ${REGION}
+      tags:
+        createdAt: "${CREATED_AT}"
+        capi-test-user: "${USER}"
+        capi-test-env: "${DEPLOYMENT_ENV}"
+        capi-test-run-id: "${NAME_PREFIX}"
+${SWEEPER_DISABLE}        e2e.aro-hcp-ci.redhat.com: "true"
+${SWEEPER_DISABLE}        deleteAfter.aro-hcp-ci.redhat.com: "${DELETE_AFTER}"
   # Equivalent to:
   # az network vnet create -n "${VNET}" -g "${RESOURCEGROUPNAME}"
   # This YAML creates a virtual network named "${VNET}" in the "${RESOURCEGROUPNAME}" resource group.

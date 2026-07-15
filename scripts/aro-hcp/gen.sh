@@ -21,7 +21,8 @@ export ENV=${ENV:-${DEPLOYMENT_ENV}}
 export ENV=${ENV:-stage}
 export CREATE_CREDENTIALS=true
 export NAMESPACE=${NAMESPACE:-default}
-export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
+export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20260630preview}
+#export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
 #export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20240610preview}
 
 

@@ -24,13 +24,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-clusterapiazuremi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_CLUSTER_API_AZURE}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLUSTER_API_AZURE}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -64,13 +60,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-kmsmi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_KMS}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_KMS}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -124,13 +116,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-controlplanemi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_CONTROL_PLANE}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CONTROL_PLANE}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -184,13 +172,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-cloudcontrollermanagermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_CLOUD_CONTROLLER_MANAGER}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLOUD_CONTROLLER_MANAGER}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -224,13 +208,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-ingressmi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_INGRESS}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_INGRESS}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -244,13 +224,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-diskcsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_DISK_CSI_DRIVER}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DISK_CSI_DRIVER}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -304,13 +280,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-filecsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_FILE_CSI_DRIVER}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_FILE_CSI_DRIVER}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -324,13 +296,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-imageregistrymi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_IMAGE_REGISTRY}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_IMAGE_REGISTRY}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -384,13 +352,9 @@
     metadata:
       name: ${MI_SERVICE}-readerroleid-cloudnetworkconfigmi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_CLOUD_NETWORK_CONFIG}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_CLOUD_NETWORK_CONFIG}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -404,13 +368,9 @@
     metadata:
       name: ${MI_SERVICE}-federatedcredentialsroleid-dpdiskcsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_DP_DISK_CSI_DRIVER}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DP_DISK_CSI_DRIVER}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -424,13 +384,9 @@
     metadata:
       name: ${MI_SERVICE}-federatedcredentialsroleid-dpfilecsidrivermi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_DP_FILE_CSI_DRIVER}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DP_FILE_CSI_DRIVER}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId
@@ -484,13 +440,9 @@
     metadata:
       name: ${MI_SERVICE}-federatedcredentialsroleid-dpimageregistrymi-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
-        name: ${MI_DP_IMAGE_REGISTRY}
-        group: managedidentity.azure.com
-        kind: UserAssignedIdentity
+        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_DP_IMAGE_REGISTRY}
       principalIdFromConfig:
         name: identity-map-${MI_SERVICE}
         key: principalId

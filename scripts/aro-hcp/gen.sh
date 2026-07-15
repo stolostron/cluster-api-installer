@@ -72,6 +72,7 @@ export RESOURCEGROUPNAME=${RESOURCEGROUPNAME:-"$CS_CLUSTER_NAME-resgroup"}
 export OCP_VERSION=${OCP_VERSION:-4.20}
 export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.17}
 export REGION=${REGION:-westus3}
+export MSI_REGION=${MSI_REGION:-${REGION}}
 export NODEPOOL_PREFIX="w-${REGION:0:7}"
 export NAME_PREFIX="${NAME_PREFIX:0:14}"
 
@@ -137,11 +138,13 @@ if [ -n "$MSI_RESOURCEGROUPNAME" ]; then
     export MI_DP_FILE_CSI_DRIVER="dp-file-csi-driver"
     export MI_DP_IMAGE_REGISTRY="dp-image-registry"
     export MI_SERVICE="service"
-    MSI_RG_TAIL="${MSI_RESOURCEGROUPNAME##*-}"
-    if [[ "$MSI_RG_TAIL" =~ ^[0-9]+$ ]]; then
-        export MSI_SUFFIX="$MSI_RG_TAIL"
-    else
-        export MSI_SUFFIX="$NAME_PREFIX"
+    if [ -z "${MSI_SUFFIX:-}" ]; then
+        MSI_RG_TAIL="${MSI_RESOURCEGROUPNAME##*-}"
+        if [[ "$MSI_RG_TAIL" =~ ^[0-9]+$ ]]; then
+            export MSI_SUFFIX="$MSI_RG_TAIL"
+        else
+            export MSI_SUFFIX="$NAME_PREFIX"
+        fi
     fi
 else
     export MSI_RESOURCEGROUPNAME="$RESOURCEGROUPNAME"
@@ -186,6 +189,11 @@ export EA_AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
 export EA_DISABLE='#'
 [ "$USE_EA" = true ] && EA_DISABLE=''
 
+export CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+export DELETE_AFTER=$(date -u -d "+6 hours" +"%Y-%m-%dT%H:%M:%SZ")
+export SWEEPER_DISABLE='#'
+[ "${ARO_HCP_SWEEPER_TAGS}" = "true" ] && SWEEPER_DISABLE=''
+
 echo ENV=$ENV - AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME} AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}, REGION=${REGION}
 echo AZURE_TENANT_ID=${AZURE_TENANT_ID}
 echo AZURE_CLIENT_ID=${AZURE_CLIENT_ID} AZURE_ASO_CLIENT_ID=${AZURE_ASO_CLIENT_ID} 
@@ -225,9 +233,9 @@ if [ -z "$GEN_ASO" ] ; then
         echo appending role assignments to: "$GEN_OUTPUT/aro.yaml"
         envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS >> "$GEN_OUTPUT/aro.yaml"
     else
-        echo appending identity references to: "$GEN_OUTPUT/aro.yaml" "(detach-on-delete, MSI from $MSI_RESOURCEGROUPNAME)"
+        echo appending identity references to: "$GEN_OUTPUT/aro.yaml" "(MSI from $MSI_RESOURCEGROUPNAME)"
         envsubst  < $TEMPLATE_FILE_ARO_IDENTITIES_REF >> "$GEN_OUTPUT/aro.yaml"
-        echo appending role assignment references to: "$GEN_OUTPUT/aro.yaml" "(detach-on-delete)"
+        echo appending role assignment references to: "$GEN_OUTPUT/aro.yaml" "(owner.armId, MSI from $MSI_RESOURCEGROUPNAME)"
         envsubst  < $TEMPLATE_FILE_ARO_ROLEASSIGNMENTS_REF >> "$GEN_OUTPUT/aro.yaml"
     fi
 else
@@ -244,9 +252,9 @@ else
         echo appending role assignments to: "$GEN_OUTPUT/is.yaml"
         envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS >> "$GEN_OUTPUT/is.yaml"
     else
-        echo appending identity references to: "$GEN_OUTPUT/is.yaml" "(detach-on-delete, MSI from $MSI_RESOURCEGROUPNAME)"
+        echo appending identity references to: "$GEN_OUTPUT/is.yaml" "(MSI from $MSI_RESOURCEGROUPNAME)"
         envsubst  < $TEMPLATE_FILE_IS_IDENTITIES_REF >> "$GEN_OUTPUT/is.yaml"
-        echo appending role assignment references to: "$GEN_OUTPUT/is.yaml" "(detach-on-delete)"
+        echo appending role assignment references to: "$GEN_OUTPUT/is.yaml" "(owner.armId, MSI from $MSI_RESOURCEGROUPNAME)"
         envsubst  < $TEMPLATE_FILE_IS_ROLEASSIGNMENTS_REF >> "$GEN_OUTPUT/is.yaml"
     fi
 

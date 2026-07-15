@@ -80,7 +80,7 @@ function set_namespace_and_t {
 CHARTS=$(echo cluster-api $*|tr ' ' '\n'|sort -u|tr '\n' ' ')
 
 if [ "$ARO_NULL_PROVISIONING" = "true" ] ; then
-    CHARTS=$(echo aro-mockup-proxy $CHARTS|tr ' ' '\n'|sort -u|tr '\n' ' ')
+    CHARTS="$CHARTS aro-mockup-proxy"
 fi
 
 if [ "$DO_DEPLOY" = true ] ; then
@@ -96,7 +96,7 @@ if [ "$DO_DEPLOY" = true ] ; then
         echo "      NAMESPACE: $NAMESPACE"
         kubectl $KUBE_CONTEXT get namespace "$NAMESPACE" >/dev/null 2>&1 || kubectl $KUBE_CONTEXT create namespace "$NAMESPACE" 
         # Create prerequisites for aro-mockup-proxy
-        if [ "$PROJECT" = "aro-mockup-proxy" ] ; then
+        if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
             KUBECONFIG_FILE=${MOCK_KUBECONFIG_FILE:-"${SCRIPT_DIR}/../aro-mockup-proxy/workload-kubeconfig.yaml"}
             if [ -f "$KUBECONFIG_FILE" ] ; then
                 echo "  Creating mockup-proxy-kubeconfig secret from $KUBECONFIG_FILE"
@@ -110,7 +110,7 @@ if [ "$DO_DEPLOY" = true ] ; then
         # Pass DEV_ENDPOINT to aro-mockup-proxy chart when set
         DEV_ENDPOINT_ARG=""
         if [ "$PROJECT" = "aro-mockup-proxy" -a -n "$DEV_ENDPOINT" ] ; then
-            DEV_ENDPOINT_ARG="--set config.devEndpoint=$DEV_ENDPOINT"
+            DEV_ENDPOINT_ARG="--set config.devEndpoint=$DEV_ENDPOINT --set kubeconfig.secretName="
             echo "  DEV_ENDPOINT: $DEV_ENDPOINT (hcpOpenShiftCluster requests will be forwarded)"
         fi
         echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG
@@ -120,6 +120,18 @@ if [ "$DO_DEPLOY" = true ] ; then
             --set imagePullSecret=${IMAGE_PULL_SECRET_B64} \
             --set "Release.Namespace=$NAMESPACE" \
             ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
+        # Wait for cert-manager to issue the TLS certificate before proceeding
+        if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
+            echo "  Waiting for TLS secret aro-mockup-proxy-tls to be created by cert-manager..."
+            for i in $(seq 1 60); do
+                if kubectl $KUBE_CONTEXT -n "$NAMESPACE" get secret aro-mockup-proxy-tls >/dev/null 2>&1; then
+                    echo "  TLS secret ready"
+                    break
+                fi
+                [ $i -eq 60 ] && echo "  WARNING: TLS secret not ready after 60s, continuing anyway"
+                sleep 1
+            done
+        fi
         echo
     done
 fi

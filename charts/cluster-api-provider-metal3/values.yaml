@@ -1,4 +1,4 @@
 manager:
   image:
     tag: v5.0
-    url: registry.redhat.io/openshift4/ose-baremetal-cluster-api-controllers-rhel9
+    url: registry.redhat.io/openshift5/ose-baremetal-cluster-api-controllers-rhel9

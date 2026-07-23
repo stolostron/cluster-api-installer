@@ -92,6 +92,121 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: ipam-webhook-service-cert
+  # Pin CAPM3 CRDs to v1beta1 as storage version (MGMT-24787).
+  # On OCP clusters, CVO and the cluster-capi-operator deploy some of these CRDs with
+  # v1beta1 as storage. If MCE sets v1beta2 as storage, Kubernetes records it in
+  # status.storedVersions and CVO can never revert to v1beta1-only, causing a
+  # reconciliation failure that blocks OCP upgrades.
+  # TODO: Remove when openshift/cluster-api-provider-metal3 removes
+  # openshift/patches/crd-storage-version.yaml (signals v1beta2 is safe as storage).
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3clusters.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3clustertemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3machines.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3machinetemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3datas.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3dataclaims.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3datatemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3remediations.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3remediationtemplates.infrastructure.cluster.x-k8s.io
+    patch: |-
+      - op: replace
+        path: /spec/versions/0/storage
+        value: true
+      - op: replace
+        path: /spec/versions/1/storage
+        value: false
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1

@@ -92,6 +92,68 @@ patches:
       - op: add
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: ipam-webhook-service-cert
+  # Pin CAPM3 CRDs to v1beta1 as storage version (MGMT-24787).
+  # Reuses the patch from openshift/cluster-api-provider-metal3 so updates are inherited.
+  # On OCP clusters, CVO and the cluster-capi-operator also manage some of these CRDs
+  # with v1beta1 as storage. If we set v1beta2 as storage, Kubernetes records it in
+  # status.storedVersions and the other controller can never revert to v1beta1-only,
+  # causing a permanent reconciliation failure that blocks OCP upgrades.
+  # TODO: Remove when CAPM3 deletes openshift/patches/crd-storage-version.yaml (the build
+  # will fail at that point, signaling it is safe to use v1beta2 as storage).
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3clusters.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3clustertemplates.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3machines.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3machinetemplates.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3datas.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3dataclaims.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3datatemplates.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3remediations.infrastructure.cluster.x-k8s.io
+  - path: ../openshift/patches/crd-storage-version.yaml
+    target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: metal3remediationtemplates.infrastructure.cluster.x-k8s.io
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1

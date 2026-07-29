@@ -8,7 +8,7 @@ CAPZ_BRANCH ?= backplane-2.17
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ
-OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.17
+OPENSHIFT_ASSISTED_BRANCH ?= backplane-5.0
 METAL3_BRANCH ?= release-4.22
 
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
@@ -120,7 +120,7 @@ build: build-cluster-api-chart build-cluster-api-provider-aws-chart build-cluste
 
 .PHONY: test-chart-crc
 test-chart-crc:
-	# run the deploy script with crc 
+	# run the deploy script with crc
 	(cd ..; export PROJECT_ONLY=$(PROJECT) ; ./scripts/deploy-charts-crc.sh )
 
 .PHONY: release-chart

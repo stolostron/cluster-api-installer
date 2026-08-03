@@ -5,6 +5,8 @@ approvers:
 - mzazrivec
 - RadekCap
 - andclt
+- bluesort
+- rccrdpccl
 
 reviewers:
 - jnpacker
@@ -13,3 +15,5 @@ reviewers:
 - mzazrivec
 - RadekCap
 - tinaafitz
+- bluesort
+- rccrdpccl

@@ -1,3 +1,5 @@
+global:
+  templateOverrides: {}
 manager:
   image:
     tag: v5.0

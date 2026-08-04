@@ -27,7 +27,10 @@ spec:
       containers:
       - args:
         - --webhook-port=9443
-        - --enableBMHNameBasedPreallocation=true
+        - --enableBMHNameBasedPreallocation={{ if and .Values.global .Values.global.templateOverrides
+          (hasKey .Values.global.templateOverrides "enablebmhnamebasedpreallocation")
+          }}{{ .Values.global.templateOverrides.enablebmhnamebasedpreallocation }}{{
+          else }}false{{ end }}
         - --diagnostics-address=:8443
         - --insecure-diagnostics=false
         - --tls-min-version=VersionTLS13

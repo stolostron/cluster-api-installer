@@ -131,7 +131,7 @@ patches:
         value: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
       - op: replace
         path: /spec/template/spec/containers/0/args/1
-        value: --enableBMHNameBasedPreallocation=true
+        value: --enableBMHNameBasedPreallocation={{ if and .Values.global .Values.global.templateOverrides (hasKey .Values.global.templateOverrides "enablebmhnamebasedpreallocation") }}{{ .Values.global.templateOverrides.enablebmhnamebasedpreallocation }}{{ else }}false{{ end }}
       - op: replace
         path: /spec/template/spec/containers/0/args/2
         value: --diagnostics-address=:8443

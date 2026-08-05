@@ -40,6 +40,17 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --crd-management=none
+  # Set AZURE_USER_AGENT_SUFFIX to include CAPZ image tag so ARM requests
+  # carry the deployed version (the kustomize replacement in config/default
+  # runs before this overlay and resolves to the base image tag "main")
+  - target:
+      version: v1
+      kind: Secret
+      name: aso-controller-settings
+    patch: |-
+      - op: replace
+        path: /stringData/AZURE_USER_AGENT_SUFFIX
+        value: 'cluster-api-provider-azure/{{.Values.manager.image.tag}}'
   - target:
       kind: ServiceAccount
       name: capz-manager

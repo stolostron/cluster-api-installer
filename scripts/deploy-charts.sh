@@ -98,6 +98,13 @@ if [ "$DO_DEPLOY" = true ] ; then
         # Create prerequisites for aro-mockup-proxy
         if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
             KUBECONFIG_FILE=${MOCK_KUBECONFIG_FILE:-"${SCRIPT_DIR}/../aro-mockup-proxy/workload-kubeconfig.yaml"}
+            if [ ! -f "$KUBECONFIG_FILE" ] && [ "$ARO_NULL_PROVISIONING" = "true" ] ; then
+                WORKLOAD_KIND_NAME="${KIND_CLUSTER_NAME:-aso2}-workload"
+                echo "  Creating Kind workload cluster '$WORKLOAD_KIND_NAME' for null-provisioning mode"
+                KIND_CLUSTER_NAME="$WORKLOAD_KIND_NAME" ${SCRIPT_DIR}/setup-kind-cluster.sh
+                kind get kubeconfig --name "$WORKLOAD_KIND_NAME" > "$KUBECONFIG_FILE"
+                echo "  Workload kubeconfig written to $KUBECONFIG_FILE"
+            fi
             if [ -f "$KUBECONFIG_FILE" ] ; then
                 echo "  Creating mockup-proxy-kubeconfig secret from $KUBECONFIG_FILE"
                 kubectl $KUBE_CONTEXT -n "$NAMESPACE" create secret generic mockup-proxy-kubeconfig \
@@ -189,6 +196,21 @@ if [ "$ARO_NULL_PROVISIONING" = "true" ] && echo "$CHARTS" | grep -q "aro-mockup
 
         echo "✓ Azure Service Operator configured to use mockup proxy"
         echo "  ARM endpoint: https://$MOCKUP_PROXY_SERVICE"
+
+        # Configure CAPZ controller to route ARM calls through the mockup proxy
+        # CAPZ reads AZURE_RESOURCE_MANAGER_ENDPOINT to override the default ARM endpoint
+        if ! kubectl $KUBE_CONTEXT -n capz-system get deployment capz-controller-manager -o jsonpath='{.spec.template.spec.volumes[*].name}' | grep -q mockup-proxy-ca; then
+            echo "Patching CAPZ deployment to use mockup proxy..."
+            kubectl $KUBE_CONTEXT -n capz-system patch deployment capz-controller-manager --type=json -p='[
+              {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"mockup-proxy-ca","secret":{"secretName":"aro-mockup-proxy-tls","items":[{"key":"ca.crt","path":"ca.crt"}]}}},
+              {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts/-","value":{"name":"mockup-proxy-ca","mountPath":"/etc/ssl/certs/aro-mockup-proxy-ca.crt","subPath":"ca.crt","readOnly":true}},
+              {"op":"add","path":"/spec/template/spec/containers/0/env/-","value":{"name":"SSL_CERT_FILE","value":"/etc/ssl/certs/aro-mockup-proxy-ca.crt"}},
+              {"op":"add","path":"/spec/template/spec/containers/0/env/-","value":{"name":"AZURE_RESOURCE_MANAGER_ENDPOINT","value":"https://'"$MOCKUP_PROXY_SERVICE"'"}}
+            ]'
+        else
+            echo "CAPZ deployment already patched with mockup proxy CA, skipping"
+        fi
+        echo "✓ CAPZ controller configured to use mockup proxy"
     fi
 
     echo "========= ARO null-provisioning mode configured ========="

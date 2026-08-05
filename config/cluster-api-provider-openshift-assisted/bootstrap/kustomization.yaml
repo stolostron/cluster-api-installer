@@ -5,6 +5,7 @@ namespace: 'multicluster-engine'
 
 resources:
 - default/
+- base/
 
 patches:
 - target:

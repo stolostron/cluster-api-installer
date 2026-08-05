@@ -41,6 +41,14 @@ patches:
         path: /spec/template/spec/containers/0/args/-
         value: --crd-management=none
   - target:
+      version: v1
+      kind: Secret
+      name: aso-controller-settings
+    patch: |-
+      - op: replace
+        path: /stringData/AZURE_USER_AGENT_SUFFIX
+        value: 'cluster-api-provider-azure/{{.Values.manager.image.tag}}'
+  - target:
       kind: ServiceAccount
       name: capz-manager
     patch: |-

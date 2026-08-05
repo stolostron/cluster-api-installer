@@ -106,6 +106,9 @@ patches:
       - op: add
         path: /stringData/USE_WORKLOAD_IDENTITY_AUTH
         value: ""
+      - op: replace
+        path: /stringData/AZURE_USER_AGENT_SUFFIX
+        value: 'cluster-api-provider-azure/{{.Values.manager.image.tag}}'
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1

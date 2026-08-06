@@ -5,6 +5,7 @@ namespace: 'multicluster-engine'
 
 resources:
 - default/
+- base/capoa-controlplane-networkpolicy.yaml
 
 patches:
 - target:

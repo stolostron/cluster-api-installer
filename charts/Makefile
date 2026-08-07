@@ -2,7 +2,7 @@ OCP_VERSION ?= 5.0
 MCE_VERSION ?= 5.0-dev
 SYNC2CHARTS ?= true
 
-DEFAULT_BRANCH ?= release-4.22
+DEFAULT_BRANCH ?= release-5.0
 CAPA_BRANCH ?= backplane-5.0
 CAPZ_BRANCH ?= backplane-2.17
 DEFAULT_ORGREPO ?= https://github.com/openshift

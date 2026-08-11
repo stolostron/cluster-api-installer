@@ -4,7 +4,7 @@ SYNC2CHARTS ?= true
 
 DEFAULT_BRANCH ?= release-4.22
 CAPA_BRANCH ?= backplane-5.0
-CAPZ_BRANCH ?= backplane-2.17
+CAPZ_BRANCH ?= 2026-06-30-preview
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ

@@ -1,5 +1,5 @@
 ---
-apiVersion: redhatopenshift.azure.com/v1api20240610preview
+apiVersion: redhatopenshift.azure.com/v1api20260630preview
 kind: HcpOpenShiftClustersExternalAuth
 metadata:
   name: ${EA_OIDC_PROVIDER_NAME}

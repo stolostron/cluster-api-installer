@@ -1,5 +1,5 @@
-AZURE_CAPZ_URL="quay.io/acm-d/cluster-api-provider-azure-rhel9"
-AZURE_ASO_URL="quay.io/acm-d/azure-service-operator-rhel9"
+AZURE_CAPZ_URL="quay.io/capz/cluster-api-provider-azure-rhel9"
+AZURE_ASO_URL="quay.io/capz/azure-service-operator-rhel9"
 
 if [ "$ARO_REPO_BRANCH" = "backplane-5.1" ] ; then
     AZURE_TAG="5.1-dev"
@@ -25,6 +25,9 @@ if [ -n "$ASO_PR_NO" ] ; then
     AZURE_ASO_URL="quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-$RELEASE_EXT"
     AZURE_ASO_TAG="${AZURE_ASO_TAG%%-dev}.0-pr-$ASO_PR_NO"
 fi
+
+AZURE_CAPZ_TAG="5.0.0-dev-2"
+AZURE_ASO_TAG="v2.13.0-dev-hcpclusters.5.0-dev"
 
 declare -A helm_add_args_a=(
   [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=${CAPI_TAG} --set webhook.image.tag=${WH_TAG}"

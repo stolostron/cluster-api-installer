@@ -26,8 +26,8 @@ if [ -n "$ASO_PR_NO" ] ; then
     AZURE_ASO_TAG="${AZURE_ASO_TAG%%-dev}.0-pr-$ASO_PR_NO"
 fi
 
-AZURE_CAPZ_TAG="v1.26.0-dev-hcpclusters.1"
-AZURE_ASO_TAG="v2.18.0-dev-hcpclusters.1"
+AZURE_CAPZ_TAG="v1.26.0-hcpclusters.1"
+AZURE_ASO_TAG="v2.18.0-hcpclusters.1"
 
 declare -A helm_add_args_a=(
   [capi]="--set manager.image.url=quay.io/acm-d/ose-cluster-api-rhel9            --set webhook.image.url=quay.io/acm-d/mce-capi-webhook-config-rhel9 --set manager.image.tag=${CAPI_TAG} --set webhook.image.tag=${WH_TAG}"

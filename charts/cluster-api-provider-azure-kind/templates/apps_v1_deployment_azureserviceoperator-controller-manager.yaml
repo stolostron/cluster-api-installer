@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: azure-service-operator
-    app.kubernetes.io/version: v2.13.0-hcpclusters.3
+    app.kubernetes.io/version: v2.18.0-hcpclusters.1
     control-plane: controller-manager
   name: azureserviceoperator-controller-manager
   namespace: capz-system
@@ -21,7 +21,7 @@ spec:
         kubectl.kubernetes.io/default-container: manager
       labels:
         app.kubernetes.io/name: azure-service-operator
-        app.kubernetes.io/version: v2.13.0-hcpclusters.3
+        app.kubernetes.io/version: v2.18.0-hcpclusters.1
         control-plane: controller-manager
     spec:
       containers:
@@ -162,6 +162,12 @@ spec:
               key: DEFAULT_RECONCILE_POLICY
               name: aso-controller-settings
               optional: true
+        - name: ALLOW_MULTI_ENV_MANAGEMENT
+          valueFrom:
+            secretKeyRef:
+              key: ALLOW_MULTI_ENV_MANAGEMENT
+              name: aso-controller-settings
+              optional: true
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -172,7 +178,6 @@ spec:
           httpGet:
             path: /healthz
             port: 8081
-          initialDelaySeconds: 60
         name: manager
         ports:
         - containerPort: 9443
@@ -188,7 +193,6 @@ spec:
           httpGet:
             path: /readyz
             port: 8081
-          initialDelaySeconds: 60
         resources:
           limits:
             cpu: 500m
@@ -218,6 +222,31 @@ spec:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
+      initContainers:
+      - args:
+        - migrate-aso-crds
+        command:
+        - /manager
+        image: gcr.io/k8s-staging-cluster-api-azure/cluster-api-azure-controller:main
+        name: migrate-aso-crd-stored-versions
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+          seccompProfile:
+            type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: azureserviceoperator-default

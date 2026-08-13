@@ -35,10 +35,10 @@ spec:
         - protocol: TCP
           port: 5353
     - to:
-        - namespaceSelector: {}
-          podSelector:
-            matchLabels:
-              component: apiserver
+        - ipBlock:
+            cidr: 0.0.0.0/0
+        - ipBlock:
+            cidr: ::/0
       ports:
         - protocol: TCP
           port: 6443

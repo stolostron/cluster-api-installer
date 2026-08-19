@@ -102,7 +102,9 @@ if [ "$DO_DEPLOY" = true ] ; then
                 WORKLOAD_KIND_NAME="${KIND_CLUSTER_NAME:-aso2}-workload"
                 echo "  Creating Kind workload cluster '$WORKLOAD_KIND_NAME' for null-provisioning mode"
                 KIND_CLUSTER_NAME="$WORKLOAD_KIND_NAME" ${SCRIPT_DIR}/setup-kind-cluster.sh
-                kind get kubeconfig --name "$WORKLOAD_KIND_NAME" > "$KUBECONFIG_FILE"
+                kind get kubeconfig --name "$WORKLOAD_KIND_NAME" \
+                    | sed "s|https://127.0.0.1:[0-9]*|https://${WORKLOAD_KIND_NAME}-control-plane:6443|" \
+                    > "$KUBECONFIG_FILE"
                 echo "  Workload kubeconfig written to $KUBECONFIG_FILE"
             fi
             if [ -f "$KUBECONFIG_FILE" ] ; then

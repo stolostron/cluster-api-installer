@@ -220,31 +220,6 @@ spec:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
-      initContainers:
-      - args:
-        - migrate-aso-crds
-        command:
-        - /manager
-        image: gcr.io/k8s-staging-cluster-api-azure/cluster-api-azure-controller:main
-        name: migrate-aso-crd-stored-versions
-        resources:
-          limits:
-            cpu: 100m
-            memory: 128Mi
-          requests:
-            cpu: 10m
-            memory: 32Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
-          runAsGroup: 65532
-          runAsNonRoot: true
-          runAsUser: 65532
-          seccompProfile:
-            type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: azureserviceoperator-default

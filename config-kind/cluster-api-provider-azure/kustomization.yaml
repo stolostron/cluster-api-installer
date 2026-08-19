@@ -40,6 +40,21 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --crd-management=none
+      - op: remove
+        path: /spec/template/spec/initContainers
+  # Remove CRD delete RBAC rule - only needed by migrate-aso-crd-stored-versions
+  # init container which is disabled for ACM (CRDs managed by cluster-api-installer)
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: ClusterRole
+      name: azureserviceoperator-crd-manager-role
+    patch: |-
+      - op: test
+        path: /rules/3/verbs/0
+        value: delete
+      - op: remove
+        path: /rules/3
   # Set AZURE_USER_AGENT_SUFFIX to include CAPZ image tag so ARM requests
   # carry the deployed version (the kustomize replacement in config/default
   # runs before this overlay and resolves to the base image tag "main")

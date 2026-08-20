@@ -1,5 +1,5 @@
 ---
-apiVersion: redhatopenshift.azure.com/v1api20240610preview
+apiVersion: redhatopenshift.azure.com/${ARO_HCP_VERSION}
 kind: HcpOpenShiftCluster
 metadata:
   name: ${CS_CLUSTER_NAME}
@@ -8,8 +8,6 @@ spec:
   azureName: ${CS_CLUSTER_NAME}
   location: ${REGION}
   owner:
-    group: resources.azure.com
-    kind: ResourceGroup
     name: ${RESOURCEGROUPNAME}
   operatorSpec:
     secrets:
@@ -40,6 +38,9 @@ spec:
         - reference:
             armId: "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${MSI_RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${MI_SERVICE}"
   properties:
+    cryptoRestrictions: None
+    ingress:
+      type: Public
     platform:
       networkSecurityGroupReference:
         group: network.azure.com
@@ -79,6 +80,10 @@ spec:
         group: network.azure.com
         kind: VirtualNetworksSubnet
         name: "${VNET}-${SUBNET}"
+      vnetIntegrationSubnetReference:
+        group: network.azure.com
+        kind: VirtualNetworksSubnet
+        name: "${VNET}-${INTEGRATION_SUBNET}"
       managedResourceGroup: "capz_node_${CS_CLUSTER_NAME}_${RESOURCEGROUPNAME}_rg"
       outboundType: LoadBalancer
     clusterImageRegistry:
@@ -89,10 +94,10 @@ spec:
         customerManaged:
           encryptionType: KMS
           kms:
+            vaultName: "${KV}"
+            visibility: Public
             activeKey:
-              vaultName: "${KV}"
               name: "etcd-data-kms-encryption-key"
-              version: "${KV_VERSION}"
     network:
       hostPrefix: 23
       networkType: OVNKubernetes
@@ -107,18 +112,18 @@ spec:
   tags:
     environment: production
     owner: sre-team
+    aro-hcp.experimental.cluster.single-replica: SingleReplica
+    aro-hcp.experimental.cluster.size-override: Minimal
 ---
-apiVersion: redhatopenshift.azure.com/v1api20240610preview
+apiVersion: redhatopenshift.azure.com/${ARO_HCP_VERSION}
 kind: HcpOpenShiftClustersNodePool
 metadata:
-  name: ${CS_CLUSTER_NAME}-mp-0
+  name: ${CS_CLUSTER_NAME}-mp1
   namespace: ${NAMESPACE}
 spec:
-  azureName: ${CS_CLUSTER_NAME}-mp-0
+  azureName: ${NAME_PREFIX}-mp1
   location: ${REGION}
   owner:
-    group: redhatopenshift.azure.com
-    kind: HcpOpenShiftCluster
     name: ${CS_CLUSTER_NAME}
   properties:
     # replicas: 2
@@ -148,3 +153,5 @@ spec:
   tags:
     environment: production
     cost-center: engineering
+    aro-hcp.experimental.cluster.single-replica: SingleReplica
+    aro-hcp.experimental.cluster.size-override: Minimal

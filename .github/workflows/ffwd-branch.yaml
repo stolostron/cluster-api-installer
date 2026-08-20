@@ -14,7 +14,7 @@ jobs:
   fast-forward:
     runs-on: ubuntu-latest
     env:
-      TARGET_BRANCHES: backplane-5.0 backplane-5.1
+      TARGET_BRANCHES: backplane-5.1 backplane-5.2
 
     steps:
       - name: Checkout repo

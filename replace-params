@@ -1,17 +1,10 @@
 AZURE_CAPZ_URL="quay.io/acm-d/cluster-api-provider-azure-rhel9"
 AZURE_ASO_URL="quay.io/acm-d/azure-service-operator-rhel9"
 
-if [ "$ARO_REPO_BRANCH" = "backplane-5.1" ] ; then
-    AZURE_TAG="5.1-dev"
-    CAPI_TAG="v4.22" # TODO: -> v.5.1
-    WH_TAG="5.0-dev" # TODO: -> 5.1-dev
-    RELEASE_EXT="51"
-else
-    AZURE_TAG="5.0-dev"
-    CAPI_TAG="v4.22" # TODO: -> v.5.0
-    WH_TAG="5.0-dev"
-    RELEASE_EXT="50"
-fi
+AZURE_TAG="5.0-dev"
+CAPI_TAG="v5.0"
+WH_TAG="5.0-dev"
+RELEASE_EXT="50"
 
 AZURE_CAPZ_TAG="$AZURE_TAG"
 AZURE_ASO_TAG="$AZURE_TAG"
@@ -24,6 +17,13 @@ fi
 if [ -n "$ASO_PR_NO" ] ; then
     AZURE_ASO_URL="quay.io/redhat-user-workloads/crt-redhat-acm-tenant/azure-service-operator-mce-$RELEASE_EXT"
     AZURE_ASO_TAG="${AZURE_ASO_TAG%%-dev}.0-pr-$ASO_PR_NO"
+fi
+
+if [ "$USE_CAPZ_REPO" = "true" ] ; then
+  AZURE_CAPZ_TAG="v1.26.0-hcpclusters.1"
+  AZURE_ASO_TAG="v2.18.0-hcpclusters.1"
+  AZURE_CAPZ_URL="quay.io/capz/cluster-api-provider-azure-rhel9"
+  AZURE_ASO_URL="quay.io/capz/azure-service-operator-rhel9"
 fi
 
 declare -A helm_add_args_a=(

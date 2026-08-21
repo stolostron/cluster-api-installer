@@ -80,6 +80,9 @@ patches:
       - op: add
         path: /stringData/USE_WORKLOAD_IDENTITY_AUTH
         value: ""
+      - op: replace
+        path: /stringData/AZURE_USER_AGENT_SUFFIX
+        value: 'cluster-api-provider-azure/{{.Values.manager.image.tag}}'
   # Replace Deployment with default values & helm chart value
   - target:
       version: v1
@@ -114,6 +117,21 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --crd-management=none
+      - op: remove
+        path: /spec/template/spec/initContainers
+  # Remove CRD delete RBAC rule - only needed by migrate-aso-crd-stored-versions
+  # init container which is disabled for ACM (CRDs managed by cluster-api-installer)
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: ClusterRole
+      name: azureserviceoperator-crd-manager-role
+    patch: |-
+      - op: test
+        path: /rules/3/verbs/0
+        value: delete
+      - op: remove
+        path: /rules/3
   # Add OCP cert service annotation
   - target:
       kind: Service

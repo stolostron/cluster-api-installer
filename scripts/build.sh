@@ -174,9 +174,11 @@ build_for_config() {
 mkdir -p "${WKDIR}"
 
 # Execute build function with config type (default to "config" for backward compatibility)
-build_for_config "config"
+# Each call runs in a subshell so exported env variables (from sourcing the env file)
+# don't leak between config variants.
+(build_for_config "config")
 for suffix in k8s kind; do
   if [ -d $PROJECT_ROOT/config-$suffix/$PROJECT ]; then
-       build_for_config "config-$suffix"
+       (build_for_config "config-$suffix")
   fi
 done

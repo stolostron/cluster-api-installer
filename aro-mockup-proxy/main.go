@@ -167,7 +167,8 @@ func (sr *statusRecorder) WriteHeader(code int) {
 
 func (p *AROHCPMockProxyEnhanced) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rec := &statusRecorder{ResponseWriter: w, status: 200}
-	log.Printf("[%s] %s (Host: %s)", r.Method, r.URL.Path, r.Host)
+	ua := r.Header.Get("User-Agent")
+	log.Printf("[%s] %s (Host: %s, User-Agent: %s)", r.Method, r.URL.Path, r.Host, ua)
 
 	// Handle async operation status requests
 	if strings.Contains(r.URL.Path, "/operations/") && !strings.Contains(r.URL.Path, "/providers/") {

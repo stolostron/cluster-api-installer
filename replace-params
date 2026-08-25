@@ -1,3 +1,4 @@
+CAPZ_PR_NO=431 # huck to use this PR for a while
 AZURE_CAPZ_URL="quay.io/acm-d/cluster-api-provider-azure-rhel9"
 AZURE_ASO_URL="quay.io/acm-d/azure-service-operator-rhel9"
 

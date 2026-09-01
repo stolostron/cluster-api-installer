@@ -99,6 +99,9 @@ patches:
         path: /spec/template/spec/containers/0/securityContext/runAsUser
       - op: remove
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --tls-min-version=VersionTLS13
   - target:
       version: v1
       kind: Deployment
@@ -117,6 +120,11 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --crd-management=none
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: TLS_MIN_VERSION
+          value: VersionTLS13
       - op: remove
         path: /spec/template/spec/initContainers
   # Remove CRD delete RBAC rule - only needed by migrate-aso-crd-stored-versions

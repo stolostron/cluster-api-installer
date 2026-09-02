@@ -174,6 +174,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: TLS_MIN_VERSION
+          value: VersionTLS13
         image: '{{ .Values.aso.image.url  }}:{{ .Values.aso.image.tag  }}'
         imagePullPolicy: Always
         livenessProbe:

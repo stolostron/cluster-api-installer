@@ -44,6 +44,10 @@ sed -i 's|https://github.com/.*/azure-service-operator/releases/download/.*/azur
 sed -i 's|quay.io/capz/azureserviceoperator:[^ ]*|quay.io/capz/azureserviceoperator:'"${CAPZ_ASO_VERSION}"'|g' \
     config/aso/kustomization.yaml
 
+# Add the filtered CRDs generated below to the ASO resources.
+grep -qx '  - crds.yaml' config/aso/kustomization.yaml || \
+    sed -i '/^  - settings\.yaml$/i\  - crds.yaml' config/aso/kustomization.yaml
+
 # Download and filter CRDs
 echo "Downloading ASO CRDs from ${ASO_CRDS_URL}"
 ASO_CRDS_FULL=$(mktemp)

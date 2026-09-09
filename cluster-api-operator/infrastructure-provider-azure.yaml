@@ -5,11 +5,11 @@ metadata:
   namespace: capz-system
 spec:
   # Use your custom version from the GitHub release
-  version: v1.22.1-mce-217
+  version: v1.26.0-hcpclusters.1
 
   # Point to your custom GitHub releases
   fetchConfig:
-    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/v1.22.1-mce-217/infrastructure-components.yaml
+    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/v1.26.0-hcpclusters.1/infrastructure-components.yaml
 
   # Azure Service Operator deployment configuration
   additionalDeployments:
@@ -17,9 +17,9 @@ spec:
       deployment:
         containers:
         - name: manager
-          imageUrl: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.9
+          imageUrl: quay.io/capz/azure-service-operator-rhel9:v2.18.0-hcpclusters.3
           args:
-            --crd-pattern: authorization.azure.com/*;managedidentity.azure.com/*;network.azure.com/*;eventhub.azure.com/*;storage.azure.com/*;web.azure.com/*;insights.azure.com/*;keyvault.azure.com/*;redhatopenshift.azure.com/*
+            --crd-pattern: authorization.azure.com/*;managedidentity.azure.com/*;network.azure.com/*;eventhub.azure.com/*;storage.azure.com/*;web.azure.com/*;insights.azure.com/*;keyvault.azure.com/*;redhatopenshift.azure.com/*;containerservice.azure.com/*;resources.azure.com/*
             --secure-metrics: "false"
           env:
           - name: AZURE_SYNC_PERIOD
@@ -51,7 +51,7 @@ spec:
     containers:
     - name: manager
       # Use your custom image
-      imageUrl: quay.io/mveber/cluster-api-provider-azure-rhel9:v2.17.0-10
+      imageUrl: quay.io/capz/cluster-api-provider-azure-rhel9:v1.26.0-hcpclusters.1
       args:
         --azurecluster-concurrency: "20"
         --azuremachine-concurrency: "50"

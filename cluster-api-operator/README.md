@@ -8,8 +8,8 @@ Use `scripts/deploy-operator.sh` to automate the full deployment (operator + pro
 
 ```bash
 # clone the repo
-git clone -b capi-test-rebase https://github.com/marek-veber/cluster-api-installer.git capi-test-rebase
-cd capi-test-rebase
+git clone -b doc-2026-09-01-preview https://github.com/marek-veber/cluster-api-installer.git 2026-09-01-preview
+cd 2026-09-01-preview
 
 # On Kind cluster
 USE_KIND=true KIND_CLUSTER_NAME=my-cluster ./scripts/deploy-operator.sh cluster-api-provider-azure
@@ -48,35 +48,43 @@ Environment variables:
 ## Custom Images
 
 This configuration uses custom images:
-- **CAPZ Controller**: quay.io/mveber/cluster-api-provider-azure-rhel9:v2.17.0-10
-- **ASO Controller**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.9
-- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.1-mce-217
+- **CAPZ Controller**: quay.io/capz/cluster-api-provider-azure-rhel9:v1.26.0-hcpclusters.1
+- **ASO Controller**: quay.io/capz/azure-service-operator-rhel9:v2.18.0-hcpclusters.3
+- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.26.0-hcpclusters.1
 
 ## API Version Support
 
 The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 
-| ARO HCP API Version | Required CAPZ Release | Status |
-|----------------------|-----------------------|--------|
-| `v1api20240610preview` | v1.22.0-mce-217 or v1.22.1-mce-217 | Supported |
-| `v1api20251223preview` | v1.22.1-mce-217 | Current |
+| Item | Value |
+|---------|-------|
+| Required CAPZ Release | `v1.26.0-hcpclusters.1` |
+| Required ASO Release | `v2.18.0-hcpclusters.3` |
+| Communication with ARM | `2026-09-01-preview` |
+| Kubernetes storage version | `v20260901preview` |
+| Kubernetes API versions | `v1api20251223preview`, `v20260901preview` |
 
-> **Note:** Release v1.22.1-mce-217 uses the `2025-12-23-preview` API version
-> to communicate with ARM, even when using `v1api20240610preview` CRDs.
+> **Note: 1)** The `2026-09-01-preview` API version is used
+> to communicate with ARM for both supported Kubernetes API versions. Kubernetes
+> objects are stored using `v20260901preview`.
+>
+> **Note: 2)** ASO v2.16 introduced the `v1api` -> `v` Kubernetes API prefix.
+> Use `v20260901preview` for the new API; keep `v1api20251223preview` only
+> when reading or migrating existing manifests.
 
-To migrate from `v1api20240610preview` to `v1api20251223preview`, see
-[Migration Guide](../doc/aro-hcp-api-v1api20251223preview-migration.md).
+To migrate from `v1api20251223preview` to `v20260901preview`, see
+[Migration Guide](../doc/aro-hcp-api-v1api20260901preview-migration.md).
 
-> **Warning:** The `v1api20251223preview` API introduces an optional `imageDigestMirrors` field.
+> **Warning:** The `v1api20251223preview` API has introduced an optional `imageDigestMirrors` field.
 > Any change to this field (adding, removing, or modifying an entry) on a running cluster will
 > trigger a **rolling replacement of all nodes across all existing NodePools**. See the
 > [Updating Cluster Configuration](../doc/ARO-capz.md#updating-cluster-configuration) section
 > for details.
 
 The new release must include updated `infrastructure-components.yaml` with CRDs for:
-- `hcpopenshiftclusters.redhatopenshift.azure.com` (v1api20251223preview)
-- `hcpopenshiftclustersnodepools.redhatopenshift.azure.com` (v1api20251223preview)
-- `hcpopenshiftclustersexternalauths.redhatopenshift.azure.com` (v1api20251223preview)
+- `hcpopenshiftclusters.redhatopenshift.azure.com` (`v20260901preview`)
+- `hcpopenshiftclustersnodepools.redhatopenshift.azure.com` (`v20260901preview`)
+- `hcpopenshiftclustersexternalauths.redhatopenshift.azure.com` (`v20260901preview`)
 
 The ASO CRD pattern in `infrastructure-provider-azure.yaml` must include
 `redhatopenshift.azure.com/*` for ARO HCP resources to be reconciled.
@@ -204,7 +212,7 @@ kubectl logs -n capz-system -l control-plane=azureserviceoperator-controller-man
 
 ## Custom Release Requirements
 
-Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.22.1-mce-217 must include:
+Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.26.0-hcpclusters.1 must include:
 
 1. **metadata.yaml** - Provider metadata with version information
 2. **infrastructure-components.yaml** - All CRDs, deployments, and resources (including ARO HCP CRDs)
@@ -231,7 +239,7 @@ releaseSeries:
 ## Azure Service Operator
 
 The configuration includes an additional deployment for Azure Service Operator controller manager with:
-- **Custom Image**: quay.io/mveber/azure-service-operator-rhel9:v2.13.0-hcpclusters.9
+- **Custom Image**: quay.io/capz/azure-service-operator-rhel9:v2.18.0-hcpclusters.3
 - **CRD Pattern Filter**: authorization.azure.com/*, managedidentity.azure.com/*, network.azure.com/*, eventhub.azure.com/*, storage.azure.com/*, web.azure.com/*, insights.azure.com/*, keyvault.azure.com/*
 - **Sync Period**: 1 hour
 
@@ -306,7 +314,7 @@ Common issues:
 ### Cannot fetch manifests from GitHub
 
 Ensure:
-1. The release v1.22.1-mce-217 exists at https://github.com/stolostron/cluster-api-provider-azure/releases
+1. The release `v1.26.0-hcpclusters.1` exists at https://github.com/stolostron/cluster-api-provider-azure/releases
 2. The release contains `metadata.yaml` and `infrastructure-components.yaml` files
 3. The cluster can reach github.com (or configure a proxy if needed)
 

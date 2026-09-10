@@ -386,24 +386,6 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-cp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-subnet
-  namespace: default
-spec:
-  owner:
-    name: \${VNET}-\${SUBNET}
-    group: network.azure.com
-    kind: VirtualNetworksSubnet
-  principalIdFromConfig:
-    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}
-    key: principalId
-  principalType: ServicePrincipal
-  roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
----
-apiVersion: authorization.azure.com/v1api20220401
-kind: RoleAssignment
-metadata:
   name: \${USER}-\${CS_CLUSTER_NAME}-cp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-nsg
   namespace: default
 spec:
@@ -458,7 +440,25 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-vnet
+  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-resourcegroup
+  namespace: default
+spec:
+  owner:
+    name: \${RESOURCEGROUPNAME}
+    group: resources.azure.com
+    kind: ResourceGroup
+  principalIdFromConfig:
+    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
+    key: principalId
+  principalType: ServicePrincipal
+  roleDefinitionReference:
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
+---
+apiVersion: authorization.azure.com/v1api20220401
+kind: RoleAssignment
+metadata:
+  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-vnet
   namespace: default
 spec:
   owner:
@@ -470,44 +470,8 @@ spec:
     key: principalId
   principalType: ServicePrincipal
   roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
----
-apiVersion: authorization.azure.com/v1api20220401
-kind: RoleAssignment
-metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-subnet
-  namespace: default
-spec:
-  owner:
-    name: \${VNET}-\${SUBNET}
-    group: network.azure.com
-    kind: VirtualNetworksSubnet
-  principalIdFromConfig:
-    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
-    key: principalId
-  principalType: ServicePrincipal
-  roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
----
-apiVersion: authorization.azure.com/v1api20220401
-kind: RoleAssignment
-metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-nsg
-  namespace: default
-spec:
-  owner:
-    name: \${NSG}
-    group: network.azure.com
-    kind: NetworkSecurityGroup
-  principalIdFromConfig:
-    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
-    key: principalId
-  principalType: ServicePrincipal
-  roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
 ---
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
@@ -620,24 +584,6 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-subnet
-  namespace: default
-spec:
-  owner:
-    name: \${VNET}-\${SUBNET}
-    group: network.azure.com
-    kind: VirtualNetworksSubnet
-  principalIdFromConfig:
-    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}
-    key: principalId
-  principalType: ServicePrincipal
-  roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
----
-apiVersion: authorization.azure.com/v1api20220401
-kind: RoleAssignment
-metadata:
   name: \${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-nsg
   namespace: default
 spec:
@@ -674,7 +620,25 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-vnet
+  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-resourcegroup
+  namespace: default
+spec:
+  owner:
+    name: \${RESOURCEGROUPNAME}
+    group: resources.azure.com
+    kind: ResourceGroup
+  principalIdFromConfig:
+    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
+    key: principalId
+  principalType: ServicePrincipal
+  roleDefinitionReference:
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
+---
+apiVersion: authorization.azure.com/v1api20220401
+kind: RoleAssignment
+metadata:
+  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-vnet
   namespace: default
 spec:
   owner:
@@ -686,44 +650,8 @@ spec:
     key: principalId
   principalType: ServicePrincipal
   roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
----
-apiVersion: authorization.azure.com/v1api20220401
-kind: RoleAssignment
-metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-subnet
-  namespace: default
-spec:
-  owner:
-    name: \${VNET}-\${SUBNET}
-    group: network.azure.com
-    kind: VirtualNetworksSubnet
-  principalIdFromConfig:
-    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
-    key: principalId
-  principalType: ServicePrincipal
-  roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
----
-apiVersion: authorization.azure.com/v1api20220401
-kind: RoleAssignment
-metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-nsg
-  namespace: default
-spec:
-  owner:
-    name: \${NSG}
-    group: network.azure.com
-    kind: NetworkSecurityGroup
-  principalIdFromConfig:
-    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
-    key: principalId
-  principalType: ServicePrincipal
-  roleDefinitionReference:
-    # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
-    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
 ---
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment

@@ -37,4 +37,4 @@ and its `RequirementsValid` condition reports the denied action, identity, and
 resource. Compare those identities with the role assignments in the resource
 group and VNet scopes.
 
-The validation was introduced by [ARO-HCP PR #6575](https://github.com/Azure/ARO-HCP/pull/6575).
+The role-assignment changes documented here correspond to [ARO-HCP PR #6575](https://github.com/Azure/ARO-HCP/pull/6575), which added the missing assignments required by the existing `DataPlaneIdentitiesPermissionsValidation` and `ControlPlaneIdentitiesPermissionsClusterValidation` checks.

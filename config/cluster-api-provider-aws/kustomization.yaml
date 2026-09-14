@@ -162,6 +162,9 @@ patches:
         path: /spec/template/spec/containers/0/securityContext/runAsGroup
       - op: remove
         path: /spec/template/spec/securityContext/fsGroup
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: "--tls-min-version=VersionTLS13"        
   # Add OCP cert service annotation
   - target:
       kind: Service

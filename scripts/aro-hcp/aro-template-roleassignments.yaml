@@ -494,23 +494,6 @@
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
-      name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-intsubnet
-      namespace: ${NAMESPACE}
-    spec:
-      owner:
-        name: ${VNET}-${INTEGRATION_SUBNET}
-        group: network.azure.com
-        kind: VirtualNetworksSubnet
-      principalIdFromConfig:
-        name: identity-map-${MI_SERVICE}
-        key: principalId
-      principalType: ServicePrincipal
-      roleDefinitionReference:
-        # c0ff367d-66d8-445e-917c-583feb0ef0d4 represents 'hcpServiceManagedIdentityRoleId'
-        armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/c0ff367d-66d8-445e-917c-583feb0ef0d4
-  - apiVersion: authorization.azure.com/v1api20220401
-    kind: RoleAssignment
-    metadata:
       name: ${MI_SERVICE}-hcpservicemanagedidentityroleid-nsg
       namespace: ${NAMESPACE}
     spec:

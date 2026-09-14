@@ -8,8 +8,8 @@ Use `scripts/deploy-operator.sh` to automate the full deployment (operator + pro
 
 ```bash
 # clone the repo
-git clone -b doc-2026-09-01-preview https://github.com/marek-veber/cluster-api-installer.git 2026-09-01-preview
-cd 2026-09-01-preview
+git clone -b backplane-5.0 https://github.com/stolostron/cluster-api-installer.git capi-test
+cd capi-test
 
 # On Kind cluster
 USE_KIND=true KIND_CLUSTER_NAME=my-cluster ./scripts/deploy-operator.sh cluster-api-provider-azure

@@ -368,13 +368,13 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-cp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-subnet
+  name: \${USER}-\${CS_CLUSTER_NAME}-cp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-vnet
   namespace: default
 spec:
   owner:
-    name: \${VNET}-\${SUBNET}
+    name: \${VNET}
     group: network.azure.com
-    kind: VirtualNetworksSubnet
+    kind: VirtualNetwork
   principalIdFromConfig:
     name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}
     key: principalId
@@ -436,6 +436,42 @@ spec:
   roleDefinitionReference:
     # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
     armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+---
+apiVersion: authorization.azure.com/v1api20220401
+kind: RoleAssignment
+metadata:
+  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-resourcegroup
+  namespace: default
+spec:
+  owner:
+    name: \${RESOURCEGROUPNAME}
+    group: resources.azure.com
+    kind: ResourceGroup
+  principalIdFromConfig:
+    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
+    key: principalId
+  principalType: ServicePrincipal
+  roleDefinitionReference:
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
+---
+apiVersion: authorization.azure.com/v1api20220401
+kind: RoleAssignment
+metadata:
+  name: \${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-vnet
+  namespace: default
+spec:
+  owner:
+    name: \${VNET}
+    group: network.azure.com
+    kind: VirtualNetwork
+  principalIdFromConfig:
+    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-cp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
+    key: principalId
+  principalType: ServicePrincipal
+  roleDefinitionReference:
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
 ---
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
@@ -530,13 +566,13 @@ spec:
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment
 metadata:
-  name: \${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-subnet
+  name: \${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}-filestorageoperatorroleid-vnet
   namespace: default
 spec:
   owner:
-    name: \${VNET}-\${SUBNET}
+    name: \${VNET}
     group: network.azure.com
-    kind: VirtualNetworksSubnet
+    kind: VirtualNetwork
   principalIdFromConfig:
     name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}
     key: principalId
@@ -580,6 +616,42 @@ spec:
   roleDefinitionReference:
     # ef318e2a-8334-4a05-9e4a-295a196c6a6e represents 'federatedCredentialsRoleId'
     armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/ef318e2a-8334-4a05-9e4a-295a196c6a6e
+---
+apiVersion: authorization.azure.com/v1api20220401
+kind: RoleAssignment
+metadata:
+  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-resourcegroup
+  namespace: default
+spec:
+  owner:
+    name: \${RESOURCEGROUPNAME}
+    group: resources.azure.com
+    kind: ResourceGroup
+  principalIdFromConfig:
+    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
+    key: principalId
+  principalType: ServicePrincipal
+  roleDefinitionReference:
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
+---
+apiVersion: authorization.azure.com/v1api20220401
+kind: RoleAssignment
+metadata:
+  name: \${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}-imageregistryoperatorroleid-vnet
+  namespace: default
+spec:
+  owner:
+    name: \${VNET}
+    group: network.azure.com
+    kind: VirtualNetwork
+  principalIdFromConfig:
+    name: identity-map-\${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}
+    key: principalId
+  principalType: ServicePrincipal
+  roleDefinitionReference:
+    # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
+    armId: /subscriptions/\${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
 ---
 apiVersion: authorization.azure.com/v1api20220401
 kind: RoleAssignment

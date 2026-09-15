@@ -10,6 +10,7 @@ on:
     paths:
       - "scripts/aro-hcp/**"
       - "charts/cluster-api-provider-azure-kind/**"
+      - ".github/workflows/capi-tests.yaml"
 
 permissions:
   contents: read

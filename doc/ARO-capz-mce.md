@@ -4,6 +4,30 @@ This guide explains how to provision Azure Red Hat OpenShift (ARO) Hosted Contro
 
 > **Note**: In MCE, all Cluster API controllers (CAPI, CAPZ, and ASO) run in the `multicluster-engine` namespace, unlike standalone CAPZ deployments where they run in separate namespaces (`capi-system`, `capz-system`).
 
+## ARO HCP API version
+
+CAPZ uses the ARO HCP `2026-09-01-preview` ARM API through the ASO Kubernetes
+API version `redhatopenshift.azure.com/v20260901preview`:
+
+```yaml
+apiVersion: redhatopenshift.azure.com/v20260901preview
+kind: HcpOpenShiftCluster
+```
+
+The version applies to `HcpOpenShiftCluster`, `HcpOpenShiftClustersNodePool`,
+and `HcpOpenShiftClustersExternalAuth`. CAPI resources in the examples below
+continue to use `v1beta2`.
+
+For this API, `properties.etcd.dataEncryption.keyManagementMode` is required
+when data encryption is configured and must be set to `CustomerManaged`. Managed node
+pool disks require a `sizeGiB` between 64 and 4095. External-auth status
+conditions are exposed at `status.properties.status.conditions`; manifests
+must not set this read-only status field.
+
+Use `v20260901preview` for new manifests. Existing manifests using
+`v1api20251223preview` require migration; see the [ARO HCP API migration
+guide](aro-hcp-api-v1api20251223preview-migration.md).
+
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
@@ -276,7 +300,7 @@ spec:
   subscriptionID: "<YOUR_SUBSCRIPTION_ID>"
   resources:
     # Infrastructure resources will be defined here
-    # See ARO-capz.md for complete resource definitions
+    # Add the generated resources from scripts/aro-hcp/aro-template.yaml.
 ---
 apiVersion: controlplane.cluster.x-k8s.io/v1beta2
 kind: AROControlPlane
@@ -289,7 +313,7 @@ spec:
   version: "4.20.0"
   resources:
     # Control plane resources will be defined here
-    # See ARO-capz.md for complete resource definitions
+    # Add the generated resources from scripts/aro-hcp/aro-template.yaml.
 ---
 apiVersion: cluster.x-k8s.io/v1beta2
 kind: MachinePool
@@ -317,7 +341,7 @@ metadata:
 spec:
   resources:
     # Node pool resources will be defined here
-    # See ARO-capz.md for complete resource definitions
+    # Add the generated resources from scripts/aro-hcp/aro-template.yaml.
 ```
 
 ### 3. Apply Cluster Configuration

@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: capm3-controller-manager
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-metal3
+    control-plane: controller-manager
+spec:
+  podSelector:
+    matchLabels:
+      cluster.x-k8s.io/provider: infrastructure-metal3
+      control-plane: controller-manager
+      controller-tools.k8s.io: "1.0"
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: monitoring
+      ports:
+        - protocol: TCP
+          port: 8443
+    - ports:
+        - protocol: TCP
+          port: 9443
+  # CAPM3 connects to management and workload API endpoints from kubeconfig
+  # Secrets. Keep egress open until those endpoint ports are explicitly
+  # inventoried and can be restricted without breaking deployments.
+  egress:
+    - {}

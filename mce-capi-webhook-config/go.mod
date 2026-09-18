@@ -1,8 +1,6 @@
 module github.com/stolostron/cluster-api-installer/mutating-webhook/mce-capi-webhook-config
 
-go 1.25.0
-
-toolchain go1.25.4
+go 1.27
 
 require (
 	github.com/onsi/ginkgo/v2 v2.27.2

@@ -21,12 +21,38 @@ We expect the following:
   * `az login` with your Red Hat account
 * It's not possible to use `az cli` with Python 3.14, see a possible fix - https://github.com/RadekCap/CAPZTests/blob/main/docs/FEDORA-43-AZURE-CLI.md
 
+## ARO HCP API version
+
+The ARO HCP resources embedded in CAPZ manifests use the `2026-09-01-preview`
+ARM API through the ASO Kubernetes API version
+`redhatopenshift.azure.com/v20260901preview`:
+
+```yaml
+apiVersion: redhatopenshift.azure.com/v20260901preview
+kind: HcpOpenShiftCluster
+```
+
+This applies to `HcpOpenShiftCluster`, `HcpOpenShiftClustersNodePool`, and
+`HcpOpenShiftClustersExternalAuth`. The CAPI resources (`Cluster`,
+`AROCluster`, `AROControlPlane`, and `AROMachinePool`) continue to use their
+normal `v1beta2` API versions.
+
+When `properties.etcd.dataEncryption` is configured, the new API requires
+`keyManagementMode: CustomerManaged`. The `properties.ingress.type` and
+`properties.cryptoRestrictions` fields are also available for configuring the
+cluster. Node pool managed-disk `properties.platform.osDisk.sizeGiB` values
+must be between 64 and 4095.
+
+The generated manifests use `v20260901preview` by default. Existing manifests
+using `v1api20251223preview` must be migrated before changing their API
+version; see the [ARO HCP API migration guide](aro-hcp-api-v1api20251223preview-migration.md).
+
 ## Provisioning ARO
 
 1. Check out the deployment:
 ```
-git clone -b backplane-2.17 https://github.com/stolostron/cluster-api-installer.git backplane-2.17
-cd backplane-2.17
+git clone -b backplane-5.0 https://github.com/stolostron/cluster-api-installer.git backplane-5.0
+cd backplane-5.0
 ```
 
 2. The next command will prepare an instance of a kind cluster (with cert manager, CAPI, CAPZ and ASO):
@@ -42,14 +68,14 @@ export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-$ENV}
 export NAME_PREFIX=${NAME_PREFIX:-$CS_CLUSTER_NAME}
 export RESOURCEGROUPNAME="$CS_CLUSTER_NAME-resgroup"
 export OCP_VERSION=${OCP_VERSION:-4.20}
-export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.0}
+export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.17}
 export REGION=${REGION:-westus3}
 ```
 
 4. The next command (please use your right values for REGION, USER, ENV and AZURE_SUBSCRIPTION_NAME) will generate:
  * `sp-$SUBSCRIPTION_ID.json` file with generated ServicePrincipal (named `$USER-sp-$randomIdentifier`) which has the assigned role `Custom-Owner (Block Billing and Subscription deletion)` for the specified subscription
  * `operators-uamis-suffix.txt` - Random name suffix used for User Assigned Identities
- * YAML files with k8s resources (based on templates: [aro-template.yaml](./aro-hcp-scripts/aro-template.yaml) and [credentials-sp-template.yaml](./aro-hcp-scripts/credentials-sp-template.yaml)):
+ * YAML files with k8s resources (based on templates: [aro-template.yaml](../scripts/aro-hcp/aro-template.yaml) and [credentials-sp-template.yaml](../scripts/aro-hcp/credentials-sp-template.yaml)):
    * `aro-stage/credentials.yaml` - `Secret/aso-secret` & `AzureClusterIdentity/cluster-identity` & `Secret/cluster-identity-secret`
    * `aro-stage/aro.yaml` - `AROControlPlane`, `AROCluster`, `Cluster`, `AROMachinePool` and `MachinePool`
        * `AROCluster.spec.resources[]` - Contains the infrastructure required for ARO HCP cluster: `ResourceGroup`, `NetworkSecurityGroup`, `VirtualNetwork`, `VirtualNetworksSubnet`, `Vault`, `UserAssignedIdentity`s, `RoleAssignment`s
@@ -113,7 +139,7 @@ If your ARO cluster is configured with External Authentication (Azure AD integra
 
 9. Run the External Authentication post-deployment script:
 ```
-USE_KIND=true KIND_CLUSTER_NAME=capz-stage ./doc/aro-hcp-scripts/ea-post-deploy-update.sh aro-stage/aro.yaml
+USE_KIND=true KIND_CLUSTER_NAME=capz-stage ./scripts/aro-hcp/ea-post-deploy-update.sh aro-stage/aro.yaml
 ```
 
 This script will:
@@ -124,5 +150,3 @@ This script will:
 * Set up cluster role bindings for your user and the engineering group
 
 **Note**: This step is only required for clusters using External Authentication. Skip this if you're using standard cluster authentication.
-
-

@@ -4,6 +4,7 @@ kind: Kustomization
 ## condsidering resources under cluster-api-provider-aws/config/default directory to generate the CAPA CRDs and CRs
 resources:
 - default/
+- base/capa-networkpolicy.yaml
 
 transformers:
 - base/transformer.yaml

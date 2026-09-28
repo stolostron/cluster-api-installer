@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
 - default/
 - base/mce-capi-webhook-config/
+- base/capi-networkpolicy.yaml
 
 transformers:
 - base/transformer.yaml

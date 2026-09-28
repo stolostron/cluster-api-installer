@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: capi-controller-manager
+  namespace: capi-system
+  labels:
+    cluster.x-k8s.io/provider: cluster-api
+    control-plane: controller-manager
+spec:
+  podSelector:
+    matchLabels:
+      cluster.x-k8s.io/provider: cluster-api
+      control-plane: controller-manager
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: monitoring
+      ports:
+        - protocol: TCP
+          port: 8443
+    - ports:
+        - protocol: TCP
+          port: 9443
+  # CAPI connects to management and workload API endpoints. Keep egress open
+  # until those endpoint ports are explicitly inventoried.
+  egress:
+    - {}

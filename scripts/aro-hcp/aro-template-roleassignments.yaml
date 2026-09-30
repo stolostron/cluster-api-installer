@@ -1,3 +1,4 @@
+  # hcpClusterApiProviderRoleId — cluster-api-azure → Subnet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -15,6 +16,7 @@
       roleDefinitionReference:
         # 88366f10-ed47-4cc0-9fab-c8a06148393e represents 'hcpClusterApiProviderRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/88366f10-ed47-4cc0-9fab-c8a06148393e
+  # Reader — service → Reader on cluster-api-azure identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -32,6 +34,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # keyVaultCryptoUserRoleId — kms → KeyVault
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -49,6 +52,7 @@
       roleDefinitionReference:
         # 12338af0-0e69-4776-bea7-57ae8d297424 represents 'keyVaultCryptoUserRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/12338af0-0e69-4776-bea7-57ae8d297424
+  # Reader — service → Reader on kms identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -66,6 +70,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # hcpControlPlaneOperatorRoleId — control-plane → VNet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -83,6 +88,7 @@
       roleDefinitionReference:
         # fc0c873f-45e9-4d0d-a7d1-585aab30c6ed represents 'hcpControlPlaneOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/fc0c873f-45e9-4d0d-a7d1-585aab30c6ed
+  # hcpControlPlaneOperatorRoleId — control-plane → NSG
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -100,6 +106,7 @@
       roleDefinitionReference:
         # fc0c873f-45e9-4d0d-a7d1-585aab30c6ed represents 'hcpControlPlaneOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/fc0c873f-45e9-4d0d-a7d1-585aab30c6ed
+  # Reader — service → Reader on control-plane identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -117,6 +124,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # cloudControllerManagerRoleId — cloud-controller-manager → Subnet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -134,6 +142,7 @@
       roleDefinitionReference:
         # a1f96423-95ce-4224-ab27-4e3dc72facd4 represents 'cloudControllerManagerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/a1f96423-95ce-4224-ab27-4e3dc72facd4
+  # cloudControllerManagerRoleId — cloud-controller-manager → NSG
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -151,6 +160,7 @@
       roleDefinitionReference:
         # a1f96423-95ce-4224-ab27-4e3dc72facd4 represents 'cloudControllerManagerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/a1f96423-95ce-4224-ab27-4e3dc72facd4
+  # Reader — service → Reader on cloud-controller-manager identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -168,6 +178,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # ingressOperatorRoleId — ingress → Subnet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -185,6 +196,7 @@
       roleDefinitionReference:
         # 0336e1d3-7a87-462b-b6db-342b63f7802c represents 'ingressOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0336e1d3-7a87-462b-b6db-342b63f7802c
+  # Reader — service → Reader on ingress identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -202,6 +214,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # Reader — service → Reader on disk-csi-driver identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -219,6 +232,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # fileStorageOperatorRoleId — file-csi-driver → VNet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -236,6 +250,7 @@
       roleDefinitionReference:
         # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
+  # fileStorageOperatorRoleId — file-csi-driver → NSG
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -253,6 +268,7 @@
       roleDefinitionReference:
         # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
+  # Reader — service → Reader on file-csi-driver identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -270,6 +286,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # Reader — service → Reader on image-registry identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -321,6 +338,7 @@
       roleDefinitionReference:
         # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
+  # networkOperatorRoleId — cloud-network-config → VNet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -338,6 +356,7 @@
       roleDefinitionReference:
         # be7a6435-15ae-4171-8f30-4a343eff9e8f represents 'networkOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/be7a6435-15ae-4171-8f30-4a343eff9e8f
+  # Reader — service → Reader on cloud-network-config identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -355,6 +374,7 @@
       roleDefinitionReference:
         # acdd72a7-3385-48ef-bd42-f606fba81ae7 represents 'readerRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
+  # FederatedCredentials — service → FederatedCredential on dp-disk-csi-driver identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -372,6 +392,7 @@
       roleDefinitionReference:
         # ef318e2a-8334-4a05-9e4a-295a196c6a6e represents 'federatedCredentialsRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/ef318e2a-8334-4a05-9e4a-295a196c6a6e
+  # FederatedCredentials — service → FederatedCredential on dp-file-csi-driver identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -389,6 +410,7 @@
       roleDefinitionReference:
         # ef318e2a-8334-4a05-9e4a-295a196c6a6e represents 'federatedCredentialsRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/ef318e2a-8334-4a05-9e4a-295a196c6a6e
+  # fileStorageOperatorRoleId — dp-file-csi-driver → VNet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -406,6 +428,7 @@
       roleDefinitionReference:
         # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
+  # fileStorageOperatorRoleId — dp-file-csi-driver → NSG
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -423,6 +446,7 @@
       roleDefinitionReference:
         # 0d7aedc0-15fd-4a67-a412-efad370c947e represents 'fileStorageOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/0d7aedc0-15fd-4a67-a412-efad370c947e
+  # FederatedCredentials — service → FederatedCredential on dp-image-registry identity
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -474,6 +498,7 @@
       roleDefinitionReference:
         # 8b32b316-c2f5-4ddf-b05b-83dacd2d08b5 represents 'imageRegistryOperatorRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/8b32b316-c2f5-4ddf-b05b-83dacd2d08b5
+  # hcpServiceManagedIdentityRoleId — service → VNet
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:
@@ -491,6 +516,7 @@
       roleDefinitionReference:
         # c0ff367d-66d8-445e-917c-583feb0ef0d4 represents 'hcpServiceManagedIdentityRoleId'
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Authorization/roleDefinitions/c0ff367d-66d8-445e-917c-583feb0ef0d4
+  # hcpServiceManagedIdentityRoleId — service → NSG
   - apiVersion: authorization.azure.com/v1api20220401
     kind: RoleAssignment
     metadata:

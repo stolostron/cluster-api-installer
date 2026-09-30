@@ -1,3 +1,6 @@
+  # Equivalent to:
+  # az identity create -n "${MI_CONTROL_PLANE}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_CONTROL_PLANE}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -17,6 +20,9 @@
           clientId:
             name: identity-map-${MI_CONTROL_PLANE}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_CLUSTER_API_AZURE}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_CLUSTER_API_AZURE}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -36,6 +42,9 @@
           clientId:
             name: identity-map-${MI_CLUSTER_API_AZURE}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_CLOUD_CONTROLLER_MANAGER}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_CLOUD_CONTROLLER_MANAGER}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -55,6 +64,9 @@
           clientId:
             name: identity-map-${MI_CLOUD_CONTROLLER_MANAGER}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_INGRESS}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_INGRESS}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -74,6 +86,9 @@
           clientId:
             name: identity-map-${MI_INGRESS}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_DISK_CSI_DRIVER}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_DISK_CSI_DRIVER}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -93,6 +108,9 @@
           clientId:
             name: identity-map-${MI_DISK_CSI_DRIVER}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_FILE_CSI_DRIVER}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_FILE_CSI_DRIVER}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -112,6 +130,9 @@
           clientId:
             name: identity-map-${MI_FILE_CSI_DRIVER}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_IMAGE_REGISTRY}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_IMAGE_REGISTRY}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -131,6 +152,9 @@
           clientId:
             name: identity-map-${MI_IMAGE_REGISTRY}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_CLOUD_NETWORK_CONFIG}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_CLOUD_NETWORK_CONFIG}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -150,6 +174,9 @@
           clientId:
             name: identity-map-${MI_CLOUD_NETWORK_CONFIG}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_KMS}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_KMS}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -169,6 +196,9 @@
           clientId:
             name: identity-map-${MI_KMS}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_DP_DISK_CSI_DRIVER}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_DP_DISK_CSI_DRIVER}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -188,6 +218,9 @@
           clientId:
             name: identity-map-${MI_DP_DISK_CSI_DRIVER}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_DP_IMAGE_REGISTRY}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_DP_IMAGE_REGISTRY}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -207,6 +240,9 @@
           clientId:
             name: identity-map-${MI_DP_IMAGE_REGISTRY}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_DP_FILE_CSI_DRIVER}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_DP_FILE_CSI_DRIVER}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:
@@ -226,6 +262,9 @@
           clientId:
             name: identity-map-${MI_DP_FILE_CSI_DRIVER}
             key: clientId
+  # Equivalent to:
+  # az identity create -n "${MI_SERVICE}" -g "${MSI_RESOURCEGROUPNAME}"
+  # This YAML creates a managed identity named "${MI_SERVICE}" in the "${MSI_RESOURCEGROUPNAME}" resource group.
   - apiVersion: managedidentity.azure.com/v1api20230131
     kind: UserAssignedIdentity
     metadata:

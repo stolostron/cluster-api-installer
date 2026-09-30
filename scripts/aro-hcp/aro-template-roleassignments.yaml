@@ -292,8 +292,6 @@
     metadata:
       name: ${MI_IMAGE_REGISTRY}-imageregistryoperatorroleid-resourcegroup
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${RESOURCEGROUPNAME}
@@ -447,8 +445,6 @@
     metadata:
       name: ${MI_DP_IMAGE_REGISTRY}-imageregistryoperatorroleid-resourcegroup
       namespace: ${NAMESPACE}
-      annotations:
-        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         name: ${RESOURCEGROUPNAME}

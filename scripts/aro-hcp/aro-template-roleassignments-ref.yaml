@@ -311,6 +311,8 @@
     metadata:
       name: ${MI_IMAGE_REGISTRY}-imageregistryoperatorroleid-resourcegroup-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
+      annotations:
+        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}
@@ -467,6 +469,8 @@
     metadata:
       name: ${MI_DP_IMAGE_REGISTRY}-imageregistryoperatorroleid-resourcegroup-${MSI_SUFFIX}
       namespace: ${NAMESPACE}
+      annotations:
+        serviceoperator.azure.com/reconcile-policy: detach-on-delete
     spec:
       owner:
         armId: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${RESOURCEGROUPNAME}

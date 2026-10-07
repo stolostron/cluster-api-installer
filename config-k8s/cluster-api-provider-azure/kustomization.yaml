@@ -185,6 +185,9 @@ patches:
       kind: Service
       name: azureserviceoperator-controller-manager-metrics-service
     patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: metrics-server-cert
       - op: replace
         path: /metadata/labels/control-plane
         value: azureserviceoperator-controller-manager

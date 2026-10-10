@@ -5,7 +5,7 @@ SYNC2CHARTS ?= true
 DEFAULT_BRANCH ?= release-5.0
 CAPA_BRANCH ?= backplane-5.0
 CAPZ_BRANCH ?= backplane-5.1
-CAPZ_ASO_VERSION ?= v2.20.0-hcpclusters.2
+CAPZ_ASO_VERSION ?= v2.22.0-hcpclusters.0
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ
@@ -68,7 +68,7 @@ build-cluster-api-provider-azure-chart:
 	PROJECT="cluster-api-provider-azure" \
 	BRANCH="$(CAPZ_BRANCH)" \
 	CAPZ_ASO_VERSION="$(CAPZ_ASO_VERSION)" \
-	CAPZ_ASO_ORGREPO="$(STOLOSTRON_ORGREPO)" \
+	CAPZ_ASO_ORGREPO="https://github.com/marek-veber" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api-provider-azure/config/tmp" \
 	CHART_VERSION="$(MCE_VERSION)" \

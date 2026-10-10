@@ -50,6 +50,14 @@ patches:
           value: VersionTLS13
       - op: remove
         path: /spec/template/spec/initContainers
+  - target:
+      version: v1
+      kind: Service
+      name: azureserviceoperator-controller-manager-metrics-service
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: metrics-server-cert
   # Remove CRD delete RBAC rule - only needed by migrate-aso-crd-stored-versions
   # init container which is disabled for ACM (CRDs managed by cluster-api-installer)
   - target:

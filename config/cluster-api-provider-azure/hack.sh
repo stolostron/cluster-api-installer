@@ -35,6 +35,21 @@ CAPZ_ASO_CRDS="${CAPZ_ASO_CRDS:-\
 
 echo "=== hack.sh: rebuilding ASO resources from release ${CAPZ_ASO_VERSION} ==="
 
+# The ASO bundle's args list can change between releases. CAPZ's downstream
+# patch replaces --crd-pattern= by array index, so keep its JSON patch paths
+# aligned with the selected bundle instead of relying on a fixed index.
+ASO_BUNDLE_FULL=$(mktemp)
+curl -fSsL "${ASO_BUNDLE_URL}" > "${ASO_BUNDLE_FULL}"
+ASO_CRD_PATTERN_INDEX=$(${YQ} e 'select(.kind == "Deployment" and .metadata.name == "azureserviceoperator-controller-manager") | .spec.template.spec.containers[0].args[]' "${ASO_BUNDLE_FULL}" \
+    | awk '$0 == "--crd-pattern=" { print NR - 1; exit }')
+rm -f "${ASO_BUNDLE_FULL}"
+if [ -z "${ASO_CRD_PATTERN_INDEX}" ]; then
+    echo "Error: could not find --crd-pattern= in the ASO release bundle ${CAPZ_ASO_VERSION}" >&2
+    exit 1
+fi
+sed -i -E "s#(/spec/template/spec/containers/0/args/)[0-9]+#\\1${ASO_CRD_PATTERN_INDEX}#g" \
+    config/aso/kustomization.yaml
+
 # Update the release URL in config/aso/kustomization.yaml
 echo "Updating release URL to ${CAPZ_ASO_VERSION}"
 sed -i 's|https://github.com/.*/azure-service-operator/releases/download/.*/azureserviceoperator_.*\.yaml|'"${ASO_BUNDLE_URL}"'|' \

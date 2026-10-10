@@ -165,6 +165,14 @@ patches:
         path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
         value: webhook-server-cert
 
+  - target:
+      kind: Service
+      name: azureserviceoperator-controller-manager-metrics-service
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: metrics-server-cert
+
 # Fix conflict between CAPI and CAPZ while using the same namespace
 #      control-plane: controller-manager -> azureserviceoperator-controller-manager
   - target:

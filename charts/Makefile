@@ -6,7 +6,7 @@ DEFAULT_BRANCH ?= release-5.0
 CAPA_BRANCH ?= backplane-5.0
 #CAPZ_BRANCH ?= backplane-5.1
 CAPZ_BRANCH ?= feat/aro-hcp-20261001-ga
-CAPZ_ASO_VERSION ?= v2.22.0-hcpclusters.1
+CAPZ_ASO_VERSION ?= v2.22.0-hcpclusters.2
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ

@@ -6,11 +6,11 @@ This guide explains how to provision Azure Red Hat OpenShift (ARO) Hosted Contro
 
 ## ARO HCP API version
 
-CAPZ uses the ARO HCP `2026-09-01-preview` ARM API through the ASO Kubernetes
-API version `redhatopenshift.azure.com/v20260901preview`:
+CAPZ uses the ARO HCP `2026-10-01` ARM API through the ASO Kubernetes
+API version `redhatopenshift.azure.com/v20261001`:
 
 ```yaml
-apiVersion: redhatopenshift.azure.com/v20260901preview
+apiVersion: redhatopenshift.azure.com/v20261001
 kind: HcpOpenShiftCluster
 ```
 
@@ -24,9 +24,11 @@ pool disks require a `sizeGiB` between 64 and 4095. External-auth status
 conditions are exposed at `status.properties.status.conditions`; manifests
 must not set this read-only status field.
 
-Use `v20260901preview` for new manifests. Existing manifests using
-`v1api20251223preview` require migration; see the [ARO HCP API migration
-guide](aro-hcp-api-v1api20251223preview-migration.md).
+Use `v20261001` for new manifests. Current CRDs serve `v20260901preview` and
+`v20261001`, but no longer serve `v1api20251223preview`. Migrate resources on
+that legacy API while using a release that still serves it, following the
+[legacy migration guide](aro-hcp-api-v1api20260901preview-migration.md), then
+use the [migration guide to `v20261001`](aro-hcp-api-v20260901preview-to-v20261001-migration.md).
 
 ## Table of Contents
 

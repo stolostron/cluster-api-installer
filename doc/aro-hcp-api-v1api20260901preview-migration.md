@@ -4,6 +4,12 @@ This document describes the migration from the ARO HCP Kubernetes API
 `v1api20251223preview` to `v20260901preview`. The latter is the API version
 generated from the `2026-09-01-preview` Azure Resource Manager API.
 
+> **Legacy migration:** The current CRDs serve `v20260901preview` and
+> `v20261001`; they no longer serve `v1api20251223preview`. Use this guide only
+> with a release that still serves the legacy source version. For the current
+> stable API migration, see the
+> [guide from `v20260901preview` to `v20261001`](aro-hcp-api-v20260901preview-to-v20261001-migration.md).
+
 ## Prerequisites
 
 Use CAPZ `v1.26.0-hcpclusters.1` and ASO `v2.18.0-hcpclusters.3`, or later

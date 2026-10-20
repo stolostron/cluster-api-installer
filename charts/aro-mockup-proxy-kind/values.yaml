@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/mveber/aro-mockup-proxy
+  repository: quay.io/capz/aro-mockup-proxy
   pullPolicy: IfNotPresent
   tag: "latest"
 

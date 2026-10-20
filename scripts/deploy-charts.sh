@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 set -o pipefail
+GENERATED_MOCK_CLIENT_CA_CERT_FILE=""
+GENERATED_MOCK_CLIENT_CA_KEY_FILE=""
+cleanup_mock_client_ca() {
+    [ -z "$GENERATED_MOCK_CLIENT_CA_CERT_FILE" ] || rm -f -- "$GENERATED_MOCK_CLIENT_CA_CERT_FILE"
+    [ -z "$GENERATED_MOCK_CLIENT_CA_KEY_FILE" ] || rm -f -- "$GENERATED_MOCK_CLIENT_CA_KEY_FILE"
+}
+trap cleanup_mock_client_ca EXIT
 DO_INIT_KIND=${INIT_KIND:-true}
 DO_DEPLOY=${DO_DEPLOY:-true}
 DO_CHECK=${DO_CHECK:-true}
@@ -91,6 +98,7 @@ if [ "$DO_DEPLOY" = true ] ; then
             continue
         }
         set_namespace_and_t
+        CLIENT_CERTIFICATE_SIGNER_ARG=""
         echo ========= deploy: $CHART "using context: $KUBE_CONTEXT"
         echo "        PROJECT: $PROJECT"
         echo "      NAMESPACE: $NAMESPACE"
@@ -99,6 +107,8 @@ if [ "$DO_DEPLOY" = true ] ; then
         if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
             KUBECONFIG_FILE=${MOCK_KUBECONFIG_FILE:-"${SCRIPT_DIR}/../aro-mockup-proxy/workload-kubeconfig.yaml"}
             GENERATE_WORKLOAD_KUBECONFIG=false
+            MOCK_CLIENT_CA_CERT_FILE=${MOCK_CLIENT_CA_CERT_FILE:-}
+            MOCK_CLIENT_CA_KEY_FILE=${MOCK_CLIENT_CA_KEY_FILE:-}
             if [ "${ARO_NULL_PROVISIONING:-}" = "true" ] ; then
                 WORKLOAD_KIND_NAME="${KIND_CLUSTER_NAME:-aso2}-workload"
                 if [ -z "${MOCK_KUBECONFIG_FILE:-}" ] ; then
@@ -115,11 +125,48 @@ if [ "$DO_DEPLOY" = true ] ; then
                     | sed "s|https://127.0.0.1:[0-9]*|https://${WORKLOAD_KIND_NAME}-control-plane:6443|" \
                     > "$KUBECONFIG_FILE"
                 echo "  Workload kubeconfig written to $KUBECONFIG_FILE"
+
+            fi
+            if [ "${ARO_NULL_PROVISIONING:-}" = "true" ] \
+                && [ -z "$MOCK_CLIENT_CA_CERT_FILE" ] && [ -z "$MOCK_CLIENT_CA_KEY_FILE" ] ; then
+                KIND_CONTAINER_RUNTIME=${KIND_EXPERIMENTAL_PROVIDER:-}
+                if [ -z "$KIND_CONTAINER_RUNTIME" ] ; then
+                    if command -v docker >/dev/null 2>&1 ; then
+                        KIND_CONTAINER_RUNTIME=docker
+                    elif command -v podman >/dev/null 2>&1 ; then
+                        KIND_CONTAINER_RUNTIME=podman
+                    else
+                        echo "ERROR: docker or podman is required to configure the mock CSR signer"
+                        exit 1
+                    fi
+                fi
+                if ! command -v "$KIND_CONTAINER_RUNTIME" >/dev/null 2>&1 ; then
+                    echo "ERROR: Kind container runtime '$KIND_CONTAINER_RUNTIME' is not installed"
+                    exit 1
+                fi
+                GENERATED_MOCK_CLIENT_CA_CERT_FILE=$(mktemp "${TMPDIR:-/var/tmp}/aro-mock-client-ca-${WORKLOAD_KIND_NAME}.XXXXXX.crt")
+                GENERATED_MOCK_CLIENT_CA_KEY_FILE=$(mktemp "${TMPDIR:-/var/tmp}/aro-mock-client-ca-${WORKLOAD_KIND_NAME}.XXXXXX.key")
+                "$KIND_CONTAINER_RUNTIME" exec "${WORKLOAD_KIND_NAME}-control-plane" cat /etc/kubernetes/pki/ca.crt > "$GENERATED_MOCK_CLIENT_CA_CERT_FILE"
+                "$KIND_CONTAINER_RUNTIME" exec "${WORKLOAD_KIND_NAME}-control-plane" cat /etc/kubernetes/pki/ca.key > "$GENERATED_MOCK_CLIENT_CA_KEY_FILE"
+                chmod 600 "$GENERATED_MOCK_CLIENT_CA_KEY_FILE"
+                MOCK_CLIENT_CA_CERT_FILE="$GENERATED_MOCK_CLIENT_CA_CERT_FILE"
+                MOCK_CLIENT_CA_KEY_FILE="$GENERATED_MOCK_CLIENT_CA_KEY_FILE"
             fi
             if [ -f "$KUBECONFIG_FILE" ] ; then
                 echo "  Creating mockup-proxy-kubeconfig secret from $KUBECONFIG_FILE"
+                MOCKUP_PROXY_SECRET_ARGS=(--from-file=workload-kubeconfig.yaml="$KUBECONFIG_FILE")
+                if [ -n "$MOCK_CLIENT_CA_CERT_FILE" ] || [ -n "$MOCK_CLIENT_CA_KEY_FILE" ] ; then
+                    if [ -z "$MOCK_CLIENT_CA_CERT_FILE" ] || [ -z "$MOCK_CLIENT_CA_KEY_FILE" ] \
+                        || [ ! -f "$MOCK_CLIENT_CA_CERT_FILE" ] || [ ! -f "$MOCK_CLIENT_CA_KEY_FILE" ] ; then
+                        echo "ERROR: MOCK_CLIENT_CA_CERT_FILE and MOCK_CLIENT_CA_KEY_FILE must both name existing files"
+                        exit 1
+                    fi
+                    MOCKUP_PROXY_SECRET_ARGS+=(--from-file=client-ca.crt="$MOCK_CLIENT_CA_CERT_FILE")
+                    MOCKUP_PROXY_SECRET_ARGS+=(--from-file=client-ca.key="$MOCK_CLIENT_CA_KEY_FILE")
+                    CLIENT_CERTIFICATE_SIGNER_ARG="--set clientCertificateSigner.enabled=true"
+                fi
                 kubectl $KUBE_CONTEXT -n "$NAMESPACE" create secret generic mockup-proxy-kubeconfig \
-                    --from-file=workload-kubeconfig.yaml="$KUBECONFIG_FILE" \
+                    "${MOCKUP_PROXY_SECRET_ARGS[@]}" \
                     --dry-run=client -o yaml | kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f -
             else
                 echo "  WARNING: kubeconfig file not found at $KUBECONFIG_FILE, requestAdminCredential will fail"
@@ -131,13 +178,13 @@ if [ "$DO_DEPLOY" = true ] ; then
             DEV_ENDPOINT_ARG="--set config.devEndpoint=$DEV_ENDPOINT --set kubeconfig.secretName="
             echo "  DEV_ENDPOINT: $DEV_ENDPOINT (hcpOpenShiftCluster requests will be forwarded)"
         fi
-        echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG
+        echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG $CLIENT_CERTIFICATE_SIGNER_ARG
         HELM_NAME_ARG=""
         [ -n "$HELM_RELEASE_NAME" ] && HELM_NAME_ARG="--name-template=$HELM_RELEASE_NAME"
         helm template $HELM_NAME_ARG $CHART --include-crds --namespace "$NAMESPACE" \
             --set imagePullSecret=${IMAGE_PULL_SECRET_B64} \
             --set "Release.Namespace=$NAMESPACE" \
-            ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
+            ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG $CLIENT_CERTIFICATE_SIGNER_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
         # Wait for cert-manager to issue the TLS certificate before proceeding
         if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
             echo "  Waiting for TLS secret aro-mockup-proxy-tls to be created by cert-manager..."

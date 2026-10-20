@@ -98,8 +98,17 @@ if [ "$DO_DEPLOY" = true ] ; then
         # Create prerequisites for aro-mockup-proxy
         if [ "$PROJECT" = "aro-mockup-proxy" ] && [ -z "${DEV_ENDPOINT:-}" ] ; then
             KUBECONFIG_FILE=${MOCK_KUBECONFIG_FILE:-"${SCRIPT_DIR}/../aro-mockup-proxy/workload-kubeconfig.yaml"}
-            if [ ! -f "$KUBECONFIG_FILE" ] && [ "$ARO_NULL_PROVISIONING" = "true" ] ; then
+            GENERATE_WORKLOAD_KUBECONFIG=false
+            if [ "${ARO_NULL_PROVISIONING:-}" = "true" ] ; then
                 WORKLOAD_KIND_NAME="${KIND_CLUSTER_NAME:-aso2}-workload"
+                if [ -z "${MOCK_KUBECONFIG_FILE:-}" ] ; then
+                    KUBECONFIG_FILE="${TMPDIR:-/var/tmp}/aro-mock-workload-${WORKLOAD_KIND_NAME}.yaml"
+                    GENERATE_WORKLOAD_KUBECONFIG=true
+                elif [ ! -f "$KUBECONFIG_FILE" ] ; then
+                    GENERATE_WORKLOAD_KUBECONFIG=true
+                fi
+            fi
+            if [ "$GENERATE_WORKLOAD_KUBECONFIG" = true ] ; then
                 echo "  Creating Kind workload cluster '$WORKLOAD_KIND_NAME' for null-provisioning mode"
                 KIND_CLUSTER_NAME="$WORKLOAD_KIND_NAME" ${SCRIPT_DIR}/setup-kind-cluster.sh
                 kind get kubeconfig --name "$WORKLOAD_KIND_NAME" \

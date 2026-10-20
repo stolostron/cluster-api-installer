@@ -26,3 +26,7 @@ data:
   TLS_CERT_FILE: "/tls/tls.crt"
   TLS_KEY_FILE: "/tls/tls.key"
   {{- end }}
+  {{- if .Values.clientCertificateSigner.enabled }}
+  MOCK_CLIENT_CA_CERT_PATH: {{ .Values.clientCertificateSigner.certPath | quote }}
+  MOCK_CLIENT_CA_KEY_PATH: {{ .Values.clientCertificateSigner.keyPath | quote }}
+  {{- end }}

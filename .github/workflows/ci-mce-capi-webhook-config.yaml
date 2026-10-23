@@ -17,7 +17,5 @@ jobs:
           go-version-file: './mce-capi-webhook-config/go.mod'
       - name: build
         run: make build
-      - name: docker-build
-        run: make docker-build
       - name: test
         run: make test

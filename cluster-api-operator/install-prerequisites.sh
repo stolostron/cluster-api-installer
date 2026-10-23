@@ -41,7 +41,7 @@ echo "📦 Installing cluster-api-operator..."
 # Check if helm is available
 if ! command -v helm &> /dev/null; then
     echo "⚠️  Helm not found. Installing cluster-api-operator using manifests instead..."
-    kubectl apply -f https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.17.1/operator-components.yaml
+    kubectl apply -f https://github.com/kubernetes-sigs/cluster-api-operator/releases/download/v0.24.0/operator-components.yaml
 
     echo "⏳ Waiting for cluster-api-operator to be ready..."
     kubectl wait --for=condition=Available --timeout=300s -n capi-operator-system deployment/capi-operator-controller-manager

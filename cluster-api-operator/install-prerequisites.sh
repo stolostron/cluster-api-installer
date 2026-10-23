@@ -56,7 +56,7 @@ else
     helm install capi-operator capi-operator/cluster-api-operator \
       --create-namespace \
       --namespace capi-operator-system \
-      --version v0.17.1 \
+      --version v0.24.0 \
       --wait
 fi
 

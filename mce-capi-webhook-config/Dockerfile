@@ -17,7 +17,7 @@ COPY webhook/ webhook/
 # Build
 RUN CGO_ENABLED=1 GO111MODULE=on GOEXPERIMENT=strictfipsruntime go build -a -o /tmp/mce-capi-webhook-config main.go
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+FROM registry.redhat.io/ubi9/ubi-minimal-pqc:latest
 
 LABEL com.redhat.component="mce-capi-webhook-config" \
       url="mce-capi-webhook-config/Dockerfile" \

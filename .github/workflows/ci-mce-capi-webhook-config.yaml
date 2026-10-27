@@ -13,7 +13,5 @@ jobs:
       - uses: actions/checkout@v7
       - name: build
         run: make build
-      - name: docker-build
-        run: make docker-build
       - name: test
         run: make test

@@ -2,7 +2,8 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "baseBranchPatterns": [
         "main",
-        "/^backplane-2\\.[0-99]$/"
+        "/^backplane-2\\.1[0-99]$/",
+        "/^backplane-5\\.[0-9]+$/"
     ],
     "tekton": {
         "includePaths": [
@@ -15,14 +16,18 @@
     "packageRules": [
         {
             "matchManagers": [
-                "Dockerfile"
+                "dockerfile"
+            ],
+            "matchFileNames": [
+                "mce-capi-webhook-config/Dockerfile"
             ],
             "enabled": true
         },
         {
             "matchBaseBranches": [
                 "main",
-                "/^backplane-2\\.[0-99]$/"
+                "/^backplane-2\\.1[0-99]$/",
+                "/^backplane-5\\.[0-9]+$/"
             ],
             "matchManagers": [
                 "tekton"

@@ -60,31 +60,32 @@ The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 |---------|-------|
 | Required CAPZ Release | `v1.26.0-hcpclusters.1` |
 | Required ASO Release | `v2.18.0-hcpclusters.3` |
-| Communication with ARM | `2026-09-01-preview` |
-| Kubernetes storage version | `v20260901preview` |
-| Kubernetes API versions | `v1api20251223preview`, `v20260901preview` |
+| Communication with ARM | `2026-10-01` |
+| Kubernetes storage version | `v20261001storage` |
+| Kubernetes API versions | `v20260901preview`, `v20261001` |
 
-> **Note: 1)** The `2026-09-01-preview` API version is used
-> to communicate with ARM for both supported Kubernetes API versions. Kubernetes
-> objects are stored using `v20260901preview`.
+> **Note: 1)** New ARO HCP resources use the stable `2026-10-01` API version
+> to communicate with ARM. The CRDs also serve `v20260901preview` for existing
+> resources. `v1api20251223preview` is not served by the current CRDs.
 >
 > **Note: 2)** ASO v2.16 introduced the `v1api` -> `v` Kubernetes API prefix.
-> Use `v20260901preview` for the new API; keep `v1api20251223preview` only
-> when reading or migrating existing manifests.
+> Use `v20261001` for new resources. Migrate manifests using
+> `v1api20251223preview` before upgrading to a release with the current CRDs.
 
-To migrate from `v1api20251223preview` to `v20260901preview`, see
-[Migration Guide](../doc/aro-hcp-api-v1api20260901preview-migration.md).
+For the earlier migration from `v1api20251223preview` to `v20260901preview`, see
+the [legacy API migration guide](../doc/aro-hcp-api-v1api20260901preview-migration.md).
+To migrate from `v20260901preview` to `v20261001`, see the
+[ARO HCP API migration guide](../doc/aro-hcp-api-v20260901preview-to-v20261001-migration.md).
 
-> **Warning:** The `v1api20251223preview` API has introduced an optional `imageDigestMirrors` field.
-> Any change to this field (adding, removing, or modifying an entry) on a running cluster will
+> **Warning:** Any change to `imageDigestMirrors` (adding, removing, or modifying an entry) on a running cluster will
 > trigger a **rolling replacement of all nodes across all existing NodePools**. See the
 > [Updating Cluster Configuration](../doc/ARO-capz.md#updating-cluster-configuration) section
 > for details.
 
 The new release must include updated `infrastructure-components.yaml` with CRDs for:
-- `hcpopenshiftclusters.redhatopenshift.azure.com` (`v20260901preview`)
-- `hcpopenshiftclustersnodepools.redhatopenshift.azure.com` (`v20260901preview`)
-- `hcpopenshiftclustersexternalauths.redhatopenshift.azure.com` (`v20260901preview`)
+- `hcpopenshiftclusters.redhatopenshift.azure.com` (`v20261001`)
+- `hcpopenshiftclustersnodepools.redhatopenshift.azure.com` (`v20261001`)
+- `hcpopenshiftclustersexternalauths.redhatopenshift.azure.com` (`v20261001`)
 
 The ASO CRD pattern in `infrastructure-provider-azure.yaml` must include
 `redhatopenshift.azure.com/*` for ARO HCP resources to be reconciled.

@@ -23,12 +23,12 @@ We expect the following:
 
 ## ARO HCP API version
 
-The ARO HCP resources embedded in CAPZ manifests use the `2026-09-01-preview`
+The ARO HCP resources embedded in CAPZ manifests use the `2026-10-01`
 ARM API through the ASO Kubernetes API version
-`redhatopenshift.azure.com/v20260901preview`:
+`redhatopenshift.azure.com/v20261001`:
 
 ```yaml
-apiVersion: redhatopenshift.azure.com/v20260901preview
+apiVersion: redhatopenshift.azure.com/v20261001
 kind: HcpOpenShiftCluster
 ```
 
@@ -43,9 +43,11 @@ When `properties.etcd.dataEncryption` is configured, the new API requires
 cluster. Node pool managed-disk `properties.platform.osDisk.sizeGiB` values
 must be between 64 and 4095.
 
-The generated manifests use `v20260901preview` by default. Existing manifests
-using `v1api20251223preview` must be migrated before changing their API
-version; see the [ARO HCP API migration guide](aro-hcp-api-v1api20251223preview-migration.md).
+The generated manifests use `v20261001` by default. Current CRDs serve
+`v20260901preview` and `v20261001`; they no longer serve
+`v1api20251223preview`. Migrate resources on that legacy API while using a
+release that still serves it, following the [legacy migration guide](aro-hcp-api-v1api20260901preview-migration.md),
+then use the [migration guide to `v20261001`](aro-hcp-api-v20260901preview-to-v20261001-migration.md).
 
 ## Provisioning ARO
 

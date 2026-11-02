@@ -4,12 +4,12 @@ AZURE_ASO_URL="quay.io/acm-d/azure-service-operator-rhel9"
 if [ "$ARO_REPO_BRANCH" = "backplane-5.2" ] ; then
     AZURE_TAG="5.2-dev"
     CAPI_TAG="v5.0" # TODO: -> v.5.2
-    WH_TAG="5.0-dev" # TODO: -> 5.2-dev
+    WH_TAG="5.2-dev"
     RELEASE_EXT="52"
 else
     AZURE_TAG="5.1-dev"
     CAPI_TAG="v5.0" # TODO: -> v.5.1
-    WH_TAG="5.0-dev"
+    WH_TAG="5.1-dev"
     RELEASE_EXT="51"
 fi
 

@@ -21,8 +21,9 @@ export ENV=${ENV:-${DEPLOYMENT_ENV}}
 export ENV=${ENV:-stage}
 export CREATE_CREDENTIALS=true
 export NAMESPACE=${NAMESPACE:-default}
-export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v20260901preview}
-#export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
+export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v20261001}
+# To generate manifests for the 2026-09-01-preview API, set:
+# ARO_HCP_VERSION=v20260901preview ./gen.sh <output-dir>
 
 
 if [ "$USE_CI" != "true" ] ; then

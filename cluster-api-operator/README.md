@@ -48,9 +48,9 @@ Environment variables:
 ## Custom Images
 
 This configuration uses custom images:
-- **CAPZ Controller**: quay.io/capz/cluster-api-provider-azure-rhel9:v1.26.0-hcpclusters.1
-- **ASO Controller**: quay.io/capz/azure-service-operator-rhel9:v2.18.0-hcpclusters.3
-- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.26.0-hcpclusters.1
+- **CAPZ Controller**: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.1
+- **ASO Controller**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.1
+- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.1
 
 ## API Version Support
 
@@ -58,8 +58,8 @@ The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 
 | Item | Value |
 |---------|-------|
-| Required CAPZ Release | `v1.26.0-hcpclusters.1` |
-| Required ASO Release | `v2.18.0-hcpclusters.3` |
+| Required CAPZ Release | `v1.27.0-hcpclusters.1` |
+| Required ASO Release | `v2.23.0-hcpclusters.1` |
 | Communication with ARM | `2026-10-01` |
 | Kubernetes storage version | `v20261001storage` |
 | Kubernetes API versions | `v20260901preview`, `v20261001` |
@@ -213,7 +213,7 @@ kubectl logs -n capz-system -l control-plane=azureserviceoperator-controller-man
 
 ## Custom Release Requirements
 
-Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.26.0-hcpclusters.1 must include:
+Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.1 must include:
 
 1. **metadata.yaml** - Provider metadata with version information
 2. **infrastructure-components.yaml** - All CRDs, deployments, and resources (including ARO HCP CRDs)
@@ -240,7 +240,7 @@ releaseSeries:
 ## Azure Service Operator
 
 The configuration includes an additional deployment for Azure Service Operator controller manager with:
-- **Custom Image**: quay.io/capz/azure-service-operator-rhel9:v2.18.0-hcpclusters.3
+- **Custom Image**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.1
 - **CRD Pattern Filter**: authorization.azure.com/*, managedidentity.azure.com/*, network.azure.com/*, eventhub.azure.com/*, storage.azure.com/*, web.azure.com/*, insights.azure.com/*, keyvault.azure.com/*
 - **Sync Period**: 1 hour
 
@@ -315,7 +315,7 @@ Common issues:
 ### Cannot fetch manifests from GitHub
 
 Ensure:
-1. The release `v1.26.0-hcpclusters.1` exists at https://github.com/stolostron/cluster-api-provider-azure/releases
+1. The release `v1.27.0-hcpclusters.1` exists at https://github.com/stolostron/cluster-api-provider-azure/releases
 2. The release contains `metadata.yaml` and `infrastructure-components.yaml` files
 3. The cluster can reach github.com (or configure a proxy if needed)
 

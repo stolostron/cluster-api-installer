@@ -39,7 +39,7 @@ jobs:
     - name: Create Pull Request CAPI
       id: cpr-capi
       if: ${{ steps.sync.outputs.updated_cluster-api == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@v8
       with:
         commit-message: CAPI Update report
         add-paths: charts/cluster-api, src/cluster-api.yaml
@@ -62,7 +62,7 @@ jobs:
     - name: Create Pull Request CAPA
       id: cpr-capa
       if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@v8
       with:
         commit-message: CAPA Update report
         add-paths: charts/cluster-api-provider-aws, src/cluster-api-provider-aws.yaml

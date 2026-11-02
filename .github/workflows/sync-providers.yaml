@@ -21,12 +21,12 @@ jobs:
     steps:
     - name: test-target-branch-capi
       id: check-branch-exists-capi
-      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists
+      uses: GuillaumeFalourd/branch-exists@v1.2 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists
       with:
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capi') }}
     - name: test-target-branch-capa
       id: check-branch-exists-capa
-      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
+      uses: GuillaumeFalourd/branch-exists@v1.2 # the Apache License 2.0 https://github.com/marketplace/actions/branch-exists
       with:
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
     - name: checkout

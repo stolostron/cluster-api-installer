@@ -54,6 +54,16 @@ spec:
           subPath: {{ .Values.kubeconfig.key }}
           readOnly: true
         {{- end }}
+        {{- if and .Values.kubeconfig.secretName .Values.clientCertificateSigner.enabled }}
+        - name: kubeconfig
+          mountPath: {{ .Values.clientCertificateSigner.certPath }}
+          subPath: {{ .Values.clientCertificateSigner.certKey }}
+          readOnly: true
+        - name: kubeconfig
+          mountPath: {{ .Values.clientCertificateSigner.keyPath }}
+          subPath: {{ .Values.clientCertificateSigner.keyKey }}
+          readOnly: true
+        {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
       volumes:

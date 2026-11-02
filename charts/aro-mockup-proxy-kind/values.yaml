@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/mveber/aro-mockup-proxy
+  repository: quay.io/capz/aro-mockup-proxy
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -81,6 +81,15 @@ config:
 kubeconfig:
   secretName: mockup-proxy-kubeconfig
   key: workload-kubeconfig.yaml
+
+# CA material for signing the CSR sent to requestAdminCredential.
+# Enabled only for null-provisioning with a Kind workload cluster.
+clientCertificateSigner:
+  enabled: false
+  certKey: client-ca.crt
+  keyKey: client-ca.key
+  certPath: /client-ca/ca.crt
+  keyPath: /client-ca/ca.key
 
 # Persistence for database
 persistence:

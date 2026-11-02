@@ -1,11 +1,19 @@
 package main
 
 import (
+	"bytes"
+	"crypto"
+	"crypto/rand"
 	"crypto/tls"
+	"crypto/x509"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
+	"io"
 	"log"
+	"math/big"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -168,7 +176,11 @@ func (sr *statusRecorder) WriteHeader(code int) {
 func (p *AROHCPMockProxyEnhanced) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rec := &statusRecorder{ResponseWriter: w, status: 200}
 	ua := r.Header.Get("User-Agent")
-	log.Printf("[%s] %s (Host: %s, User-Agent: %s)", r.Method, r.URL.Path, r.Host, ua)
+	apiVersion := r.URL.Query().Get("api-version")
+	if apiVersion == "" {
+		apiVersion = "<missing>"
+	}
+	log.Printf("[%s] %s (api-version: %s, Host: %s, User-Agent: %s)", r.Method, r.URL.Path, apiVersion, r.Host, ua)
 
 	// Handle async operation status requests
 	if strings.Contains(r.URL.Path, "/operations/") && !strings.Contains(r.URL.Path, "/providers/") {
@@ -529,7 +541,7 @@ func (p *AROHCPMockProxyEnhanced) handleOperationsList(w http.ResponseWriter, r 
 	// Return the list of available operations for the Microsoft.RedHatOpenShift provider
 	operations := []map[string]interface{}{
 		{
-			"name":   "Microsoft.RedHatOpenShift/hcpOpenShiftClusters/read",
+			"name": "Microsoft.RedHatOpenShift/hcpOpenShiftClusters/read",
 			"display": map[string]interface{}{
 				"provider":    "Microsoft Red Hat OpenShift",
 				"resource":    "HCP OpenShift Cluster",
@@ -538,7 +550,7 @@ func (p *AROHCPMockProxyEnhanced) handleOperationsList(w http.ResponseWriter, r 
 			},
 		},
 		{
-			"name":   "Microsoft.RedHatOpenShift/hcpOpenShiftClusters/write",
+			"name": "Microsoft.RedHatOpenShift/hcpOpenShiftClusters/write",
 			"display": map[string]interface{}{
 				"provider":    "Microsoft Red Hat OpenShift",
 				"resource":    "HCP OpenShift Cluster",
@@ -547,7 +559,7 @@ func (p *AROHCPMockProxyEnhanced) handleOperationsList(w http.ResponseWriter, r 
 			},
 		},
 		{
-			"name":   "Microsoft.RedHatOpenShift/hcpOpenShiftClusters/delete",
+			"name": "Microsoft.RedHatOpenShift/hcpOpenShiftClusters/delete",
 			"display": map[string]interface{}{
 				"provider":    "Microsoft Red Hat OpenShift",
 				"resource":    "HCP OpenShift Cluster",
@@ -1069,6 +1081,16 @@ func (p *AROHCPMockProxyEnhanced) handleRequestAdminCredential(w http.ResponseWr
 	resourceID := fmt.Sprintf("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.RedHatOpenShift/%s/%s",
 		parsed.SubscriptionID, parsed.ResourceGroup, parsed.ResourceType, parsed.ResourceName)
 
+	var request struct {
+		CertificateSigningRequest string `json:"certificateSigningRequest"`
+	}
+	if r.Body != nil {
+		if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&request); err != nil && err != io.EOF {
+			http.Error(w, "Invalid admin credential request", http.StatusBadRequest)
+			return
+		}
+	}
+
 	// Read kubeconfig from file (path configurable via MOCK_KUBECONFIG_PATH env)
 	kubeconfigPath := os.Getenv("MOCK_KUBECONFIG_PATH")
 	if kubeconfigPath == "" {
@@ -1079,6 +1101,20 @@ func (p *AROHCPMockProxyEnhanced) handleRequestAdminCredential(w http.ResponseWr
 		log.Printf("Failed to read kubeconfig from %s: %v", kubeconfigPath, err)
 		http.Error(w, "Failed to read kubeconfig", http.StatusInternalServerError)
 		return
+	}
+	if request.CertificateSigningRequest != "" {
+		clientCertificate, err := signAdminCredentialCSR(request.CertificateSigningRequest)
+		if err != nil {
+			log.Printf("Failed to sign admin credential CSR: %v", err)
+			http.Error(w, "Failed to sign admin credential CSR", http.StatusInternalServerError)
+			return
+		}
+		kubeconfigBytes, err = replaceKubeconfigClientCertificate(kubeconfigBytes, clientCertificate)
+		if err != nil {
+			log.Printf("Failed to prepare admin kubeconfig: %v", err)
+			http.Error(w, "Failed to prepare admin kubeconfig", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	// Create the credential response
@@ -1101,6 +1137,131 @@ func (p *AROHCPMockProxyEnhanced) handleRequestAdminCredential(w http.ResponseWr
 	w.Header().Set("Retry-After", fmt.Sprintf("%d", int(p.config.PollingInterval.Seconds())))
 	w.WriteHeader(http.StatusAccepted)
 	// No body for 202 response per Azure LRO spec
+}
+
+func signAdminCredentialCSR(csrPEM string) ([]byte, error) {
+	certPath := os.Getenv("MOCK_CLIENT_CA_CERT_PATH")
+	keyPath := os.Getenv("MOCK_CLIENT_CA_KEY_PATH")
+	if certPath == "" || keyPath == "" {
+		return nil, fmt.Errorf("mock client CA certificate and key paths must be configured")
+	}
+
+	csrBlock, _ := pem.Decode([]byte(csrPEM))
+	if csrBlock == nil || csrBlock.Type != "CERTIFICATE REQUEST" {
+		return nil, fmt.Errorf("request does not contain a PEM certificate signing request")
+	}
+	csr, err := x509.ParseCertificateRequest(csrBlock.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("parse certificate signing request: %w", err)
+	}
+	if err := csr.CheckSignature(); err != nil {
+		return nil, fmt.Errorf("verify certificate signing request: %w", err)
+	}
+	if csr.Subject.CommonName != "system:customer-break-glass:system-admin" || !contains(csr.Subject.Organization, "system:masters") {
+		return nil, fmt.Errorf("certificate signing request has an unexpected subject")
+	}
+
+	caCertPEM, err := os.ReadFile(certPath)
+	if err != nil {
+		return nil, fmt.Errorf("read mock client CA certificate: %w", err)
+	}
+	caCertBlock, _ := pem.Decode(caCertPEM)
+	if caCertBlock == nil || caCertBlock.Type != "CERTIFICATE" {
+		return nil, fmt.Errorf("mock client CA certificate is not PEM encoded")
+	}
+	caCert, err := x509.ParseCertificate(caCertBlock.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("parse mock client CA certificate: %w", err)
+	}
+	if !caCert.IsCA {
+		return nil, fmt.Errorf("mock client certificate signer is not a CA")
+	}
+
+	caKeyPEM, err := os.ReadFile(keyPath)
+	if err != nil {
+		return nil, fmt.Errorf("read mock client CA key: %w", err)
+	}
+	caKeyBlock, _ := pem.Decode(caKeyPEM)
+	if caKeyBlock == nil {
+		return nil, fmt.Errorf("mock client CA key is not PEM encoded")
+	}
+	caKey, err := parsePrivateKey(caKeyBlock)
+	if err != nil {
+		return nil, fmt.Errorf("parse mock client CA key: %w", err)
+	}
+	caPublicKey, err := x509.MarshalPKIXPublicKey(caCert.PublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("marshal mock client CA public key: %w", err)
+	}
+	keyPublicKey, err := x509.MarshalPKIXPublicKey(caKey.Public())
+	if err != nil {
+		return nil, fmt.Errorf("marshal mock client CA key public part: %w", err)
+	}
+	if !bytes.Equal(caPublicKey, keyPublicKey) {
+		return nil, fmt.Errorf("mock client CA certificate and key do not match")
+	}
+
+	serialNumber, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+	if err != nil {
+		return nil, fmt.Errorf("generate client certificate serial number: %w", err)
+	}
+	if serialNumber.Sign() == 0 {
+		serialNumber.SetInt64(1)
+	}
+	now := time.Now()
+	clientCert := &x509.Certificate{
+		SerialNumber:          serialNumber,
+		Subject:               csr.Subject,
+		NotBefore:             now.Add(-time.Minute),
+		NotAfter:              now.Add(24 * time.Hour),
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
+		BasicConstraintsValid: true,
+	}
+	certDER, err := x509.CreateCertificate(rand.Reader, clientCert, caCert, csr.PublicKey, caKey)
+	if err != nil {
+		return nil, fmt.Errorf("sign client certificate: %w", err)
+	}
+	return pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER}), nil
+}
+
+func parsePrivateKey(block *pem.Block) (crypto.Signer, error) {
+	var key interface{}
+	var err error
+	switch block.Type {
+	case "RSA PRIVATE KEY":
+		key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	case "EC PRIVATE KEY":
+		key, err = x509.ParseECPrivateKey(block.Bytes)
+	default:
+		key, err = x509.ParsePKCS8PrivateKey(block.Bytes)
+	}
+	if err != nil {
+		return nil, err
+	}
+	signer, ok := key.(crypto.Signer)
+	if !ok {
+		return nil, fmt.Errorf("private key type %T cannot sign certificates", key)
+	}
+	return signer, nil
+}
+
+func replaceKubeconfigClientCertificate(kubeconfig, certificate []byte) ([]byte, error) {
+	pattern := regexp.MustCompile(`(?m)^([ \t]*client-certificate-data:[ \t]*).+$`)
+	if !pattern.Match(kubeconfig) {
+		return nil, fmt.Errorf("kubeconfig has no client-certificate-data field")
+	}
+	encodedCertificate := base64.StdEncoding.EncodeToString(certificate)
+	return pattern.ReplaceAll(kubeconfig, []byte("${1}"+encodedCertificate)), nil
+}
+
+func contains(values []string, wanted string) bool {
+	for _, value := range values {
+		if value == wanted {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *AROHCPMockProxyEnhanced) handleGetAdminCredential(w http.ResponseWriter, r *http.Request, parsed *ARMPath) {

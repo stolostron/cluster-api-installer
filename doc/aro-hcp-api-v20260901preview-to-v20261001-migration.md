@@ -7,12 +7,11 @@ This guide covers moving ARO HCP resources from the ASO Kubernetes API version
 ## Prerequisites
 
 The target CAPZ and ASO releases must serve `v20261001` for all three ARO HCP
-resource kinds: `HcpOpenShiftCluster`, `HcpOpenShiftClustersNodePool`, and
-`HcpOpenShiftClustersExternalAuth`. Do not install them until the pre-upgrade
-gate below passes. When using `cluster-api-operator`, update the
-`InfrastructureProvider` resource and ensure ASO's CRD pattern includes
-`redhatopenshift.azure.com/*`; see
+resource kinds. Do not install them until the pre-upgrade gate passes. When
+using `cluster-api-operator`, update the `InfrastructureProvider` resource and
+ensure ASO's CRD pattern includes `redhatopenshift.azure.com/*`; see
 [infrastructure-provider-azure.yaml](../cluster-api-operator/infrastructure-provider-azure.yaml).
+Non-SWIFT clusters are not considered to exist in the management cluster.
 
 Before upgrading from `v20260901preview`, complete the pre-upgrade gate below
 while the current ASO release can still read all versions recorded by the HCP
@@ -70,17 +69,14 @@ planned changes:
 ./doc/migrate-hcp-managed-api-version.sh --from-version v20260901preview --to-version v20261001
 ```
 
-These commands are server-side dry runs. Add `--apply` after reviewing the
-planned changes. The script scans `AROMachinePool`, `AROCluster`, and
-`AROControlPlane` resources in every namespace. It changes only embedded HCP
-API versions matching the selected source version, checks that the target API
-is served, and stops before making changes if an affected HCP cluster has no
-VNet integration subnet reference. `--apply` updates CAPZ parent resources;
-CAPZ then reconciles the HCP children. The script does not patch HCP objects or
-CRD `status.storedVersions` directly. Rerun the inventory above after
-reconciliation. If a parent does not update a child, a same-value patch to
-`spec.azureName` triggers conversion through the desired API version. Use the
-object's actual `spec.azureName`:
+The script scans `AROMachinePool`, `AROCluster`, and `AROControlPlane`
+resources in every namespace. It updates only embedded HCP API versions
+matching the selected source version and aborts without patching if an affected
+cluster lacks the required `vnetIntegrationSubnetReference`. With `--apply`,
+it patches CAPZ parents, which then reconcile HCP children; it does not patch
+HCP objects or CRD `status.storedVersions`. Rerun the inventory after
+reconciliation. If a parent does not update its child, patch the child through
+the target API using the same `spec.azureName` value. Use its actual value:
 
 ```bash
 resource=hcpopenshiftclusters # or hcpopenshiftclustersnodepools / hcpopenshiftclustersexternalauths
@@ -95,9 +91,9 @@ kubectl patch "${resource}.v20260901preview.redhatopenshift.azure.com" \
 
 This is a Kubernetes write and can trigger normal ASO reconciliation. Check
 the object's reconcile policy and review the intended Azure effect before
-applying it. For legacy SWIFT clusters without a VNet integration subnet, use
-the documented compatibility/read-and-delete procedure; do not send a
-fabricated subnet reference in an ARM PUT.
+applying it. The bulk migration script stops without changing CAPZ resources
+if it finds an HCP cluster without a VNet integration subnet reference;
+investigate such a finding before proceeding.
 
 Check the active storage version and `status.storedVersions` on all three CRDs:
 
@@ -131,22 +127,22 @@ Only proceed with the upgrade after all three checks pass: the object
 `v20260901preview`. This is the gate that ensures the 2025 API can be removed
 without leaving HCP resources that depend on it.
 
-## Example pre-upgrade state
+## Upgrade CAPZ and ASO
 
-A cluster can be healthy on `v20260901preview` and still fail the gate:
+With `cluster-api-operator`, set the CAPZ version and release URL, and the ASO
+image, in [`infrastructure-provider-azure.yaml`](../cluster-api-operator/infrastructure-provider-azure.yaml)
+to builds that serve `v20261001`. Apply the updated provider and wait for it
+to finish installing:
 
-```text
-CAPI cluster:                    Provisioned, Available=True
-HCP CRD storage version:         v20260901previewstorage
-HCP CRD status.storedVersions:   v1api20251223previewstorage,v20260901previewstorage
-HCP object spec.originalVersion: v1api20251223preview
-HCP object Ready:                True
+```bash
+kubectl apply -f cluster-api-operator/infrastructure-provider-azure.yaml
+kubectl wait --for=condition=ProviderInstalled --timeout=600s \
+  infrastructureprovider/azure -n capz-system
 ```
 
-Do not upgrade while any object or CRD still reports the 2025 version. Use
-the checks above to confirm every object's `spec.originalVersion` is
-`v20260901preview` and each CRD lists only `v20260901previewstorage` in
-`status.storedVersions`. Readiness alone is not sufficient.
+Before running the migration script, confirm that all three HCP CRDs serve
+`v20261001`. The script checks this too and exits without changes if the target
+API is unavailable.
 
 ## API version
 
@@ -165,10 +161,11 @@ apiVersion: redhatopenshift.azure.com/v20261001
 The CAPZ ARO manifest generator now defaults to `v20261001`. To set it
 explicitly, run it with `ARO_HCP_VERSION=v20261001`.
 
-Update every embedded HCP resource's `apiVersion` in the owning CAPZ
-`AROCluster`, `AROControlPlane`, and `AROMachinePool` resources, then apply the
-updated CAPZ resources. Also update separately maintained HCP manifests. This
-keeps CAPZ's desired resource definitions aligned with the new API.
+For CAPZ-managed resources, run the post-upgrade command above with
+`--from-version v20260901preview --to-version v20261001`. With `--apply`, the
+script updates CAPZ parents and CAPZ reconciles the HCP children. For standalone
+HCP manifests, change the `apiVersion` and apply them after installing the new
+CRDs. Keep their existing `spec` unless configuring an optional field.
 
 Write each live HCP child through the served `v20261001` endpoint so ASO's
 conversion webhook records `v20261001` in `spec.originalVersion`. If parent
@@ -265,15 +262,5 @@ both be `v20261001storage`. If `v20260901previewstorage` remains, wait for or
 complete the ASO storage migration before removing that version from the CRD.
 Do not patch `status.storedVersions` just to make the older version disappear.
 
-## Apply the migration
-
-Apply manifests after the new CRDs are installed. Keep the existing `spec`
-unless you want to configure one of the new optional fields. Then check the ASO
-resource conditions and the corresponding CAPI cluster status to confirm
-reconciliation completed.
-
-```diff
-- apiVersion: redhatopenshift.azure.com/v20260901preview
-+ apiVersion: redhatopenshift.azure.com/v20261001
-  kind: HcpOpenShiftCluster
-```
+Finally, confirm the HCP resources are Ready and the corresponding CAPI
+clusters report successful reconciliation.

@@ -54,11 +54,33 @@ done
 ```
 
 This command must print no rows. If it finds an object still on
-`v1api20251223preview`, first update its owning CAPZ `spec.resources[]` entry
-to `redhatopenshift.azure.com/v20260901preview`, then write the child through
-the served `v20260901preview` endpoint. If the parent reconciliation did not
-perform that write, a same-value patch to `spec.azureName` triggers conversion
-through the desired API version. Use the object's actual `spec.azureName`:
+`v1api20251223preview`, update its owning CAPZ `spec.resources[]` entry to
+`redhatopenshift.azure.com/v20260901preview`, then verify that reconciliation
+updates the child's `spec.originalVersion`.
+
+For a bulk update across namespaces, run the script from the installer repo
+root. It defaults to a server-side dry run; add `--apply` after reviewing the
+planned changes:
+
+```bash
+# Normalize old objects before upgrading CRDs:
+./doc/migrate-hcp-managed-api-version.sh --from-version v1api20251223preview --to-version v20260901preview
+
+# After installing v20261001 CRDs:
+./doc/migrate-hcp-managed-api-version.sh --from-version v20260901preview --to-version v20261001
+```
+
+These commands are server-side dry runs. Add `--apply` after reviewing the
+planned changes. The script scans `AROMachinePool`, `AROCluster`, and
+`AROControlPlane` resources in every namespace. It changes only embedded HCP
+API versions matching the selected source version, checks that the target API
+is served, and stops before making changes if an affected HCP cluster has no
+VNet integration subnet reference. `--apply` updates CAPZ parent resources;
+CAPZ then reconciles the HCP children. The script does not patch HCP objects or
+CRD `status.storedVersions` directly. Rerun the inventory above after
+reconciliation. If a parent does not update a child, a same-value patch to
+`spec.azureName` triggers conversion through the desired API version. Use the
+object's actual `spec.azureName`:
 
 ```bash
 resource=hcpopenshiftclusters # or hcpopenshiftclustersnodepools / hcpopenshiftclustersexternalauths
@@ -88,6 +110,7 @@ for crd in \
     .metadata.name as $name |
     [$name,
      ([.spec.versions[] | select(.storage) | .name] | join(",")),
+     ([.spec.versions[] | select(.served) | .name] | join(",")),
      (.status.storedVersions | join(","))] | @tsv'
 done
 ```
@@ -107,6 +130,23 @@ Only proceed with the upgrade after all three checks pass: the object
 `v20260901previewstorage`, and CAPZ's embedded HCP resources declare
 `v20260901preview`. This is the gate that ensures the 2025 API can be removed
 without leaving HCP resources that depend on it.
+
+## Example pre-upgrade state
+
+A cluster can be healthy on `v20260901preview` and still fail the gate:
+
+```text
+CAPI cluster:                    Provisioned, Available=True
+HCP CRD storage version:         v20260901previewstorage
+HCP CRD status.storedVersions:   v1api20251223previewstorage,v20260901previewstorage
+HCP object spec.originalVersion: v1api20251223preview
+HCP object Ready:                True
+```
+
+Do not upgrade while any object or CRD still reports the 2025 version. Use
+the checks above to confirm every object's `spec.originalVersion` is
+`v20260901preview` and each CRD lists only `v20260901previewstorage` in
+`status.storedVersions`. Readiness alone is not sufficient.
 
 ## API version
 

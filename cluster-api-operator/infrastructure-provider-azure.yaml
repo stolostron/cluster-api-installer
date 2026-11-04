@@ -53,7 +53,7 @@ spec:
       deployment:
         containers:
         - name: manager
-          imageUrl: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.1
+          imageUrl: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.2
           args:
             --crd-pattern: authorization.azure.com/*;managedidentity.azure.com/*;network.azure.com/*;eventhub.azure.com/*;storage.azure.com/*;web.azure.com/*;insights.azure.com/*;keyvault.azure.com/*;redhatopenshift.azure.com/*;containerservice.azure.com/*;resources.azure.com/*
             --secure-metrics: "false"

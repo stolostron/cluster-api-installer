@@ -5,11 +5,11 @@ metadata:
   namespace: capz-system
 spec:
   # Use your custom version from the GitHub release
-  version: v1.27.0-hcpclusters.1
+  version: v1.27.0-hcpclusters.2
 
   # Point to your custom GitHub releases
   fetchConfig:
-    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/v1.27.0-hcpclusters.1/infrastructure-components.yaml
+    url: https://github.com/stolostron/cluster-api-provider-azure/releases/download/v1.27.0-hcpclusters.2/infrastructure-components.yaml
 
   manifestPatches:
     - |
@@ -26,7 +26,7 @@ spec:
                   - migrate-aso-crds
                 command:
                   - /manager
-                image: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.1
+                image: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.2
                 name: migrate-aso-crd-stored-versions
                 resources:
                   limits:
@@ -87,7 +87,7 @@ spec:
     containers:
     - name: manager
       # Use your custom image
-      imageUrl: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.1
+      imageUrl: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.2
       args:
         --azurecluster-concurrency: "20"
         --azuremachine-concurrency: "50"

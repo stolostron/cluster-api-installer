@@ -8,7 +8,7 @@ Use `scripts/deploy-operator.sh` to automate the full deployment (operator + pro
 
 ```bash
 # clone the repo
-git clone -b backplane-5.0 https://github.com/stolostron/cluster-api-installer.git capi-test
+git clone -b backplane-5.1 https://github.com/stolostron/cluster-api-installer.git capi-test
 cd capi-test
 
 # On Kind cluster
@@ -35,21 +35,21 @@ Environment variables:
 ## Requirements
 
 - **cluster-api-operator**: v0.24.0 or later (required for v1beta2 API support)
-- **Cluster API Core**: v1.11.4 (uses v1beta2 APIs)
+- **Cluster API Core**: v1.14.0 (uses v1beta2 APIs)
 - **Kubernetes**: v1.28+
 - **cert-manager**: v1.14.2+
 
 ## Files
 
 - `namespace.yaml` - Creates the required namespaces (capi-operator-system, capi-system, capz-system)
-- `core-provider.yaml` - Configures the Cluster API Core Provider (v1.11.4)
+- `core-provider.yaml` - Configures the Cluster API Core Provider (v1.14.0)
 - `infrastructure-provider-azure.yaml` - Configures the Azure Infrastructure Provider with custom manifests
 
 ## Custom Images
 
 This configuration uses custom images:
 - **CAPZ Controller**: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.1
-- **ASO Controller**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.1
+- **ASO Controller**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.2
 - **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.1
 
 ## API Version Support
@@ -59,8 +59,8 @@ The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 | Item | Value |
 |---------|-------|
 | Required CAPZ Release | `v1.27.0-hcpclusters.1` |
-| Required ASO Release | `v2.23.0-hcpclusters.1` |
-| Communication with ARM | `2026-10-01` |
+| Required ASO Release | `v2.23.0-hcpclusters.2` |
+| Communication with ARM | `2026-10-01` or `2026-09-01-preview` |
 | Kubernetes storage version | `v20261001storage` |
 | Kubernetes API versions | `v20260901preview`, `v20261001` |
 
@@ -96,6 +96,13 @@ The cluster-api-operator v0.24.0+ is required to support Cluster API v1.11+ whic
 - v0.17.1 and earlier only support v1beta1 providers
 - v0.24.0 (October 2024) added support for Cluster API v1.11.0 (v1beta2)
 - v0.25.0 (January 2025) added support for Cluster API v1.12.0
+
+We recommend upgrading the core provider directly from v1.11.4 to v1.14.0
+for compatibility with CAPZ v1.27.0. CAPI supports skipping at most three
+minor releases (`n-3` to `n`), making this the largest supported upgrade skip;
+no intermediate CAPI releases are required ([CAPI version support policy](https://cluster-api.sigs.k8s.io/reference/versions)).
+Apply the updated `core-provider.yaml` and wait for the CoreProvider to report
+`ProviderInstalled` before proceeding.
 
 ## Prerequisites
 
@@ -240,7 +247,7 @@ releaseSeries:
 ## Azure Service Operator
 
 The configuration includes an additional deployment for Azure Service Operator controller manager with:
-- **Custom Image**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.1
+- **Custom Image**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.2
 - **CRD Pattern Filter**: authorization.azure.com/*, managedidentity.azure.com/*, network.azure.com/*, eventhub.azure.com/*, storage.azure.com/*, web.azure.com/*, insights.azure.com/*, keyvault.azure.com/*
 - **Sync Period**: 1 hour
 

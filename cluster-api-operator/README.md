@@ -48,9 +48,9 @@ Environment variables:
 ## Custom Images
 
 This configuration uses custom images:
-- **CAPZ Controller**: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.1
+- **CAPZ Controller**: quay.io/capz/cluster-api-provider-azure-rhel9:v1.27.0-hcpclusters.2
 - **ASO Controller**: quay.io/capz/azure-service-operator-rhel9:v2.23.0-hcpclusters.2
-- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.1
+- **GitHub Release**: https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.2
 
 ## API Version Support
 
@@ -58,7 +58,7 @@ The CAPZ release must include CRDs for the ARO HCP API version you plan to use:
 
 | Item | Value |
 |---------|-------|
-| Required CAPZ Release | `v1.27.0-hcpclusters.1` |
+| Required CAPZ Release | `v1.27.0-hcpclusters.2` |
 | Required ASO Release | `v2.23.0-hcpclusters.2` |
 | Communication with ARM | `2026-10-01` or `2026-09-01-preview` |
 | Kubernetes storage version | `v20261001storage` |
@@ -220,7 +220,7 @@ kubectl logs -n capz-system -l control-plane=azureserviceoperator-controller-man
 
 ## Custom Release Requirements
 
-Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.1 must include:
+Your custom release at https://github.com/stolostron/cluster-api-provider-azure/releases/tag/v1.27.0-hcpclusters.2 must include:
 
 1. **metadata.yaml** - Provider metadata with version information
 2. **infrastructure-components.yaml** - All CRDs, deployments, and resources (including ARO HCP CRDs)
@@ -322,7 +322,7 @@ Common issues:
 ### Cannot fetch manifests from GitHub
 
 Ensure:
-1. The release `v1.27.0-hcpclusters.1` exists at https://github.com/stolostron/cluster-api-provider-azure/releases
+1. The release `v1.27.0-hcpclusters.2` exists at https://github.com/stolostron/cluster-api-provider-azure/releases
 2. The release contains `metadata.yaml` and `infrastructure-components.yaml` files
 3. The cluster can reach github.com (or configure a proxy if needed)
 

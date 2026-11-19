@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capi-operator-system
+  labels:
+    app: cluster-api-operator
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capi-system
+  labels:
+    app: cluster-api
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capz-system
+  labels:
+    app: cluster-api-provider-azure

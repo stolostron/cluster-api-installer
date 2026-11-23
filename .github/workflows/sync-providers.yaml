@@ -88,7 +88,7 @@ jobs:
     - name: Create Jira task
       id: jira
       if: ${{ steps.sync.outputs[format('updated_{0}', matrix.project)] == 'true' && steps.check-branch-exists.outputs.exists == 'false' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action@v2
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
     - name: Update epic in Jira task
       id: jira-epic
       if: ${{ steps.jira.outputs.status == '201' && fromJson(steps.jira.outputs.response).id != '' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action@v2
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira.outputs.response).id}}"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}

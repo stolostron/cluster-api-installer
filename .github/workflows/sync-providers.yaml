@@ -52,7 +52,7 @@ jobs:
         echo "env.JIRA_EPIC_LINK: ${{ env.JIRA_EPIC_LINK }}"
     - name: test-target-branch
       id: check-branch-exists
-      uses: GuillaumeFalourd/branch-exists@v1.1 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists
+      uses: GuillaumeFalourd/branch-exists@v1.2 # the Apache License 2.0 - see https://github.com/marketplace/actions/branch-exists
       with:
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, matrix.short-name) }}
     - name: checkout

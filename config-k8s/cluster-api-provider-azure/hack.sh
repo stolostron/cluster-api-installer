@@ -14,6 +14,7 @@ ASO_CRDS_URL="${ASO_RELEASE_URL}/azureserviceoperator_customresourcedefinitions_
 
 CAPZ_ASO_CRDS="${CAPZ_ASO_CRDS:-\
     bastionhosts.network.azure.com \
+    diagnosticsettings.insights.azure.com \
     extensions.kubernetesconfiguration.azure.com \
     fleetsmembers.containerservice.azure.com \
     hcpopenshiftclusters.redhatopenshift.azure.com \

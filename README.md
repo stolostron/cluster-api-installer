@@ -8,6 +8,7 @@ Currently supported providers:
  * Cluster-API-provider-AWS (CAPA)
  * Cluster-API-provider-Azure (CAPZ)
  * Cluster-API-provider-Metal3 (CAPM3)
+ * Cluster-API-provider-KubeVirt (CAPK)
  * Cluster-API-provider-OpenShift-Assisted
 
 CAPI components require the cert-manager operator to generate the necessary certificates. The Cluster-api-installer modifies the CAPI Helm charts to leverage the cert-serve-service (certificate service) that already exists within the OpenShift cluster, instead of relying on the cert-manager operator.
@@ -17,6 +18,7 @@ The cluster-api-installer syncs the changes from the upstream repos to the chart
  * Core CAPI provider → `charts/cluster-api`
  * CAPA - AWS provider → `charts/cluster-api-provider-aws`
  * CAPM3 - Metal3 provider → `charts/cluster-api-provider-metal3`
+ * CAPK - KubeVirt provider → `charts/cluster-api-provider-kubevirt`
  * OpenShift Assisted provider → `charts/cluster-api-provider-openshift-assisted`
 
 The synchronization process synchronizes the Kubernetes deployment and creates a Helm chart (used for the Backplane Operator).
@@ -29,6 +31,7 @@ CAPA_BRANCH ?= backplane-2.11
 CAPZ_BRANCH ?= backplane-2.11
 OPENSHIFT_ASSISTED_BRANCH ?= backplane-2.11
 METAL3_BRANCH ?= release-4.21
+CAPK_BRANCH ?= release-5.1
 DEFAULT_ORGREPO ?= https://github.com/openshift
 STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted

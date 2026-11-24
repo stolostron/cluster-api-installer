@@ -39,6 +39,10 @@ jobs:
             project: cluster-api-provider-openshift-assisted
             display-name: CAPOA
             add-paths: "charts/cluster-api-provider-openshift-assisted, charts/cluster-api-provider-openshift-assisted-k8s, src/cluster-api-provider-openshift-assisted.yaml"
+          - short-name: capk
+            project: cluster-api-provider-kubevirt
+            display-name: CAPK
+            add-paths: "charts/cluster-api-provider-kubevirt, src/cluster-api-provider-kubevirt.yaml"
           - short-name: metal3
             project: cluster-api-provider-metal3
             display-name: Metal3

@@ -11,6 +11,7 @@ STOLOSTRON_ORGREPO ?= https://github.com/stolostron
 # needs overridable branch, as the non-master branch will differ
 OPENSHIFT_ASSISTED_BRANCH ?= backplane-5.1
 METAL3_BRANCH ?= release-5.0
+CAPK_BRANCH ?= release-5.1
 
 OPENSHIFT_ASSISTED_ORGREPO ?= https://github.com/openshift-assisted
 
@@ -118,8 +119,26 @@ build-cluster-api-provider-metal3-chart:
 	PROJECT="cluster-api-provider-metal3" \
 	../scripts/sync2chart.sh
 
+.PHONY: build-cluster-api-provider-kubevirt-chart
+build-cluster-api-provider-kubevirt-chart:
+	$(eval TAG=$(call get-tag-from-branch, $(CAPK_BRANCH)))
+	@echo "Building cluster-api-provider-kubevirt chart"
+	WKDIR="$(WKDIR)" \
+	ORGREPO="$(DEFAULT_ORGREPO)" \
+	PROJECT="cluster-api-provider-kubevirt" \
+	BRANCH="$(CAPK_BRANCH)" \
+	../scripts/build.sh
+	BUILTDIR="$(WKDIR)/cluster-api-provider-kubevirt/config/tmp" \
+	CHART_VERSION="$(OCP_VERSION)" \
+	CHART_APP_VERSION="$(OCP_VERSION)" \
+	CHART_VALUES_IMAGE_TAG="$(TAG)" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="v" \
+	SYNC2CHARTS="$(SYNC2CHARTS)" \
+	PROJECT="cluster-api-provider-kubevirt" \
+	../scripts/sync2chart.sh
+
 .PHONY: build
-build: build-cluster-api-chart build-cluster-api-provider-aws-chart build-cluster-api-provider-azure-chart build-cluster-api-provider-metal3-chart build-cluster-api-provider-openshift-assisted-chart
+build: build-cluster-api-chart build-cluster-api-provider-aws-chart build-cluster-api-provider-azure-chart build-cluster-api-provider-metal3-chart build-cluster-api-provider-kubevirt-chart build-cluster-api-provider-openshift-assisted-chart
 
 .PHONY: test-chart-crc
 test-chart-crc:

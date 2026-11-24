@@ -1,0 +1,100 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+# Compose CAPK's subdirectories directly instead of upstream config/default.
+# That default adds cert-manager resources which are replaced below with the
+# OpenShift service CA, so composing the source directories avoids carrying
+# and deleting its Certificate and Issuer resources.
+- crd/
+- rbac/
+- manager/
+- webhook/
+- base/capk-networkpolicy.yaml
+
+namePrefix: mce-capk-
+
+namespace: multicluster-engine
+
+labels:
+- includeSelectors: true
+  pairs:
+    cluster.x-k8s.io/provider: kubevirt
+    cluster.x-k8s.io/v1beta1: v1alpha1
+    cluster.x-k8s.io/v1beta2: v1alpha1
+
+patches:
+  - target:
+      version: v1
+      kind: ValidatingWebhookConfiguration
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
+        value: true
+  - target:
+      version: v1
+      kind: Service
+      name: webhook-service
+    patch: |-
+      - op: add
+        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
+        value: mce-capk-webhook-service-cert
+  - target:
+      version: v1
+      kind: Deployment
+      name: controller-manager
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: '{{ .Values.manager.image.url }}:{{ .Values.manager.image.tag }}'
+      - op: add
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --exclude-annotations=hypershift.openshift.io/nodePool,hypershift.openshift.io/cluster
+      # CAPK applies this exclusion to both reconciliation and webhook
+      # validation. Keeping the exclusion in-process avoids maintaining
+      # admission matchConditions for each webhook and remains correct if
+      # upstream adds another webhook.
+      - op: add
+        path: /spec/template/spec/containers/0/ports/-
+        value:
+          containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts
+        value:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      - op: add
+        path: /spec/template/spec/volumes
+        value:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: mce-capk-webhook-service-cert
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      - op: add
+        path: /spec/template/spec/containers/0/securityContext
+        value:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+      - op: add
+        path: /spec/template/spec/securityContext
+        value:
+          runAsNonRoot: true

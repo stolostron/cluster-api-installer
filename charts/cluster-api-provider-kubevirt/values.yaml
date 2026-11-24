@@ -1,0 +1,4 @@
+manager:
+  image:
+    tag: v5.1
+    url: registry.redhat.io/multicluster-engine/cluster-api-provider-kubevirt-rhel9

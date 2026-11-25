@@ -1,5 +1,9 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "vulnerabilityAlerts": {
+        "enabled": false
+    },
+    "osvVulnerabilityAlerts": false,
     "baseBranchPatterns": [
         "main",
         "backplane-5.0",

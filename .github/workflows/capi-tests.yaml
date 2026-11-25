@@ -1,0 +1,114 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+# This workflow gates pull requests on the capi-tests integration results.
+# It only orchestrates an external workflow and never checks out or executes
+# pull request code.
+name: CAPI tests (ARO)
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - backplane-2.11
+      - backplane-2.17
+      - backplane-5.0
+    paths:
+      - "scripts/aro-hcp/**"
+      - "charts/cluster-api-provider-azure-kind/**"
+      - ".github/workflows/capi-tests.yaml"
+
+permissions:
+  checks: read
+
+concurrency:
+  group: capi-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  capi-tests:
+    name: capi-tests (${{ github.base_ref }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Trigger capi-tests
+        id: trigger
+        env:
+          GH_TOKEN: ${{ secrets.CAPI_TESTS_PAT }}
+          ARO_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+
+          trigger_time=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          echo "trigger_time=${trigger_time}" >> "$GITHUB_OUTPUT"
+
+          gh workflow run workload-cluster-aro.yml \
+            --repo stolostron/capi-tests \
+            --ref main \
+            -f cluster_mode=kind \
+            -f aro_repo_branch="$ARO_BRANCH"
+
+      - name: Find triggered run
+        id: find-run
+        env:
+          GH_TOKEN: ${{ secrets.CAPI_TESTS_PAT }}
+          TRIGGER_TIME: ${{ steps.trigger.outputs.trigger_time }}
+        run: |
+          set -euo pipefail
+
+          repo=stolostron/capi-tests
+          workflow_file=workload-cluster-aro.yml
+          run_id=""
+
+          sleep 15
+          for attempt in $(seq 1 10); do
+            run_id=$(gh run list \
+              --repo "$repo" \
+              --workflow "$workflow_file" \
+              --event workflow_dispatch \
+              --json databaseId,createdAt \
+              --jq "[.[] | select(.createdAt >= \"$TRIGGER_TIME\")] | sort_by(.createdAt) | last | .databaseId // empty")
+
+            if [ -n "$run_id" ]; then
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "Triggered capi-tests run: https://github.com/$repo/actions/runs/$run_id"
+              exit 0
+            fi
+
+            echo "Attempt $attempt/10: capi-tests run not found yet"
+            sleep 15
+          done
+
+          echo "::error::Unable to find the dispatched capi-tests run"
+          exit 1
+
+      - name: Wait for capi-tests completion
+        env:
+          GH_TOKEN: ${{ secrets.CAPI_TESTS_PAT }}
+          RUN_ID: ${{ steps.find-run.outputs.run_id }}
+        run: |
+          set -euo pipefail
+
+          repo=stolostron/capi-tests
+          for attempt in $(seq 1 180); do
+            run_data=$(gh run view "$RUN_ID" --repo "$repo" --json status,conclusion)
+            status=$(echo "$run_data" | jq -r '.status')
+            conclusion=$(echo "$run_data" | jq -r '.conclusion')
+
+            if [ "$status" = completed ]; then
+              if [ "$conclusion" = success ]; then
+                echo "capi-tests passed"
+                exit 0
+              fi
+
+              echo "::error::capi-tests finished with conclusion: $conclusion"
+              echo "See: https://github.com/$repo/actions/runs/$RUN_ID"
+              exit 1
+            fi
+
+            echo "Attempt $attempt/180: capi-tests status=$status"
+            sleep 120
+          done
+
+          echo "::error::Timed out waiting for capi-tests"
+          exit 1

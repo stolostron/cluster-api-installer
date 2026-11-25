@@ -154,6 +154,24 @@ patches:
           emptyDir:
             sizeLimit: 1Mi
           name: ocm
+      # Trust the hub cluster CA bundle (Proxy.spec.trustedCA). MCE injects
+      # ConfigMap trusted-ca-bundle; optional so non-OCP installs still start.
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+          mountPath: /etc/pki/ca-trust/extracted/pem/
+          name: trusted-ca-bundle
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: trusted-ca-bundle
+          configMap:
+            defaultMode: 440
+            items:
+            - key: ca-bundle.crt
+              path: tls-ca-bundle.pem
+            name: trusted-ca-bundle
+            optional: true
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent

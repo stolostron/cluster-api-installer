@@ -96,7 +96,7 @@ jobs:
     - name: Create Jira task CAPA
       id: jira-capa
       if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action@v2
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}
@@ -118,7 +118,7 @@ jobs:
     - name: Update epic in Jira task CAPA
       id: jira-epic-capa
       if: ${{ steps.jira-capa.outputs.status == '201' && fromJson(steps.jira-capa.outputs.response).id != '' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action@v2
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capa.outputs.response).id}}"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}
@@ -137,7 +137,7 @@ jobs:
     - name: Create Jira task CAPI
       id: jira-capi
       if: ${{ steps.sync.outputs.updated_cluster-api == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action@v2
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}
@@ -159,7 +159,7 @@ jobs:
     - name: Update epic in Jira task CAPI
       id: jira-epic-capi
       if: ${{ steps.jira-capi.outputs.status == '201' && fromJson(steps.jira-capi.outputs.response).id != '' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action@v2
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capi.outputs.response).id}}"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}
